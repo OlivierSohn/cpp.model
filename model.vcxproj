@@ -36,21 +36,11 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\Shared\precompiled.header.props" />
     <Import Project="..\os.log\os.log.props" />
-    <Import Project="..\WireModeler\WireModeler.lib.props" />
-    <Import Project="..\os.storage\os.storage.props" />
-    <Import Project="..\Shared\thirdparty.glm.header.props" />
-    <Import Project="..\gl.view\gl.view.props" />
-    <Import Project="..\gl.platform\gl.platform.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\Shared\precompiled.header.props" />
     <Import Project="..\os.log\os.log.props" />
-    <Import Project="..\WireModeler\WireModeler.lib.props" />
-    <Import Project="..\os.storage\os.storage.props" />
-    <Import Project="..\Shared\thirdparty.glm.header.props" />
-    <Import Project="..\gl.view\gl.view.props" />
-    <Import Project="..\gl.platform\gl.platform.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
@@ -98,22 +88,12 @@
     <ClInclude Include="include\paramset.rounding.h" />
     <ClInclude Include="include\paramset.shrink.h" />
     <ClInclude Include="include\persistable.h" />
-    <ClInclude Include="include\positionable.body.h" />
     <ClInclude Include="include\positionable.h" />
-    <ClInclude Include="include\positionable.joint.h" />
-    <ClInclude Include="include\positionable.specwm.h" />
-    <ClInclude Include="include\roundedwm.h" />
     <ClInclude Include="include\updatable.h" />
-    <ClInclude Include="include\wmoperation.h" />
-    <ClInclude Include="include\wmoperation.rounded.h" />
-    <ClInclude Include="include\wmoperation.spec.h" />
     <ClInclude Include="source\win32\stdafx.h" />
     <ClInclude Include="source\win32\targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\operation.geo.cpp" />
-    <ClCompile Include="source\operation.rasterize.cpp" />
-    <ClCompile Include="source\operation.render.cpp" />
     <ClCompile Include="source\param.cpp" />
     <ClCompile Include="source\paramset.color.cpp" />
     <ClCompile Include="source\paramset.cpp" />
@@ -124,17 +104,12 @@
     <ClCompile Include="source\paramset.rounding.cpp" />
     <ClCompile Include="source\paramset.shrink.cpp" />
     <ClCompile Include="source\persistable.cpp" />
-    <ClCompile Include="source\positionable.body.cpp" />
     <ClCompile Include="source\positionable.cpp" />
-    <ClCompile Include="source\positionable.joint.cpp" />
     <ClCompile Include="source\updatable.cpp" />
     <ClCompile Include="source\win32\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="source\wmoperation.cpp" />
-    <ClCompile Include="source\wmoperation.rounded.cpp" />
-    <ClCompile Include="source\wmoperation.spec.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -54,19 +54,7 @@
     <ClInclude Include="include\persistable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\positionable.body.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\positionable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\positionable.joint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\positionable.specwm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roundedwm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\updatable.h">
@@ -78,26 +66,8 @@
     <ClInclude Include="source\win32\targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\wmoperation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\wmoperation.rounded.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\wmoperation.spec.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\operation.geo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\operation.rasterize.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\operation.render.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\param.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -128,28 +98,13 @@
     <ClCompile Include="source\persistable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\positionable.body.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\positionable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\positionable.joint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\updatable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\win32\stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\wmoperation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\wmoperation.rounded.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\wmoperation.spec.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
