@@ -108,12 +108,14 @@ void Updatable::addSpec(spec item)
     assert(!isSpec(item));
 
     m_specs.push_back(item);
+    item->addObserver(this);
 
     assert(isConsistent());
 }
 
 void Updatable::removeSpec(spec item)
 {
+    item->removeObserver(this);
     m_specs.remove(item);
 
     assert(!isSpec(item));

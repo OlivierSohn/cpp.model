@@ -78,6 +78,15 @@
     <ClInclude Include="source\win32\targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\wmoperation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wmoperation.rounded.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wmoperation.spec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\operation.geo.cpp">
@@ -128,16 +137,19 @@
     <ClCompile Include="source\positionable.joint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\positionable.specwm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\roundedwm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\updatable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\win32\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wmoperation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wmoperation.rounded.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wmoperation.spec.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

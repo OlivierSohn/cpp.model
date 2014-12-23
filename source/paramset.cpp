@@ -33,3 +33,9 @@ const char * ParamSet::name() const
 {
     return m_name;
 }
+
+
+ParamBase & ParamSet::getParam(unsigned int index)
+{
+    return m_params.at(index);
+}

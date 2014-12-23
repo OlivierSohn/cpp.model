@@ -14,6 +14,13 @@ namespace imajuscule
     // forward declarations of Persistables defined in gl.view
     class ParamBase;
     class ParamSet;
+    class Joint;
+    class Body;
+    class SpecWM;
+    class RoundedWM;
+    class GeoOp;
+    class RasterizeOp;
+    class RenderOp;
 
     class PersistableVisitor
     {
@@ -23,6 +30,13 @@ namespace imajuscule
         // TODO subclass in gl.view and add "Visit" pure virtual methods
         virtual void Visit(ParamBase*) = 0;
         virtual void Visit(ParamSet*) = 0;
+        virtual void Visit(Joint*) = 0;
+        virtual void Visit(Body*) = 0;
+        virtual void Visit(SpecWM*) = 0;
+        virtual void Visit(RoundedWM*) = 0;
+        virtual void Visit(GeoOp*) = 0;
+        virtual void Visit(RasterizeOp*) = 0;
+        virtual void Visit(RenderOp*) = 0;
 
     protected:
         PersistableVisitor() {}

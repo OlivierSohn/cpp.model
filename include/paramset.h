@@ -16,6 +16,8 @@ namespace imajuscule
 
         const char * name() const;
 
+        ParamBase & getParam(unsigned int index);
+
         void doUpdate() override;
 
         PERSISTABLE_VISITOR_HEADER_IMPL
