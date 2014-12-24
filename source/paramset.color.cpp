@@ -2,7 +2,7 @@
 using namespace imajuscule;
 
 Color::Color() :
-ParamSet("Color", paramsInSet{ Param<float>("ALPHA", 0.5f), Param<float>("RS", 0.f) })
+ParamSet("Color", paramsInSet{ new Param<float>("ALPHA", 0.5f), new Param<float>("RS", 0.f) })
 {
 
 }

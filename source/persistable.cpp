@@ -5,6 +5,7 @@ using namespace imajuscule;
 Persistable::~Persistable()
 {}
 
-Persistable::Persistable()
+Persistable::Persistable():
+Observable()
 {
 }

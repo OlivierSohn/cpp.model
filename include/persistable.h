@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "observable.h"
+
 namespace imajuscule
 {
 
@@ -18,9 +20,12 @@ namespace imajuscule
     class Body;
     class SpecWM;
     class RoundedWM;
-    class GeoOp;
+    class WMGeoOp;
     class RasterizeOp;
-    class RenderOp;
+    class STAIRenderOp;
+    class ShrinkOp;
+    class STAIRasterOp;
+    class STAISimOp;
 
     class PersistableVisitor
     {
@@ -34,15 +39,18 @@ namespace imajuscule
         virtual void Visit(Body*) = 0;
         virtual void Visit(SpecWM*) = 0;
         virtual void Visit(RoundedWM*) = 0;
-        virtual void Visit(GeoOp*) = 0;
+        virtual void Visit(WMGeoOp*) = 0;
         virtual void Visit(RasterizeOp*) = 0;
-        virtual void Visit(RenderOp*) = 0;
+        virtual void Visit(STAIRenderOp*) = 0;
+        virtual void Visit(ShrinkOp*) = 0;
+        virtual void Visit(STAIRasterOp*) = 0;
+        virtual void Visit(STAISimOp*) = 0;
 
     protected:
         PersistableVisitor() {}
     };
 
-    class Persistable
+    class Persistable : public Observable
     {
     public:
         virtual ~Persistable();

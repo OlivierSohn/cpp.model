@@ -10,7 +10,7 @@ namespace imajuscule
     class ParamSet : public Updatable
     {
     public:
-        typedef std::vector< ParamBase > paramsInSet;
+        typedef std::vector< ParamBase* > paramsInSet;
         ParamSet(const char* paramSetName, paramsInSet & vParams);
         virtual ~ParamSet();
 

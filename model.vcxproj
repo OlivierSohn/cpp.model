@@ -75,6 +75,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\observable.h" />
     <ClInclude Include="include\operation.geo.h" />
     <ClInclude Include="include\operation.rasterize.h" />
     <ClInclude Include="include\operation.render.h" />
@@ -94,6 +95,7 @@
     <ClInclude Include="source\win32\targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\observable.cpp" />
     <ClCompile Include="source\param.cpp" />
     <ClCompile Include="source\paramset.color.cpp" />
     <ClCompile Include="source\paramset.cpp" />

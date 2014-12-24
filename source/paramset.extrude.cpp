@@ -2,7 +2,7 @@
 using namespace imajuscule;
 
 Extrude::Extrude() :
-ParamSet("Extrude", paramsInSet{ Param<int>("AXIS", 0), Param<int>("LENGTH", 10) })
+ParamSet("Extrude", paramsInSet{ new Param<int>("AXIS", 0), new Param<int>("LENGTH", 10) })
 {
 
 }

@@ -2,7 +2,7 @@
 using namespace imajuscule;
 
 Rounding::Rounding() :
-ParamSet("Rounding", paramsInSet{ Param<float>("RR", 0.f), Param<float>("RS", 0.f) })
+ParamSet("Rounding", paramsInSet{ new Param<float>("RR", 0.f), new Param<float>("RS", 0.f) })
 {
 
 }

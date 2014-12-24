@@ -46,3 +46,14 @@ void Param<T>::GetValue(T&oVal) const
 {
     oVal = m_val;
 }
+
+////////////////////////////////////////////////////////////////////
+// instantiate the templates (add some if some are unresolved)
+////////////////////////////////////////////////////////////////////
+
+#include <string>
+
+template class Param < float >;
+template class Param < int >;
+template class Param < bool >;
+template class Param < std::string >;

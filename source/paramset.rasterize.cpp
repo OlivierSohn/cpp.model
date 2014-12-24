@@ -2,7 +2,7 @@
 using namespace imajuscule;
 
 Rasterize::Rasterize() :
-ParamSet("Rasterize", paramsInSet{ Param<float>("GridSize", 0.f), Param<bool>("As Voxels", false) })
+ParamSet("Rasterize", paramsInSet{ new Param<float>("GridSize", 0.f), new Param<bool>("As Voxels", false) })
 {
 
 }

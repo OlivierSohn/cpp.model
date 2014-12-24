@@ -7,7 +7,8 @@ using namespace imajuscule;
 
 Updatable::Updatable() :
 Persistable(),
-m_bOneObservedChanged(true)
+m_bOneObservedChanged(true),
+m_stamp(0)
 {
 }
 
@@ -30,6 +31,7 @@ void Updatable::Update()
     if (m_bOneObservedChanged)
     {
         doUpdate();
+        m_stamp++;
         m_bOneObservedChanged = false;
     }
 }
@@ -56,22 +58,6 @@ bool Updatable::isConsistent() const
 
     return true;
 }
-
-bool Updatable::isObserver(observer item) const
-{
-    observers::const_iterator it = m_observers.begin();
-    observers::const_iterator end = m_observers.end();
-
-    for (; it != end; ++it)
-    {
-        if ((*it) == item)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 bool Updatable::isSpec(spec item) const
 {
     specs::const_iterator it = m_specs.begin();
@@ -85,22 +71,6 @@ bool Updatable::isSpec(spec item) const
         }
     }
     return false;
-}
-
-void Updatable::addObserver(observer item)
-{
-    assert(!isObserver(item));
-
-    m_observers.push_back(item);
-    
-    assert(isConsistent());
-}
-
-void Updatable::removeObserver(observer item)
-{
-    m_observers.remove(item);
-    
-    assert(isConsistent());
 }
 
 void Updatable::addSpec(spec item)
@@ -121,19 +91,12 @@ void Updatable::removeSpec(spec item)
     assert(!isSpec(item));
 }
 
-void Updatable::notifyObservers()
-{
-    observers::const_iterator it = m_observers.begin();
-    observers::const_iterator end = m_observers.end();
-
-    for (; it != end; ++it)
-    {
-        (*it)->onObservedChanged();
-    }
-}
-
 void Updatable::onObservedChanged()
 {
     m_bOneObservedChanged = true;
 }
 
+unsigned int Updatable::stamp()
+{
+    return m_stamp;
+}

@@ -11,38 +11,32 @@ namespace imajuscule
     class Updatable : public Persistable
     {
     public:
-        // weak pointers to allow clients to not call remove(observer/spec) when an object is deleted
-        //        typedef std::weak_ptr<Updatable> observer;
-        //        typedef std::weak_ptr<Updatable> spec;
-        typedef Updatable * observer;
         typedef Updatable * spec;
 
         virtual ~Updatable();
 
         void Update();
 
-        void addObserver(observer );
-        void removeObserver(observer);
         void addSpec(spec);
         void removeSpec(spec);
 
+        // check for difference to know if you have up-to-date data
+        unsigned int stamp();
     protected:
         Updatable();
 
         virtual void doUpdate() = 0;
 
-        typedef std::list< observer > observers;
         typedef std::list< spec > specs;
     private:
-        void notifyObservers();
-        void onObservedChanged();
+        void onObservedChanged() override;
+
         bool isConsistent() const;
-        bool isObserver(observer item) const;
         bool isSpec(spec item) const;
 
         bool m_bOneObservedChanged;
+        unsigned int m_stamp;
 
-        observers m_observers;
         specs m_specs;
     };
 }

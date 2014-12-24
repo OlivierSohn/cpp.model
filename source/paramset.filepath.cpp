@@ -2,7 +2,7 @@
 using namespace imajuscule;
 
 FilePath::FilePath() :
-ParamSet("FilePath", paramsInSet{ Param<std::string>("File Path", std::string()) })
+ParamSet("FilePath", paramsInSet{ new Param<std::string>("File Path", std::string()) })
 {
 }
 

@@ -2,7 +2,7 @@
 
 using namespace imajuscule;
 
-ParamSet::ParamSet(const char* paramSetName, std::vector< ParamBase > & vParams) :
+ParamSet::ParamSet(const char* paramSetName, paramsInSet & vParams) :
 Updatable(),
 m_name(paramSetName)
 {
@@ -12,8 +12,7 @@ m_name(paramSetName)
     paramsInSet::iterator end = m_params.end();
     for (; it != end; ++it)
     {
-        (*it).addObserver(this);
-        this->addSpec(&(*it));
+        this->addSpec(*it);
     }
 
 }
@@ -24,8 +23,8 @@ ParamSet::~ParamSet()
     paramsInSet::iterator end = m_params.end();
     for (; it != end; ++it)
     {
-        this->removeSpec(&(*it));
-        (*it).removeObserver(this);
+        this->removeSpec(*it);
+        delete(*it);
     }
 }
 
@@ -37,5 +36,8 @@ const char * ParamSet::name() const
 
 ParamBase & ParamSet::getParam(unsigned int index)
 {
-    return m_params.at(index);
+    return *m_params.at(index);
 }
+
+void ParamSet::doUpdate()
+{}
