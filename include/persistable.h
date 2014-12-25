@@ -17,7 +17,8 @@ namespace imajuscule
     class ParamBase;
     class ParamSet;
     class Joint;
-    class Body;
+    class SimSTAIBody;
+    class RasterSTAIBody;
     class SpecWM;
     class RoundedWM;
     class WMGeoOp;
@@ -36,7 +37,8 @@ namespace imajuscule
         virtual void Visit(ParamBase*) = 0;
         virtual void Visit(ParamSet*) = 0;
         virtual void Visit(Joint*) = 0;
-        virtual void Visit(Body*) = 0;
+        virtual void Visit(RasterSTAIBody*) = 0;
+        virtual void Visit(SimSTAIBody*) = 0;
         virtual void Visit(SpecWM*) = 0;
         virtual void Visit(RoundedWM*) = 0;
         virtual void Visit(WMGeoOp*) = 0;
