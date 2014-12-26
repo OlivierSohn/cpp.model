@@ -1,5 +1,6 @@
 #include "updatable.h"
 #include <cassert>
+#include <algorithm>
 #include "os.log.h"
 
 using namespace imajuscule;
@@ -89,6 +90,12 @@ void Updatable::removeSpec(spec item)
     m_specs.remove(item);
 
     assert(!isSpec(item));
+}
+
+void Updatable::traverseSpecs(specs::iterator & begin, specs::iterator & end)
+{
+    begin = m_specs.begin();
+    end = m_specs.end();
 }
 
 void Updatable::onObservedChanged()

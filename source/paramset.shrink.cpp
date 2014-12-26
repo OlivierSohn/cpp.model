@@ -3,7 +3,7 @@ using namespace imajuscule;
 
 // TODO lifecyle...
 Shrink::Shrink() :
-ParamSet("Shrink", paramsInSet{ new Param<float>("SHRINK", 0.5f ) })
+ParamSet("SHRINK", paramsInSet{ new Param<float>("SHRINK", 0.5f ) })
 {
 
 }

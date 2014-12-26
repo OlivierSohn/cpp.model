@@ -91,6 +91,7 @@
     <ClInclude Include="include\persistable.h" />
     <ClInclude Include="include\positionable.h" />
     <ClInclude Include="include\updatable.h" />
+    <ClInclude Include="include\visitor.persistable.h" />
     <ClInclude Include="source\win32\stdafx.h" />
     <ClInclude Include="source\win32\targetver.h" />
   </ItemGroup>

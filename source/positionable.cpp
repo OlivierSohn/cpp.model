@@ -22,6 +22,19 @@ Positionable::~Positionable()
     this->removeSpec(&m_position);
 }
 
+void Positionable::setParent(Positionable * parent)
+{
+    if ( m_parent )
+        this->removeSpec(m_parent);
+
+    m_parent = parent;
+}
+
+Positionable * Positionable::parent()
+{
+    return m_parent;
+}
+
 void Positionable::getAbsolutePosition(float trans[3], float rot[3])
 {
     float localTrans[3];
