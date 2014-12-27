@@ -1,10 +1,10 @@
 #include "paramset.color.h"
+
 using namespace imajuscule;
 
 Color::Color() :
-ParamSet("Color", paramsInSet{ new Param<float>("ALPHA", 0.5f), new Param<float>("RS", 0.f) })
+ParamSet("COLOR", paramsInSet{ new Param<float>("ALPHA", 0.5f), new Param<float>("RS", 0.f) })
 {
-
 }
 
 Color::~Color()
