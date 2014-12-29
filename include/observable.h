@@ -15,7 +15,7 @@ namespace imajuscule
 
         void addObserver(observer );
         void removeObserver(observer);
-        void notifyObservers();
+        virtual void notifyObservers();
     protected:
         Observable();
 
