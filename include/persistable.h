@@ -1,17 +1,14 @@
 
 #pragma once
 
-#include "observable.h"
-#include "visitor.persistable.h"
+#include "updatable.h"
 
 namespace imajuscule
 {
-    class Persistable : public Observable
+    class Persistable : public Updatable
     {
     public:
         virtual ~Persistable();
-
-        PERSISTABLE_VISITOR_PURE_VIRTUAL
 
     protected:
         Persistable();

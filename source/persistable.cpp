@@ -6,6 +6,6 @@ Persistable::~Persistable()
 {}
 
 Persistable::Persistable():
-Observable()
+Updatable()
 {
 }

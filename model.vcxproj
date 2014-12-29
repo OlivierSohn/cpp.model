@@ -79,17 +79,7 @@
     <ClInclude Include="include\operation.geo.h" />
     <ClInclude Include="include\operation.rasterize.h" />
     <ClInclude Include="include\operation.render.h" />
-    <ClInclude Include="include\param.h" />
-    <ClInclude Include="include\paramset.color.h" />
-    <ClInclude Include="include\paramset.extrude.h" />
-    <ClInclude Include="include\paramset.filepath.h" />
-    <ClInclude Include="include\paramset.h" />
-    <ClInclude Include="include\paramset.position.h" />
-    <ClInclude Include="include\paramset.rasterize.h" />
-    <ClInclude Include="include\paramset.rounding.h" />
-    <ClInclude Include="include\paramset.shrink.h" />
     <ClInclude Include="include\persistable.h" />
-    <ClInclude Include="include\positionable.h" />
     <ClInclude Include="include\updatable.h" />
     <ClInclude Include="include\visitor.persistable.h" />
     <ClInclude Include="source\win32\stdafx.h" />
@@ -97,17 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\observable.cpp" />
-    <ClCompile Include="source\param.cpp" />
-    <ClCompile Include="source\paramset.color.cpp" />
-    <ClCompile Include="source\paramset.cpp" />
-    <ClCompile Include="source\paramset.extrude.cpp" />
-    <ClCompile Include="source\paramset.filepath.cpp" />
-    <ClCompile Include="source\paramset.position.cpp" />
-    <ClCompile Include="source\paramset.rasterize.cpp" />
-    <ClCompile Include="source\paramset.rounding.cpp" />
-    <ClCompile Include="source\paramset.shrink.cpp" />
     <ClCompile Include="source\persistable.cpp" />
-    <ClCompile Include="source\positionable.cpp" />
     <ClCompile Include="source\updatable.cpp" />
     <ClCompile Include="source\win32\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

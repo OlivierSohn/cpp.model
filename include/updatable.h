@@ -1,11 +1,13 @@
 
 #pragma once
 
-#include "persistable.h"
+#include "observable.h"
 #include <list>
 #include <vector>
 #include <memory>
 #include <map>
+
+#include "visitor.persistable.h"
 
 namespace imajuscule
 {
@@ -13,7 +15,7 @@ namespace imajuscule
     typedef Updatable * spec;
     typedef std::list< spec > specs;
     
-    class Updatable : public Persistable
+    class Updatable : public Observable
     {
     public:
         virtual ~Updatable();
@@ -27,6 +29,9 @@ namespace imajuscule
         
         // check for difference to know if you have up-to-date data
         unsigned int stamp();
+
+        PERSISTABLE_VISITOR_PURE_VIRTUAL
+
     protected:
         Updatable();
 

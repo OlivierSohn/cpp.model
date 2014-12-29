@@ -7,7 +7,7 @@ using namespace imajuscule;
 
 
 Updatable::Updatable() :
-Persistable(),
+Observable(),
 m_bOneObservedChanged(true),
 m_stamp(0)
 {

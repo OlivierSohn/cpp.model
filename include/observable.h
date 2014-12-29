@@ -15,10 +15,9 @@ namespace imajuscule
 
         void addObserver(observer );
         void removeObserver(observer);
+        void notifyObservers();
     protected:
         Observable();
-
-        void notifyObservers();
 
         typedef std::list< observer > observers;
         observers m_observers;
