@@ -31,7 +31,7 @@ namespace imajuscule
     public:
         virtual ~PersistableVisitor(){}
 
-        // TODO subclass in gl.view and add "Visit" pure virtual methods
+        // TODO PersistableVisitor: subclass in gl.view and add "Visit" pure virtual methods
         virtual void Visit(ParamBase*) = 0;
         virtual void Visit(ParamSet*) = 0;
         virtual void Visit(Joint*) = 0;
