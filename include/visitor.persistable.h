@@ -11,6 +11,7 @@ namespace imajuscule
     }
 
     // forward declarations of Persistables defined in gl.view
+    class AnimationBase;
     class ParamBase;
     class ParamSet;
     class Joint;
@@ -25,6 +26,8 @@ namespace imajuscule
     class STAIRasterOp;
     class STAISimOp;
     class Positionable;
+    class UINotifierBase;
+    class Cmd;
 
     class PersistableVisitor
     {
@@ -32,6 +35,7 @@ namespace imajuscule
         virtual ~PersistableVisitor(){}
 
         // TODO PersistableVisitor: subclass in gl.view and add "Visit" pure virtual methods
+        virtual void Visit(AnimationBase*) = 0;
         virtual void Visit(ParamBase*) = 0;
         virtual void Visit(ParamSet*) = 0;
         virtual void Visit(Joint*) = 0;
@@ -46,6 +50,8 @@ namespace imajuscule
         virtual void Visit(STAIRasterOp*) = 0;
         virtual void Visit(STAISimOp*) = 0;
         virtual void Visit(Positionable*) = 0;
+        virtual void Visit(UINotifierBase*) = 0;
+        virtual void Visit(Cmd*) = 0;
 
     protected:
         PersistableVisitor() {}

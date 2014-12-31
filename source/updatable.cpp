@@ -7,9 +7,7 @@ using namespace imajuscule;
 
 
 Updatable::Updatable() :
-Observable(),
-m_bOneObservedChanged(true),
-m_stamp(0)
+Observable()
 {
 }
 
@@ -28,13 +26,12 @@ void Updatable::Update()
         (*it)->Update();
     }
 
-    //The Updatable observes each of its specs
-    if (m_bOneObservedChanged)
-    {
-        doUpdate();
-        m_stamp++;
-        m_bOneObservedChanged = false;
-    }
+    bool bOldVal = hasNewContentForUpdate();
+
+    bool bNewVal = doUpdate();
+
+    if ( bOldVal != bNewVal )
+        hasNewContentForUpdate(bNewVal);
 }
 
 bool Updatable::isConsistent() const
@@ -96,14 +93,4 @@ void Updatable::traverseSpecs(specs::iterator & begin, specs::iterator & end)
 {
     begin = m_specs.begin();
     end = m_specs.end();
-}
-
-void Updatable::onObservedChanged()
-{
-    m_bOneObservedChanged = true;
-}
-
-unsigned int Updatable::stamp()
-{
-    return m_stamp;
 }

@@ -15,15 +15,18 @@ namespace imajuscule
 
         void addObserver(observer );
         void removeObserver(observer);
-        virtual void notifyObservers();
+
+        bool hasNewContentForUpdate() const;
+        void hasNewContentForUpdate(bool);
     protected:
         Observable();
 
         typedef std::list< observer > observers;
         observers m_observers;
+
     private:
         bool isObserver(observer item) const;
 
-        virtual void onObservedChanged() {}
+        bool m_bHasNewContentForUpdate;
     };
 }

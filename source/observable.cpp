@@ -5,13 +5,23 @@
 using namespace imajuscule;
 
 
-Observable::Observable()
+Observable::Observable() :
+m_bHasNewContentForUpdate(true)
 {
 }
 
 Observable::~Observable()
 {
+}
 
+bool Observable::hasNewContentForUpdate() const
+{
+    return m_bHasNewContentForUpdate;
+}
+
+void Observable::hasNewContentForUpdate(bool bVal)
+{
+    m_bHasNewContentForUpdate = bVal;
 }
 
 bool Observable::isObserver(observer item) const
@@ -41,15 +51,3 @@ void Observable::removeObserver(observer item)
     m_observers.remove(item);
 }
 
-void Observable::notifyObservers()
-{
-    observers::const_iterator it = m_observers.begin();
-    observers::const_iterator end = m_observers.end();
-
-    for (; it != end; ++it)
-    {
-        (*it)->notifyObservers();
-
-        (*it)->onObservedChanged();
-    }
-}
