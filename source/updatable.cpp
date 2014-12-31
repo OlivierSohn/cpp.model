@@ -5,7 +5,6 @@
 
 using namespace imajuscule;
 
-
 Updatable::Updatable() :
 Observable()
 {
@@ -13,7 +12,6 @@ Observable()
 
 Updatable::~Updatable()
 {
-
 }
 
 void Updatable::Update()

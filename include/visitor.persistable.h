@@ -26,8 +26,6 @@ namespace imajuscule
     class STAIRasterOp;
     class STAISimOp;
     class Positionable;
-    class UINotifierBase;
-    class Cmd;
 
     class PersistableVisitor
     {
@@ -50,9 +48,7 @@ namespace imajuscule
         virtual void Visit(STAIRasterOp*) = 0;
         virtual void Visit(STAISimOp*) = 0;
         virtual void Visit(Positionable*) = 0;
-        virtual void Visit(UINotifierBase*) = 0;
-        virtual void Visit(Cmd*) = 0;
-
+        
     protected:
         PersistableVisitor() {}
     };

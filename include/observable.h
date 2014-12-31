@@ -2,7 +2,7 @@
 #pragma once
 
 #include <list>
-#include <memory>
+#include <set>
 
 namespace imajuscule
 {
@@ -18,6 +18,8 @@ namespace imajuscule
 
         bool hasNewContentForUpdate() const;
         void hasNewContentForUpdate(bool);
+
+        static void onUpdateEnd();
     protected:
         Observable();
 
@@ -25,6 +27,10 @@ namespace imajuscule
         observers m_observers;
 
     private:
+        typedef std::set<Observable*> observables;
+        static observables m_all;
+
+        static void traverseAll(observables::iterator & begin, observables::iterator & end);
         bool isObserver(observer item) const;
 
         bool m_bHasNewContentForUpdate;

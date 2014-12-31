@@ -3,9 +3,7 @@
 
 #include "observable.h"
 #include <list>
-#include <vector>
-#include <memory>
-#include <map>
+#include <set>
 
 #include "visitor.persistable.h"
 
@@ -26,7 +24,7 @@ namespace imajuscule
         void removeSpec(spec);
 
         void traverseSpecs(specs::iterator & begin, specs::iterator & end);
-        
+
         PERSISTABLE_VISITOR_PURE_VIRTUAL
 
     protected:
@@ -35,9 +33,9 @@ namespace imajuscule
         virtual bool doUpdate() { return hasNewContentForUpdate(); };
 
     private:
-        bool isConsistent() const;
-        bool isSpec(spec item) const;
-        
         specs m_specs;
+
+        bool isConsistent() const;
+        bool isSpec(spec item) const;        
     };
 }

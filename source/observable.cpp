@@ -4,14 +4,33 @@
 
 using namespace imajuscule;
 
+Observable::observables Observable::m_all;
 
 Observable::Observable() :
 m_bHasNewContentForUpdate(true)
 {
+    m_all.insert(observables::value_type(this));
 }
 
 Observable::~Observable()
 {
+    m_all.erase(observables::value_type(this));
+}
+
+void Observable::traverseAll(observables::iterator & begin, observables::iterator & end)
+{
+    begin = m_all.begin();
+    end = m_all.end();
+}
+
+void Observable::onUpdateEnd()
+{
+    observables::iterator it, end;
+    traverseAll(it, end);
+    for (; it != end; ++it)
+    {
+        (*it)->hasNewContentForUpdate(false);
+    }
 }
 
 bool Observable::hasNewContentForUpdate() const
