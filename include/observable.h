@@ -6,6 +6,7 @@
 
 namespace imajuscule
 {
+    // TODO Observable : notion has changed, m_observers is the backlink of Updatable::spec but has no purpose...
     class Observable
     {
     public:
