@@ -27,13 +27,18 @@ namespace imajuscule
         typedef std::list< observer > observers;
         observers m_observers;
 
+        void hasBeenUpdated(bool);
+        bool hasBeenUpdated() const;
+
     private:
         typedef std::set<Observable*> observables;
         static observables m_all;
 
         static void traverseAll(observables::iterator & begin, observables::iterator & end);
         bool isObserver(observer item) const;
+        void resetUpdateStates();
 
+        bool m_bHasBeenUpdated;
         bool m_bHasNewContentForUpdate;
     };
 }

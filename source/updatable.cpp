@@ -16,6 +16,9 @@ Updatable::~Updatable()
 
 void Updatable::Update()
 {
+    if (hasBeenUpdated())
+        return;
+
     specs::iterator it = m_specs.begin();
     specs::iterator end = m_specs.end();
 
@@ -30,6 +33,8 @@ void Updatable::Update()
 
     if ( bOldVal != bNewVal )
         hasNewContentForUpdate(bNewVal);
+
+    hasBeenUpdated(true);
 }
 
 bool Updatable::isConsistent() const

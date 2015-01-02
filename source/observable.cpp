@@ -7,7 +7,8 @@ using namespace imajuscule;
 Observable::observables Observable::m_all;
 
 Observable::Observable() :
-m_bHasNewContentForUpdate(true)
+m_bHasNewContentForUpdate(true),
+m_bHasBeenUpdated(false)
 {
     m_all.insert(observables::value_type(this));
 }
@@ -29,8 +30,14 @@ void Observable::onUpdateEnd()
     traverseAll(it, end);
     for (; it != end; ++it)
     {
-        (*it)->hasNewContentForUpdate(false);
+        (*it)->resetUpdateStates();
     }
+}
+
+void Observable::resetUpdateStates()
+{
+    hasNewContentForUpdate(false);
+    hasBeenUpdated(false);
 }
 
 bool Observable::hasNewContentForUpdate() const
@@ -41,6 +48,16 @@ bool Observable::hasNewContentForUpdate() const
 void Observable::hasNewContentForUpdate(bool bVal)
 {
     m_bHasNewContentForUpdate = bVal;
+}
+
+bool Observable::hasBeenUpdated() const
+{
+    return m_bHasBeenUpdated;
+}
+
+void Observable::hasBeenUpdated(bool bVal)
+{
+    m_bHasBeenUpdated = bVal;
 }
 
 bool Observable::isObserver(observer item) const
