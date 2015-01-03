@@ -26,6 +26,7 @@ namespace imajuscule
     class STAIRasterOp;
     class STAISimOp;
     class Positionable;
+    class EvtB;
 
     class PersistableVisitor
     {
@@ -48,7 +49,8 @@ namespace imajuscule
         virtual void Visit(STAIRasterOp*) = 0;
         virtual void Visit(STAISimOp*) = 0;
         virtual void Visit(Positionable*) = 0;
-        
+        virtual void Visit(EvtB*) = 0;
+
     protected:
         PersistableVisitor() {}
     };
