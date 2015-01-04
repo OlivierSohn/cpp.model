@@ -11,6 +11,7 @@ namespace imajuscule
     }
 
     // forward declarations of Persistables defined in gl.view
+    class FormulaBase;
     class AnimationBase;
     class ParamBase;
     class ParamSet;
@@ -49,6 +50,7 @@ namespace imajuscule
         virtual void Visit(STAIRasterOp*) = 0;
         virtual void Visit(STAISimOp*) = 0;
         virtual void Visit(Positionable*) = 0;
+        virtual void Visit(FormulaBase*) = 0;
         virtual void Visit(EvtB*) = 0;
 
     protected:
