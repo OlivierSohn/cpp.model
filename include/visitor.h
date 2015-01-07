@@ -3,14 +3,6 @@
 
 namespace imajuscule
 {
-#define PERSISTABLE_VISITOR_PURE_VIRTUAL virtual void accept(PersistableVisitor &) = 0;
-
-#define PERSISTABLE_VISITOR_HEADER_IMPL virtual void accept(PersistableVisitor & vtor) override\
-    {\
-        vtor.Visit(this);\
-    }
-
-    // forward declarations of Persistables defined in gl.view
     class PathSuite;
     class FormulaBase;
     class AnimationBase;
@@ -29,13 +21,14 @@ namespace imajuscule
     class STAISimOp;
     class Positionable;
     class EvtB;
+    class Player;
+    class ReferentiableManager;
 
-    class PersistableVisitor
+    class Visitor
     {
     public:
-        virtual ~PersistableVisitor(){}
+        virtual ~Visitor(){}
 
-        // TODO PersistableVisitor: subclass in gl.view and add "Visit" pure virtual methods
         virtual void Visit(PathSuite*) = 0;
         virtual void Visit(AnimationBase*) = 0;
         virtual void Visit(ParamBase*) = 0;
@@ -54,8 +47,10 @@ namespace imajuscule
         virtual void Visit(Positionable*) = 0;
         virtual void Visit(FormulaBase*) = 0;
         virtual void Visit(EvtB*) = 0;
+        virtual void Visit(Player*) = 0;
+        virtual void Visit(ReferentiableManager*) = 0;
 
     protected:
-        PersistableVisitor() {}
+        Visitor() {}
     };
 }

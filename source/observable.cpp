@@ -7,6 +7,7 @@ using namespace imajuscule;
 Observable::observables Observable::m_all;
 
 Observable::Observable() :
+Visitable(),
 m_bHasNewContentForUpdate(true),
 m_bHasBeenUpdated(false)
 {

@@ -39,9 +39,6 @@
     <ClInclude Include="include\observable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\visitor.persistable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\referentiable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -49,6 +46,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\session.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\visitable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\visitor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

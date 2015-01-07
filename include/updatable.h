@@ -5,7 +5,7 @@
 #include <list>
 #include <set>
 
-#include "visitor.persistable.h"
+#include "visitor.h"
 
 namespace imajuscule
 {
@@ -24,8 +24,6 @@ namespace imajuscule
         void removeSpec(spec);
 
         void traverseSpecs(specs::iterator & begin, specs::iterator & end);
-
-        PERSISTABLE_VISITOR_PURE_VIRTUAL
 
     protected:
         Updatable();

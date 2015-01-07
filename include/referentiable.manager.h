@@ -4,11 +4,13 @@
 #include <string>
 #include <vector>
 
+#include "visitable.h"
+
 namespace imajuscule
 {
     class Referentiable;
     typedef std::vector<Referentiable*> referentiables;
-    class ReferentiableManager
+    class ReferentiableManager : public Visitable
     {
     public:
         ReferentiableManager();
@@ -20,6 +22,8 @@ namespace imajuscule
         Referentiable * findBySessionName(const std::string & sessionName);
 
         void ListReferentiablesByCreationDate(referentiables& vItems);
+
+        PERSISTABLE_VISITOR_HEADER_IMPL
 
     protected:
         // pure virtual because the session names are unique "per object type"

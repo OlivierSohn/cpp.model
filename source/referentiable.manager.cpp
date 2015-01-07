@@ -15,7 +15,8 @@
 
 using namespace imajuscule;
 
-ReferentiableManager::ReferentiableManager()
+ReferentiableManager::ReferentiableManager():
+Visitable()
 {}
 
 ReferentiableManager::~ReferentiableManager()
@@ -58,6 +59,8 @@ bool ReferentiableManager::Register(Referentiable * r, const std::string & sessi
                 LG(ERR, "ReferentiableManager::Register : an element was not found in guid map but found in session names map!");
                 assert(0);
             }
+
+            // notify listeners that a referencable was registered
         }
     }
     else
