@@ -7,12 +7,10 @@
 namespace imajuscule
 {
     class Referentiable;
+    typedef std::vector<Referentiable*> referentiables;
     class ReferentiableManager
     {
     public:
-
-        typedef std::vector<Referentiable*> referentiables;
-
         ReferentiableManager();
         virtual ~ReferentiableManager();
 
@@ -23,11 +21,13 @@ namespace imajuscule
 
         void ListReferentiablesByCreationDate(referentiables& vItems);
 
-        // pure virtual because the session names are unique "per object type"
-        virtual bool ComputeSessionName(Referentiable*) = 0;
     protected:
+        // pure virtual because the session names are unique "per object type"
+        bool ComputeSessionName(Referentiable*);
 
         bool Register(Referentiable*, const std::string& sessionName);
+        static void generateGuid(std::string & guid);
+
     private:
         // guid - referentiable
         typedef std::map<std::string, Referentiable*> guidsToRftbls;
@@ -36,7 +36,5 @@ namespace imajuscule
 
         snsToRftbls m_snsToRftbls;
         guidsToRftbls m_guidsToRftbls;
-
-        static void generateGuid(std::string & guid);
     };
 }

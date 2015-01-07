@@ -28,10 +28,10 @@ Persistable()
 
     time_t result;
     result = time(NULL);
-    struct tm * time;
-    localtime_s(time, &result);
+    struct tm time;
+    localtime_s(&time, &result);
 
-    FormatDate(time, m_dateOfCreation);
+    FormatDate(&time, m_dateOfCreation);
 }
 
 Referentiable::~Referentiable()
@@ -55,24 +55,8 @@ const std::string & Referentiable::sessionName()
 {
     if (!m_bHasSessionName)
     {   
-        ReferentiableManager * manager = getManager();
-        if (manager)
-        {
-            if (!manager->ComputeSessionName(this))
-            {
-                LG(ERR, "Referentiable::sessionName : manager->ComputeSessionName returns false");
-                assert(0);
-                m_sessionName = m_hintName;
-                m_bHasSessionName = true;
-            }
-        }
-        else
-        {
-            LG(ERR, "Referentiable::sessionName : referentiable has no manager");
-            assert(0);
-            m_sessionName = m_hintName;
-            m_bHasSessionName = true;
-        }
+        LG(ERR, "Referentiable::sessionName : referencable has no session name");
+        assert(0);
     }
     return m_sessionName;
 }

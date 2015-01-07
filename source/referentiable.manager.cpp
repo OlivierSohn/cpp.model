@@ -1,3 +1,11 @@
+#ifdef _WIN32
+#include "Windows.h"
+#include "Objbase.h"
+#elif __ANDROID__
+#else
+#include <uuid/uuid.h>
+#endif
+
 #include "referentiable.h"
 #include "referentiable.manager.h"
 #include "os.log.h"
@@ -33,8 +41,8 @@ bool ReferentiableManager::Register(Referentiable * r, const std::string & sessi
             guidsToRftbls::iterator it = m_guidsToRftbls.find(guid);
             if (it == m_guidsToRftbls.end())
             {
-                bRet = true;
                 m_guidsToRftbls.insert(it, guidsToRftbls::value_type(guid, r));
+                bRet = true;
             }
         }
 
@@ -57,6 +65,8 @@ bool ReferentiableManager::Register(Referentiable * r, const std::string & sessi
         LG(ERR, "ReferentiableManager::Register : NULL param");
         assert(0);
     }
+
+    return bRet;
 }
 
 void FormatDateForComparison(std::string & date)
@@ -135,4 +145,79 @@ Referentiable * ReferentiableManager::findBySessionName(const std::string & sess
         pRet = it->second;
     return pRet;
 }
+
+bool ReferentiableManager::ComputeSessionName(Referentiable * r)
+{
+    bool bRet = false;
+
+    if (r)
+    {
+        std::string hint = r->hintName();
+        std::string sessionName = hint;
+        Referentiable * r2 = findBySessionName(sessionName);
+        while (r2)
+        {
+            sessionName.append("1");
+            r2 = findBySessionName(sessionName);
+        }
+        bRet = Register(r, sessionName);
+    }
+    else
+    {
+        LG(ERR, "ReferentiableManager::ComputeSessionName: r is NULL");
+        assert(0);
+    }
+
+    return bRet;
+}
+
+void ReferentiableManager::generateGuid(std::string & sGuid)
+{
+    LG(INFO, "ReferentiableManager::generateGuid : begin");
+
+    sGuid.clear();
+#ifdef _WIN32
+    GUID guid;
+    CoCreateGuid(&guid);
+
+    OLECHAR* bstrGuid;
+    StringFromCLSID(guid, &bstrGuid);
+
+    // First figure out our required buffer size.
+    DWORD cbData = WideCharToMultiByte(CP_ACP, 0, bstrGuid/*pszDataIn*/, -1, NULL, 0, NULL, NULL);
+    HRESULT hr = (cbData == 0) ? HRESULT_FROM_WIN32(GetLastError()) : S_OK;
+    if (SUCCEEDED(hr))
+    {
+        // Now allocate a buffer of the required size, and call WideCharToMultiByte again to do the actual conversion.
+        char *pszData = new (std::nothrow) CHAR[cbData];
+        hr = pszData ? S_OK : E_OUTOFMEMORY;
+        if (SUCCEEDED(hr))
+        {
+            hr = WideCharToMultiByte(CP_ACP, 0, bstrGuid/*pszDataIn*/, -1, pszData, cbData, NULL, NULL)
+                ? S_OK
+                : HRESULT_FROM_WIN32(GetLastError());
+            if (SUCCEEDED(hr))
+            {
+                sGuid.clear();
+                sGuid.append(pszData);
+            }
+            delete[] pszData;
+        }
+    }
+
+    // ensure memory is freed
+    ::CoTaskMemFree(bstrGuid);
+#elif __ANDROID__
+    LG(ERR, "ReferentiableManager::generateGuid : on android, the guid should be generated in java");
+#else
+    uuid_t uu;
+    uuid_generate(uu);
+    char uuid[37];
+    uuid_unparse(uu, uuid);
+    sGuid.assign(uuid);
+#endif
+
+    LG(INFO, "ReferentiableManager::generateGuid returns %s", sGuid.c_str());
+}
+
 
