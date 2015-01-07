@@ -1,6 +1,6 @@
 #include "referentiable.h"
 #include "referentiable.manager.h"
-#include <ctime>
+#include <time.h>
 #include "os.log.h"
 #include "os.log.format.h"
 #include "session.h"
@@ -28,10 +28,17 @@ Persistable()
 
     time_t result;
     result = time(NULL);
-    struct tm time;
-    localtime_s(&time, &result);
 
-    FormatDate(&time, m_dateOfCreation);
+    struct tm * pTime = NULL;
+#ifdef _WIN32
+    struct tm time;
+    pTime = &time;
+    localtime_s(pTime, &result);
+#else
+    pTime = localtime(&result);
+#endif
+
+    FormatDate(pTime, m_dateOfCreation);
 }
 
 Referentiable::~Referentiable()
