@@ -36,11 +36,13 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\Shared\precompiled.header.props" />
     <Import Project="..\os.log\os.log.props" />
+    <Import Project="..\os.storage\os.storage.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\Shared\precompiled.header.props" />
     <Import Project="..\os.log\os.log.props" />
+    <Import Project="..\os.storage\os.storage.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
@@ -80,6 +82,9 @@
     <ClInclude Include="include\operation.rasterize.h" />
     <ClInclude Include="include\operation.render.h" />
     <ClInclude Include="include\persistable.h" />
+    <ClInclude Include="include\referentiable.h" />
+    <ClInclude Include="include\referentiable.manager.h" />
+    <ClInclude Include="include\session.h" />
     <ClInclude Include="include\updatable.h" />
     <ClInclude Include="include\visitor.persistable.h" />
     <ClInclude Include="source\win32\stdafx.h" />
@@ -88,6 +93,9 @@
   <ItemGroup>
     <ClCompile Include="source\observable.cpp" />
     <ClCompile Include="source\persistable.cpp" />
+    <ClCompile Include="source\referentiable.cpp" />
+    <ClCompile Include="source\referentiable.manager.cpp" />
+    <ClCompile Include="source\session.cpp" />
     <ClCompile Include="source\updatable.cpp" />
     <ClCompile Include="source\win32\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

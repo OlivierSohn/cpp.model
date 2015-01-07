@@ -11,6 +11,7 @@ namespace imajuscule
     }
 
     // forward declarations of Persistables defined in gl.view
+    class PathSuite;
     class FormulaBase;
     class AnimationBase;
     class ParamBase;
@@ -35,6 +36,7 @@ namespace imajuscule
         virtual ~PersistableVisitor(){}
 
         // TODO PersistableVisitor: subclass in gl.view and add "Visit" pure virtual methods
+        virtual void Visit(PathSuite*) = 0;
         virtual void Visit(AnimationBase*) = 0;
         virtual void Visit(ParamBase*) = 0;
         virtual void Visit(ParamSet*) = 0;
