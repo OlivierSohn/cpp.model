@@ -5,7 +5,7 @@ namespace imajuscule
 {
     class PathSuite;
     class FormulaBase;
-    class AnimationBase;
+    class Referentiable;
     class ParamBase;
     class ParamSet;
     class Joint;
@@ -30,7 +30,7 @@ namespace imajuscule
         virtual ~Visitor(){}
 
         virtual void Visit(PathSuite*) = 0;
-        virtual void Visit(AnimationBase*) = 0;
+        virtual void Visit(Referentiable*) = 0;
         virtual void Visit(ParamBase*) = 0;
         virtual void Visit(ParamSet*) = 0;
         virtual void Visit(Joint*) = 0;

@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "visitable.h"
+#include "observable.h"
 
 namespace imajuscule
 {
@@ -13,6 +14,12 @@ namespace imajuscule
     class ReferentiableManager : public Visitable
     {
     public:
+        enum class Event
+        {
+            RFTBL_CREATE, // a referentiable was added to the list of referentiables managed by the manager
+            RFTBL_DELETE, // a referentiable was removed from the list of referentiables managed by the manager
+            MANAGER_DELETE// the manager is being deleted
+        };
         ReferentiableManager();
         virtual ~ReferentiableManager();
 
@@ -22,6 +29,8 @@ namespace imajuscule
         Referentiable * findBySessionName(const std::string & sessionName);
 
         void ListReferentiablesByCreationDate(referentiables& vItems);
+
+        Observable<Event, Referentiable* /*, bool*/> & observable();
 
         PERSISTABLE_VISITOR_HEADER_IMPL
 
@@ -36,9 +45,11 @@ namespace imajuscule
         // guid - referentiable
         typedef std::map<std::string, Referentiable*> guidsToRftbls;
         // session name - referentiable
-        typedef std::map< std::string, Referentiable*> snsToRftbls;
+        typedef std::map<std::string, Referentiable*> snsToRftbls;
 
         snsToRftbls m_snsToRftbls;
         guidsToRftbls m_guidsToRftbls;
+
+        Observable<Event, Referentiable* /*, bool*/> m_observable;
     };
 }

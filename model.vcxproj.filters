@@ -65,9 +65,6 @@
     <ClCompile Include="source\win32\stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\observable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\referentiable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

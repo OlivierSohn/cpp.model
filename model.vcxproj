@@ -92,7 +92,6 @@
     <ClInclude Include="source\win32\targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\observable.cpp" />
     <ClCompile Include="source\persistable.cpp" />
     <ClCompile Include="source\referentiable.cpp" />
     <ClCompile Include="source\referentiable.manager.cpp" />

@@ -21,6 +21,8 @@ Visitable()
 
 ReferentiableManager::~ReferentiableManager()
 {
+    m_observable.Notify(Event::MANAGER_DELETE, NULL);
+
     {
         guidsToRftbls::iterator it = m_guidsToRftbls.begin();
         for (; it != m_guidsToRftbls.end(); ++it)
@@ -28,6 +30,11 @@ ReferentiableManager::~ReferentiableManager()
             delete (it->second);
         }
     }
+}
+
+Observable<ReferentiableManager::Event, Referentiable*/*, bool*/> & ReferentiableManager::observable()
+{
+    return m_observable;
 }
 
 bool ReferentiableManager::Register(Referentiable * r, const std::string & sessionName)
@@ -60,7 +67,7 @@ bool ReferentiableManager::Register(Referentiable * r, const std::string & sessi
                 assert(0);
             }
 
-            // notify listeners that a referencable was registered
+            m_observable.Notify(Event::RFTBL_CREATE, r/*, false*/);
         }
     }
     else
