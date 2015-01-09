@@ -32,7 +32,7 @@ ReferentiableManager::~ReferentiableManager()
     }
 }
 
-Observable<ReferentiableManager::Event, Referentiable*/*, bool*/> & ReferentiableManager::observable()
+Observable<ReferentiableManager::Event, Referentiable* /*, bool*/> & ReferentiableManager::observable()
 {
     return m_observable;
 }
@@ -67,7 +67,7 @@ bool ReferentiableManager::Register(Referentiable * r, const std::string & sessi
                 assert(0);
             }
 
-            m_observable.Notify(Event::RFTBL_CREATE, r/*, false*/);
+            m_observable.Notify(Event::RFTBL_ADD, r/*, false*/);
         }
     }
     else
@@ -77,6 +77,25 @@ bool ReferentiableManager::Register(Referentiable * r, const std::string & sessi
     }
 
     return bRet;
+}
+
+void ReferentiableManager::Remove(Referentiable*r)
+{
+    if (r)
+    {
+        size_t count = m_guidsToRftbls.erase(r->guid());
+        assert(count == 1);
+        
+        count = m_snsToRftbls.erase(r->sessionName());
+        assert(count == 1);
+        
+        m_observable.Notify(Event::RFTBL_REMOVE, r);
+    }
+    else
+    {
+        LG(ERR, "ReferentiableManager::Remove : NULL param");
+        assert(0);
+    }
 }
 
 void FormatDateForComparison(std::string & date)

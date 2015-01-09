@@ -16,8 +16,8 @@ namespace imajuscule
     public:
         enum class Event
         {
-            RFTBL_CREATE, // a referentiable was added to the list of referentiables managed by the manager
-            RFTBL_DELETE, // a referentiable was removed from the list of referentiables managed by the manager
+            RFTBL_ADD, // a referentiable was added to the list of referentiables managed by the manager
+            RFTBL_REMOVE, // a referentiable was removed from the list of referentiables managed by the manager
             MANAGER_DELETE// the manager is being deleted
         };
         ReferentiableManager();
@@ -31,6 +31,8 @@ namespace imajuscule
         void ListReferentiablesByCreationDate(referentiables& vItems);
 
         Observable<Event, Referentiable* /*, bool*/> & observable();
+
+        void Remove(Referentiable*);
 
         PERSISTABLE_VISITOR_HEADER_IMPL
 
