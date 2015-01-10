@@ -135,6 +135,12 @@ namespace imajuscule
             }
         }
 
+        const void Remove(const std::vector< FunctionInfo<Event> > & functionInfo)
+        {
+            for (auto it : functionInfo)
+                Remove(it);
+        }
+
         const void Remove(const FunctionInfo<Event> &functionInfo)
         {
             auto it1 = m_observers.find(functionInfo.m_event);
@@ -176,7 +182,7 @@ namespace imajuscule
 
                 OBS_LG(INFO, "Observable(%x)::Remove(%d) : size after %d", this, functionInfo.m_event, it1->second->second.size());
 
-                assert(bFound);                
+                assert(bFound);
             }
             else
             {

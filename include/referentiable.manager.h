@@ -30,7 +30,7 @@ namespace imajuscule
 
         void ListReferentiablesByCreationDate(referentiables& vItems);
 
-        Observable<Event, Referentiable* /*, bool*/> & observable();
+        Observable<Event, Referentiable*> & observable();
 
         void Remove(Referentiable*);
 
@@ -52,6 +52,6 @@ namespace imajuscule
         snsToRftbls m_snsToRftbls;
         guidsToRftbls m_guidsToRftbls;
 
-        Observable<Event, Referentiable* /*, bool*/> m_observable;
+        Observable<Event, Referentiable*> m_observable;
     };
 }
