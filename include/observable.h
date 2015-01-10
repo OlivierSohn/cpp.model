@@ -50,9 +50,13 @@ namespace imajuscule
         Observable():
             m_bIsNotifying(false)
             , m_curNotifStamp(0)
-        {}
+        {
+            //OBS_LG(INFO, "Observable::Observable()");
+        }
         virtual ~Observable()
         {
+            //OBS_LG(INFO, "Observable::~Observable() #%d : delete %d pairs", m_curNotifStamp, m_allocatedPairs.size());
+
             auto it = m_allocatedPairs.begin();
             auto end = m_allocatedPairs.end();
             for (; it != end; ++it)
@@ -64,6 +68,8 @@ namespace imajuscule
         template <typename Observer>
         const FunctionInfo<Event> Register(const Event &evt, Observer&& observer)
         {
+            //OBS_LG(INFO, "Observable::Register(%d) #%d", evt, m_curNotifStamp);
+
             std::pair<availableKeys, callbacksMap> * v;
 
             auto r = m_observers.find(evt);
@@ -96,6 +102,7 @@ namespace imajuscule
 
         void Notify(const Event &event, Args... Params)
         {
+            //OBS_LG(INFO, "Observable::Notify(%d) #%d", event, m_curNotifStamp);
             auto it = m_observers.find(event);
             if ((it != m_observers.end()) && (! it->second->second.empty()))
             {
@@ -143,6 +150,8 @@ namespace imajuscule
 
         const void Remove(const FunctionInfo<Event> &functionInfo)
         {
+            //OBS_LG(INFO, "Observable::Remove(%d) #%d", functionInfo.m_event, m_curNotifStamp);
+
             auto it1 = m_observers.find(functionInfo.m_event);
             if (it1 != m_observers.end())
             {
