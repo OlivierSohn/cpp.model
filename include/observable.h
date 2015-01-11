@@ -5,9 +5,11 @@
 #include <functional>
 #include <map>
 #include <vector>
+#include <list>
 #include <stack>
 #include <tuple>
 #include <utility>
+#include <cassert>
 
 #define OBSERVABLE_LOG 0
 # if OBSERVABLE_LOG
@@ -38,11 +40,11 @@ namespace imajuscule
         // map doesn't work when the callback modifies the map 
         // so we use a list instead : its iterators are not invalidated by insertion / removal
         typedef std::list<
-            std::tuple<int /*key*/, bool /*active*/, int /*stamp*/, std::function<void(Args...) /*function*/ > 
+            std::tuple<unsigned int /*key*/, bool /*active*/, int /*stamp*/, std::function<void(Args...) /*function*/ > 
             >
         > callbacksMap;
 
-        typedef std::stack<int> availableKeys;
+        typedef std::stack<unsigned int> availableKeys;
         typedef std::map<Event, std::pair<availableKeys, callbacksMap> *> observers;
         std::vector<std::pair<availableKeys, callbacksMap> *> m_allocatedPairs;
 
@@ -76,7 +78,7 @@ namespace imajuscule
             if (r == m_observers.end())
             {
                 v = new std::pair < availableKeys, callbacksMap >();
-                m_observers.insert(observers::value_type(evt, v));
+                m_observers.insert(typename observers::value_type(evt, v));
                 m_allocatedPairs.push_back(v);
             }
             else
@@ -85,7 +87,7 @@ namespace imajuscule
             }
 
             // take key from stack of available keys, or if it's empty, that means the next available key is the size of the map
-            int key;
+            unsigned int key;
             if (v->first.empty())
                 key = v->second.size();
             else
@@ -94,7 +96,7 @@ namespace imajuscule
                 v->first.pop();
             }
 
-            v->second.push_back(callbacksMap::value_type(key, true, 0, std::forward<Observer>(observer)));
+            v->second.push_back(typename callbacksMap::value_type(key, true, 0, std::forward<Observer>(observer)));
 
             FunctionInfo<Event> FunctionInfo{ evt, key };
             return FunctionInfo;
@@ -112,8 +114,8 @@ namespace imajuscule
                 m_notifyingEvent = event;
                 m_bIsNotifying = true;
                 m_curNotifStamp++;
-                callbacksMap::iterator itM = it->second->second.begin();
-                callbacksMap::iterator endM = it->second->second.end();
+                typename callbacksMap::iterator itM = it->second->second.begin();
+                typename callbacksMap::iterator endM = it->second->second.end();
 
                 for (; itM != endM;)
                 {
@@ -155,8 +157,8 @@ namespace imajuscule
             auto it1 = m_observers.find(functionInfo.m_event);
             if (it1 != m_observers.end())
             {
-                callbacksMap::iterator it = it1->second->second.begin();
-                callbacksMap::iterator end = it1->second->second.end();
+                typename callbacksMap::iterator it = it1->second->second.begin();
+                typename callbacksMap::iterator end = it1->second->second.end();
 
                 OBS_LG(INFO, "Observable(%x)::Remove(%d) : size before %d", this, functionInfo.m_event, it1->second->second.size());
 
@@ -195,7 +197,7 @@ namespace imajuscule
             }
             else
             {
-                OBS_LG(ERR, "Observable::Remove : attempt to remove a registration that doesn't exist");
+                LG(ERR, "Observable::Remove : attempt to remove a registration that doesn't exist");
                 assert(0);
             }
         }
