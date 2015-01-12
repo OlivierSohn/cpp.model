@@ -54,6 +54,9 @@
     <ClInclude Include="include\visitor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\asyncnotifier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\persistable.cpp">
@@ -72,6 +75,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\referentiable.manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\asyncnotifier.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
