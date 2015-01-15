@@ -8,7 +8,6 @@
 #include <list>
 #include <stack>
 #include <tuple>
-#include <utility>
 #include <cassert>
 
 #define OBSERVABLE_LOG 0

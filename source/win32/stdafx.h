@@ -5,10 +5,20 @@
 
 #pragma once
 
-#include "targetver.h"
+// STL
+#include <list>
+#include <map>
+#include <set>
+#include <vector>
+#include <functional>
+#include <stack>
+#include <tuple>
+#include <algorithm>
 
-#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+// prereqs
+#include "os.log.allincludes.h"
 
-
+// this module
+#include "model.allincludes.h"
 
 

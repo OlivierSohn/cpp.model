@@ -78,6 +78,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\asyncnotifier.h" />
+    <ClInclude Include="include\model.allincludes.h" />
     <ClInclude Include="include\observable.h" />
     <ClInclude Include="include\operation.geo.h" />
     <ClInclude Include="include\operation.rasterize.h" />

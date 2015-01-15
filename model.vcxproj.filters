@@ -57,6 +57,9 @@
     <ClInclude Include="include\asyncnotifier.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\model.allincludes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\persistable.cpp">
