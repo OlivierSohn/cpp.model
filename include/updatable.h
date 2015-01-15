@@ -12,8 +12,8 @@ namespace imajuscule
     class Updatable;
     typedef Updatable * spec;
     typedef std::list< spec > specs;
-    
     typedef Updatable * observer;
+    typedef std::list< observer > observers;
 
     class Updatable : public Visitable
     {
@@ -24,11 +24,15 @@ namespace imajuscule
 
         void addSpec(spec);
         void removeSpec(spec);
-
         void traverseSpecs(specs::iterator & begin, specs::iterator & end);
+        void listSpecs(specs &);
+        void listSpecsRecurse(specs &);
 
         void addObserver(observer);
         void removeObserver(observer);
+        void traverseObservers(observers::iterator & begin, observers::iterator & end);
+        void listObservers(observers &);
+        void listObserversRecurse(observers &);
 
         bool hasNewContentForUpdate() const;
         void hasNewContentForUpdate(bool);
@@ -51,7 +55,6 @@ namespace imajuscule
         bool m_bHasNewContentForUpdate;
 
         specs m_specs;
-        typedef std::list< observer > observers;
         observers m_observers;
 
         static void traverseAll(updatables::iterator & begin, updatables::iterator & end);

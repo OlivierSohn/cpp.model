@@ -32,12 +32,12 @@ ReferentiableManager::~ReferentiableManager()
     }
 }
 
-Observable<ReferentiableManager::Event, Referentiable* /*, bool*/> & ReferentiableManager::observable()
+Observable<ReferentiableManager::Event, Referentiable*> & ReferentiableManager::observable()
 {
     return m_observable;
 }
 
-bool ReferentiableManager::Register(Referentiable * r, const std::string & sessionName)
+bool ReferentiableManager::RegisterWithSessionName(Referentiable * r, const std::string & sessionName)
 {
     bool bRet = false;
     if (r)
@@ -51,6 +51,11 @@ bool ReferentiableManager::Register(Referentiable * r, const std::string & sessi
             {
                 m_guidsToRftbls.insert(it, guidsToRftbls::value_type(guid, r));
                 bRet = true;
+            }
+            else
+            {
+                LG(ERR, "ReferentiableManager::Register : guid already present");
+                assert(0);
             }
         }
 
@@ -67,7 +72,7 @@ bool ReferentiableManager::Register(Referentiable * r, const std::string & sessi
                 assert(0);
             }
 
-            m_observable.Notify(Event::RFTBL_ADD, r/*, false*/);
+            m_observable.Notify(Event::RFTBL_ADD, r);
         }
     }
     else
@@ -181,15 +186,15 @@ bool ReferentiableManager::ComputeSessionName(Referentiable * r)
 
     if (r)
     {
-        std::string hint = r->hintName();
-        std::string sessionName = hint;
-        Referentiable * r2 = findBySessionName(sessionName);
-        while (r2)
+        std::string sessionName = r->hintName();
+
+        for (auto& c : sessionName) c = tolower(c);
+
+        while (Referentiable * r2 = findBySessionName(sessionName))
         {
             sessionName.append("1");
-            r2 = findBySessionName(sessionName);
         }
-        bRet = Register(r, sessionName);
+        bRet = RegisterWithSessionName(r, sessionName);
     }
     else
     {

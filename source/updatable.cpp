@@ -105,6 +105,21 @@ void Updatable::traverseSpecs(specs::iterator & begin, specs::iterator & end)
     end = m_specs.end();
 }
 
+void Updatable::listSpecs(specs & v)
+{
+    v.insert(v.end(), m_specs.begin(), m_specs.end());
+}
+void Updatable::listSpecsRecurse(specs & v)
+{
+    listSpecs(v);
+    specs::iterator it, end;
+    traverseSpecs(it, end);
+    for (; it != end; ++it)
+    {
+        (*it)->listSpecsRecurse(v);
+    }
+}
+
 void Updatable::traverseAll(updatables::iterator & begin, updatables::iterator & end)
 {
     begin = m_all.begin();
@@ -174,3 +189,23 @@ void Updatable::removeObserver(observer item)
     m_observers.remove(item);
 }
 
+void Updatable::traverseObservers(observers::iterator & begin, observers::iterator & end)
+{
+    begin = m_observers.begin();
+    end = m_observers.end();
+}
+
+void Updatable::listObservers(observers & v)
+{
+    v.insert(v.end(), m_observers.begin(), m_observers.end());
+}
+void Updatable::listObserversRecurse(observers & v)
+{
+    listObservers(v);
+    observers::iterator it, end;
+    traverseObservers(it, end);
+    for (; it != end; ++it)
+    {
+        (*it)->listObserversRecurse(v);
+    }
+}

@@ -40,7 +40,7 @@ namespace imajuscule
         // pure virtual because the session names are unique "per object type"
         bool ComputeSessionName(Referentiable*);
 
-        bool Register(Referentiable*, const std::string& sessionName);
+        bool RegisterWithSessionName(Referentiable*, const std::string& sessionName);
         static void generateGuid(std::string & guid);
 
     private:

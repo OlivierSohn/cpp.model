@@ -63,7 +63,7 @@ namespace imajuscule
         std::string m_dateOfCreation; // persisted
 
         bool m_bHasSessionName;
-        void setSessionName(const std::string & sn);
+        virtual void setSessionName(const std::string & sn);
 
 //        referencers m_referencers;
     };
