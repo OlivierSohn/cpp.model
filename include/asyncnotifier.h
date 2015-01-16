@@ -18,6 +18,7 @@ namespace imajuscule
 
         static void runScheduledNotifications();
         void schedule();
+        void unschedule();
     protected:
         std::function<void(void)> m_f;
     private:

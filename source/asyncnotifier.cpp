@@ -10,6 +10,11 @@ void AsyncNotifier::schedule()
     g_scheduled.push_back(this);
 }
 
+void AsyncNotifier::unschedule()
+{
+    g_scheduled.remove(this);
+}
+
 void AsyncNotifier::runScheduledNotifications()
 {
     notifiers::iterator it, end;
