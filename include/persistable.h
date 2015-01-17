@@ -2,6 +2,7 @@
 #pragma once
 
 #include "updatable.h"
+#include "observable.h"
 
 namespace imajuscule
 {
