@@ -8,7 +8,7 @@ namespace imajuscule
 {
     enum PersistableEvent
     {
-        VALUE_CHANGED = 0,
+        OBJECT_DEFINITION_CHANGED = 0,
         OBJECT_DELETE
     };
 
@@ -21,6 +21,10 @@ namespace imajuscule
 
     protected:
         Persistable();
+
+        const FunctionInfo<PersistableEvent> addSpecAndForwardNotifications(Persistable * upd);
+        void removeSpecAndUnforward(Persistable * upd, const FunctionInfo<PersistableEvent> & reg);
+        void removeSpecAndDelete(Persistable * upd);
 
     private:        
         Observable<PersistableEvent, Persistable*> m_observable;
