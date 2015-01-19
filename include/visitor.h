@@ -23,6 +23,7 @@ namespace imajuscule
     class EvtB;
     class Player;
     class ReferentiableManager;
+    class Shot;
 
     class Visitor
     {
@@ -49,6 +50,7 @@ namespace imajuscule
         virtual void Visit(EvtB*) = 0;
         virtual void Visit(Player*) = 0;
         virtual void Visit(ReferentiableManager*) = 0;
+        virtual void Visit(Shot*) = 0;
 
     protected:
         Visitor() {}
