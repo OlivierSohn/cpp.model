@@ -17,6 +17,7 @@ namespace imajuscule
     class RasterizeOp;
     class STAIRenderOp;
     class ShrinkOp;
+    class ScaleOp;
     class STAIRasterOp;
     class STAISimOp;
     class Positionable;
@@ -43,6 +44,7 @@ namespace imajuscule
         virtual void Visit(RasterizeOp*) = 0;
         virtual void Visit(STAIRenderOp*) = 0;
         virtual void Visit(ShrinkOp*) = 0;
+        virtual void Visit(ScaleOp*) = 0;
         virtual void Visit(STAIRasterOp*) = 0;
         virtual void Visit(STAISimOp*) = 0;
         virtual void Visit(Positionable*) = 0;
