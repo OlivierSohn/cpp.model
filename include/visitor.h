@@ -23,7 +23,7 @@ namespace imajuscule
     class Positionable;
     class EvtB;
     class Player;
-    class ReferentiableManager;
+    class ReferentiableManagerBase;
     class Shot;
 
     class Visitor
@@ -51,7 +51,7 @@ namespace imajuscule
         virtual void Visit(FormulaBase*) = 0;
         virtual void Visit(EvtB*) = 0;
         virtual void Visit(Player*) = 0;
-        virtual void Visit(ReferentiableManager*) = 0;
+        virtual void Visit(ReferentiableManagerBase*) = 0;
         virtual void Visit(Shot*) = 0;
 
     protected:

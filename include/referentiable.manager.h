@@ -11,7 +11,7 @@ namespace imajuscule
 {
     class Referentiable;
     typedef std::vector<Referentiable*> referentiables;
-    class ReferentiableManager : public Visitable
+    class ReferentiableManagerBase : public Visitable
     {
     public:
         enum class Event
@@ -20,8 +20,8 @@ namespace imajuscule
             RFTBL_REMOVE, // a referentiable was removed from the list of referentiables managed by the manager
             MANAGER_DELETE// the manager is being deleted
         };
-        ReferentiableManager();
-        virtual ~ReferentiableManager();
+        ReferentiableManagerBase();
+        virtual ~ReferentiableManagerBase();
 
         // guid is unique
         Referentiable * findByGuid(const std::string & guid);
@@ -53,5 +53,20 @@ namespace imajuscule
         guidsToRftbls m_guidsToRftbls;
 
         Observable<Event, Referentiable*> m_observable;
+    };
+
+    template <class T>
+    class ReferentiableManager : public ReferentiableManagerBase
+    {
+    public:
+        static ReferentiableManager * getInstance();
+
+        T* newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids);
+
+    private:
+        static ReferentiableManager * g_pAnimationManager;
+
+        ReferentiableManager();
+        virtual ~ReferentiableManager();
     };
 }

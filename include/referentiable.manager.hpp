@@ -15,11 +15,11 @@
 
 using namespace imajuscule;
 
-ReferentiableManager::ReferentiableManager():
+ReferentiableManagerBase::ReferentiableManagerBase():
 Visitable()
 {}
 
-ReferentiableManager::~ReferentiableManager()
+ReferentiableManagerBase::~ReferentiableManagerBase()
 {
     m_observable.Notify(Event::MANAGER_DELETE, NULL);
 
@@ -32,12 +32,12 @@ ReferentiableManager::~ReferentiableManager()
     }
 }
 
-Observable<ReferentiableManager::Event, Referentiable*> & ReferentiableManager::observable()
+Observable<ReferentiableManagerBase::Event, Referentiable*> & ReferentiableManagerBase::observable()
 {
     return m_observable;
 }
 
-bool ReferentiableManager::RegisterWithSessionName(Referentiable * r, const std::string & sessionName)
+bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const std::string & sessionName)
 {
     bool bRet = false;
     if (r)
@@ -54,7 +54,7 @@ bool ReferentiableManager::RegisterWithSessionName(Referentiable * r, const std:
             }
             else
             {
-                LG(ERR, "ReferentiableManager::Register : guid already present");
+                LG(ERR, "ReferentiableManagerBase::Register : guid already present");
                 assert(0);
             }
         }
@@ -68,23 +68,25 @@ bool ReferentiableManager::RegisterWithSessionName(Referentiable * r, const std:
             }
             else
             {
-                LG(ERR, "ReferentiableManager::Register : an element was not found in guid map but found in session names map!");
+                LG(ERR, "ReferentiableManagerBase::Register : an element was not found in guid map but found in session names map!");
                 assert(0);
             }
+
+            r->Init();
 
             m_observable.Notify(Event::RFTBL_ADD, r);
         }
     }
     else
     {
-        LG(ERR, "ReferentiableManager::Register : NULL param");
+        LG(ERR, "ReferentiableManagerBase::Register : NULL param");
         assert(0);
     }
 
     return bRet;
 }
 
-void ReferentiableManager::Remove(Referentiable*r)
+void ReferentiableManagerBase::Remove(Referentiable*r)
 {
     if (r)
     {
@@ -98,7 +100,7 @@ void ReferentiableManager::Remove(Referentiable*r)
     }
     else
     {
-        LG(ERR, "ReferentiableManager::Remove : NULL param");
+        LG(ERR, "ReferentiableManagerBase::Remove : NULL param");
         assert(0);
     }
 }
@@ -148,7 +150,7 @@ struct pred
     }
 };
 
-void ReferentiableManager::ListReferentiablesByCreationDate(referentiables& vItems)
+void ReferentiableManagerBase::ListReferentiablesByCreationDate(referentiables& vItems)
 {
     vItems.clear();
 
@@ -162,7 +164,7 @@ void ReferentiableManager::ListReferentiablesByCreationDate(referentiables& vIte
     std::sort(vItems.begin(), vItems.end(), pred());
 }
 
-Referentiable * ReferentiableManager::findByGuid(const std::string & guid)
+Referentiable * ReferentiableManagerBase::findByGuid(const std::string & guid)
 {
     Referentiable * pRet = NULL;
     guidsToRftbls::iterator it = m_guidsToRftbls.find(guidsToRftbls::key_type(guid));
@@ -171,7 +173,7 @@ Referentiable * ReferentiableManager::findByGuid(const std::string & guid)
     return pRet;
 }
 // session name is unique per-session
-Referentiable * ReferentiableManager::findBySessionName(const std::string & sessionName)
+Referentiable * ReferentiableManagerBase::findBySessionName(const std::string & sessionName)
 {
     Referentiable * pRet = NULL;
     snsToRftbls::iterator it = m_snsToRftbls.find(snsToRftbls::key_type(sessionName));
@@ -180,7 +182,7 @@ Referentiable * ReferentiableManager::findBySessionName(const std::string & sess
     return pRet;
 }
 
-bool ReferentiableManager::ComputeSessionName(Referentiable * r)
+bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r)
 {
     bool bRet = false;
 
@@ -198,16 +200,16 @@ bool ReferentiableManager::ComputeSessionName(Referentiable * r)
     }
     else
     {
-        LG(ERR, "ReferentiableManager::ComputeSessionName: r is NULL");
+        LG(ERR, "ReferentiableManagerBase::ComputeSessionName: r is NULL");
         assert(0);
     }
 
     return bRet;
 }
 
-void ReferentiableManager::generateGuid(std::string & sGuid)
+void ReferentiableManagerBase::generateGuid(std::string & sGuid)
 {
-    LG(INFO, "ReferentiableManager::generateGuid : begin");
+    LG(INFO, "ReferentiableManagerBase::generateGuid : begin");
 
     sGuid.clear();
 #ifdef _WIN32
@@ -242,7 +244,7 @@ void ReferentiableManager::generateGuid(std::string & sGuid)
     // ensure memory is freed
     ::CoTaskMemFree(bstrGuid);
 #elif __ANDROID__
-    LG(ERR, "ReferentiableManager::generateGuid : on android, the guid should be generated in java");
+    LG(ERR, "ReferentiableManagerBase::generateGuid : on android, the guid should be generated in java");
 #else
     uuid_t uu;
     uuid_generate(uu);
@@ -251,7 +253,70 @@ void ReferentiableManager::generateGuid(std::string & sGuid)
     sGuid.assign(uuid);
 #endif
 
-    LG(INFO, "ReferentiableManager::generateGuid returns %s", sGuid.c_str());
+    LG(INFO, "ReferentiableManagerBase::generateGuid returns %s", sGuid.c_str());
 }
 
+
+template <class T>
+ReferentiableManager<T> * ReferentiableManager<T>::g_pAnimationManager = NULL;
+
+template <class T>
+ReferentiableManager<T> * ReferentiableManager<T>::getInstance()
+{
+    if (!g_pAnimationManager)
+    {
+        g_pAnimationManager = new ReferentiableManager<T>();
+    }
+
+    return g_pAnimationManager;
+}
+
+template <class T>
+ReferentiableManager<T>::ReferentiableManager() :
+ReferentiableManagerBase()
+{
+}
+
+
+template <class T>
+ReferentiableManager<T>::~ReferentiableManager()
+{
+}
+
+template <class T>
+T* ReferentiableManager<T>::newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids)
+{
+    LG(INFO, "ReferentiableManager<T>::newReferentiable(%s, %d guids) begin",
+        (nameHint.c_str() ? nameHint.c_str() : "NULL"),
+        guids.size());
+
+    T * curAnim = NULL;
+
+    std::string guid;
+
+    int sizeGuids = guids.size();
+
+    if (sizeGuids > 0)
+    {
+        guid.assign(guids[0]);
+    }
+    else
+    {
+        generateGuid(guid);
+    }
+
+    curAnim = new T(this, guid, nameHint);
+    if (!ComputeSessionName(curAnim))
+    {
+        LG(ERR, "ReferentiableManager<T>::newReferentiable : ComputeSessionName failed (uuid: %s)", guid.c_str());
+        delete curAnim;
+        curAnim = NULL;
+        goto end;
+    }
+
+end:
+
+    LG((curAnim ? INFO : ERR), "ReferentiableManager<T>::newReferentiable(...) returns 0x%x", curAnim);
+    return curAnim;
+}
 

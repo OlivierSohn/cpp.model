@@ -60,6 +60,9 @@
     <ClInclude Include="include\model.allincludes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\referentiable.manager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\persistable.cpp">
@@ -75,9 +78,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\session.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\referentiable.manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\asyncnotifier.cpp">

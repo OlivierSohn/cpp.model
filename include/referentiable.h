@@ -11,10 +11,10 @@
 
 namespace imajuscule
 {
-    class ReferentiableManager;
+    class ReferentiableManagerBase;
     class Referentiable : public Persistable
     {
-        friend class ReferentiableManager;
+        friend class ReferentiableManagerBase;
     public:
         const std::string & guid();
         const std::string & sessionName();
@@ -26,11 +26,13 @@ namespace imajuscule
     protected:
         virtual ~Referentiable();
 
-        // this version of the contructor doesn't set creation Date 
-        Referentiable(ReferentiableManager * manager, const std::string & guid);
-        Referentiable(ReferentiableManager * manager, const std::string & guid, const std::string & hintName);
+        virtual void Init() {};
 
-        ReferentiableManager * getManager();
+        // this version of the contructor doesn't set creation Date 
+        Referentiable(ReferentiableManagerBase * manager, const std::string & guid);
+        Referentiable(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName);
+
+        ReferentiableManagerBase * getManager();
 
         class ReferentiablePersist : public KeysPersist
         {
@@ -56,7 +58,7 @@ namespace imajuscule
         };
 
     private:
-        ReferentiableManager * m_manager;
+        ReferentiableManagerBase * m_manager;
         std::string m_guid; // persisted
         std::string m_hintName; // persisted
         std::string m_sessionName; // not persisted

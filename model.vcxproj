@@ -86,6 +86,7 @@
     <ClInclude Include="include\persistable.h" />
     <ClInclude Include="include\referentiable.h" />
     <ClInclude Include="include\referentiable.manager.h" />
+    <ClInclude Include="include\referentiable.manager.hpp" />
     <ClInclude Include="include\session.h" />
     <ClInclude Include="include\updatable.h" />
     <ClInclude Include="include\visitable.h" />
@@ -97,7 +98,6 @@
     <ClCompile Include="source\asyncnotifier.cpp" />
     <ClCompile Include="source\persistable.cpp" />
     <ClCompile Include="source\referentiable.cpp" />
-    <ClCompile Include="source\referentiable.manager.cpp" />
     <ClCompile Include="source\session.cpp" />
     <ClCompile Include="source\updatable.cpp" />
     <ClCompile Include="source\win32\stdafx.cpp">

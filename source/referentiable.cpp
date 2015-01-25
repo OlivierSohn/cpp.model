@@ -8,7 +8,7 @@
 
 using namespace imajuscule;
 
-Referentiable::Referentiable(ReferentiableManager * manager, const std::string & guid) :
+Referentiable::Referentiable(ReferentiableManagerBase * manager, const std::string & guid) :
 Persistable()
 , m_manager(manager)
 , m_guid(guid)
@@ -17,7 +17,7 @@ Persistable()
     assert(m_manager);
 }
 
-Referentiable::Referentiable(ReferentiableManager * manager, const std::string & guid, const std::string & hintName) :
+Referentiable::Referentiable(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName) :
 Persistable()
 , m_manager(manager)
 , m_guid(guid)
@@ -44,7 +44,7 @@ Persistable()
 Referentiable::~Referentiable()
 {}
 
-ReferentiableManager * Referentiable::getManager()
+ReferentiableManagerBase * Referentiable::getManager()
 {
     return m_manager;
 }
