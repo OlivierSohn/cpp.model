@@ -78,6 +78,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\asyncnotifier.h" />
+    <ClInclude Include="include\command.h" />
+    <ClInclude Include="include\history.manager.h" />
     <ClInclude Include="include\model.allincludes.h" />
     <ClInclude Include="include\observable.h" />
     <ClInclude Include="include\operation.geo.h" />
@@ -96,6 +98,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\asyncnotifier.cpp" />
+    <ClCompile Include="source\command.cpp" />
+    <ClCompile Include="source\history.manager.cpp" />
     <ClCompile Include="source\persistable.cpp" />
     <ClCompile Include="source\referentiable.cpp" />
     <ClCompile Include="source\session.cpp" />

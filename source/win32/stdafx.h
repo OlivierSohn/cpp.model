@@ -14,11 +14,10 @@
 #include <stack>
 #include <tuple>
 #include <algorithm>
+#include <iostream>
 
 // prereqs
 #include "os.log.allincludes.h"
 
 // this module
 #include "model.allincludes.h"
-
-
