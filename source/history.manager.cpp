@@ -3,6 +3,7 @@
 #include "os.log.h"
 #include <iostream>
 #include <cassert>
+#include <algorithm>
 
 using namespace imajuscule;
 
@@ -70,9 +71,17 @@ void HistoryManager::Add(Command* c)
         Command::State s = c->getState();
         if (s == Command::EXECUTED)
         {
-            EmptyRedos();
-            m_undos.push_back(c);
-            SizeUndos();
+            if (!c->isObsolete())
+            {
+                EmptyRedos();
+                m_undos.push_back(c);
+                SizeUndos();
+            }
+            else
+            {
+                LG(ERR, "HistoryManager::Add : Command is obsolete");
+                assert(0);
+            }
         }
         else
         {
@@ -90,17 +99,38 @@ void HistoryManager::Add(Command* c)
 void HistoryManager::SizeUndos()
 {
     unsigned int size = m_undos.size();
-    if ( size > m_stacksCapacity)
+    if (size > m_stacksCapacity)
     {
-        unsigned int nElementsRemoved = (size - m_stacksCapacity);
-        UndoStack::iterator it = m_undos.begin();
-        for (unsigned int i = 0; i < nElementsRemoved; i++, ++it)
+        unsigned int count = 0;
+        for (auto it = m_undos.begin(); it != m_undos.end();)
         {
-            delete *it;
+            if ((*it)->isObsolete())
+            {
+                delete *it;
+                count++;
+                it = m_undos.erase(it);
+            }
+            else
+                ++it;
         }
 
-        it = m_undos.begin();
-        m_undos.erase(it, it + nElementsRemoved);
+        LG(INFO, "HistoryManager::SizeUndos %u out of %u commands removed because obsolete", count, size);
+
+        size = m_undos.size();
+        if (size > m_stacksCapacity)
+        {
+            unsigned int nElementsRemoved = (size - m_stacksCapacity);
+            UndoStack::iterator it = m_undos.begin();
+            for (unsigned int i = 0; i < nElementsRemoved; i++, ++it)
+            {
+                delete *it;
+            }
+
+            it = m_undos.begin();
+            m_undos.erase(it, it + nElementsRemoved);
+
+            LG(INFO, "HistoryManager::SizeUndos %u first elements removed", nElementsRemoved);
+        }
     }
 }
 
@@ -114,17 +144,28 @@ unsigned int HistoryManager::CountRedos()
 }
 void HistoryManager::Undo()
 {
-    if (!m_undos.empty())
+    bool bDone = false;
+
+    while (!m_undos.empty())
     {
         Command * c = m_undos.back();
         if (c)
         {
+            if (c->isObsolete())
+            {
+                m_undos.pop_back();
+                delete c;
+                continue;
+            }
+
             Command::State s = c->getState();
             if ((s == Command::EXECUTED) || (s == Command::REDO))
             {
                 m_undos.pop_back();
                 m_redos.push_back(c);
                 c->Undo();
+                bDone = true;
+                break;
             }
             else
             {
@@ -138,24 +179,36 @@ void HistoryManager::Undo()
             assert(0);
         }
     }
-    else
+
+    if (!bDone)
     {
         std::cout << "\a";
     }
 }
 void HistoryManager::Redo()
 {
-    if (!m_redos.empty())
+    bool bDone = false;
+
+    while (!m_redos.empty())
     {
         Command * c = m_redos.back();
         if (c)
         {
+            if (c->isObsolete())
+            {
+                m_redos.pop_back();
+                delete c;
+                continue;
+            }
+
             Command::State s = c->getState();
             if (s == Command::UNDO)
             {
                 m_redos.pop_back();
                 m_undos.push_back(c);
                 c->Redo();
+                bDone = true;
+                break;
             }
             else
             {
@@ -169,7 +222,8 @@ void HistoryManager::Redo()
             assert(0);
         }
     }
-    else
+
+    if (!bDone)
     {
         std::cout << "\a";
     }

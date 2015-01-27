@@ -1,18 +1,46 @@
 #include "command.h"
 #include "history.manager.h"
 #include <cassert>
+#include "os.log.h"
+
 using namespace imajuscule;
 
-Command::Command(HistoryManager * hm):
+Command::Command(Observable<ObsolescenceEvent> * o) :
 m_state(NOT_EXECUTED),
-m_history(hm ? hm : HistoryManager::getGlobalInstance())
-{}
-Command::~Command()
-{}
-
-HistoryManager * Command::getHistoryManager()
+m_obsolete(false),
+m_obsolescenceObservable(o)
 {
-    return m_history;
+    if ( m_obsolescenceObservable )
+        m_reg.push_back( m_obsolescenceObservable->Register(IS_OBSOLETE, std::bind(&Command::onObsolete, this)));
+}
+Command::~Command()
+{
+    if ( m_obsolescenceObservable && !m_obsolete )
+        m_obsolescenceObservable->Remove(m_reg);
+}
+
+void Command::onObsolete()
+{
+    if (m_obsolete)
+    {
+        LG(ERR, "Command::onObsolete() design error : called at least twice");
+        assert(0);
+    }
+    else
+    {
+        m_obsolete = true;
+        assert(m_obsolescenceObservable);
+        if (m_obsolescenceObservable)
+        {
+            m_obsolescenceObservable->Remove(m_reg);
+            m_obsolescenceObservable = NULL;
+        }
+    }
+}
+
+bool Command::isObsolete()
+{
+    return m_obsolete;
 }
 
 auto Command::getState() -> State
@@ -30,7 +58,7 @@ void Command::Execute()
 
     // don't log in history the commands that had no effect (example : backspace when edit location is at begin of input)
     if (bAddToHistory)
-        getHistoryManager()->Add(this);
+        HistoryManager::getGlobalInstance()->Add(this);
     else
         delete this;
 }
