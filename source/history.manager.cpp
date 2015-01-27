@@ -9,7 +9,7 @@ using namespace imajuscule;
 HistoryManager * HistoryManager::g_instance = NULL;
 
 HistoryManager::HistoryManager():
-m_stacksCapacity(-1)
+m_stacksCapacity(-1)// unsigned -> maximum capacity
 {}
 HistoryManager::~HistoryManager()
 {

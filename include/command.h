@@ -26,7 +26,7 @@ namespace imajuscule
 
         virtual void getDescription(std::string & desc) = 0;
     protected:
-        Command(HistoryManager * hm = NULL);
+        Command(HistoryManager * hm = NULL /*NULL is like passing HistoryManager::getGlobalInstance()*/);
         virtual ~Command();
     private:
         virtual bool doExecute() = 0;
