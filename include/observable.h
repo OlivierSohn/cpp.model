@@ -33,24 +33,29 @@ namespace imajuscule
         {
             KEY = 0,
             ACTIVE,
-            NTFSTAMP,
+            RECURSIVE_LEVEL,
             FUNCTION
         };
         // map doesn't work when the callback modifies the map 
         // so we use a list instead : its iterators are not invalidated by insertion / removal
-        typedef std::list<
-            std::tuple<unsigned int /*key*/, bool /*active*/, int /*stamp*/, std::function<void(Args...) /*function*/ > 
-            >
-        > callbacksMap;
+        typedef std::list< std::tuple<
+            unsigned int /*key*/, 
+            bool /*active (false means scheduled for removal)*/, 
+            int /*recursive level (>0 means being sent)*/,
+            std::function<void(Args...) /*function*/ > > > callbacksList;
 
         typedef std::stack<unsigned int> availableKeys;
-        typedef std::map<Event, std::pair<availableKeys, callbacksMap> *> observers;
-        std::vector<std::pair<availableKeys, callbacksMap> *> m_allocatedPairs;
+        enum EvtNtfTupleIndex
+        {
+            AVAILABLE_KEYS = 0,
+            CBS_LIST
+        };
+        typedef std::tuple<availableKeys, callbacksList> eventNotification;
+        typedef std::map<Event, eventNotification *> observers;
+        std::vector<eventNotification*> m_allocatedPairs;
 
     public:
-        Observable():
-            m_bIsNotifying(false)
-            , m_curNotifStamp(0)
+        Observable()
         {
             //OBS_LG(INFO, "Observable::Observable()");
         }
@@ -71,12 +76,12 @@ namespace imajuscule
         {
             //OBS_LG(INFO, "Observable::Register(%d) #%d", evt, m_curNotifStamp);
 
-            std::pair<availableKeys, callbacksMap> * v;
+            eventNotification * v;
 
             auto r = m_observers.find(evt);
             if (r == m_observers.end())
             {
-                v = new std::pair < availableKeys, callbacksMap >();
+                v = new eventNotification();
                 m_observers.insert(typename observers::value_type(evt, v));
                 m_allocatedPairs.push_back(v);
             }
@@ -87,15 +92,17 @@ namespace imajuscule
 
             // take key from stack of available keys, or if it's empty, that means the next available key is the size of the map
             unsigned int key;
-            if (v->first.empty())
-                key = v->second.size();
+            availableKeys & avKeys = std::get<AVAILABLE_KEYS>(*v);
+            callbacksList & cbslist = std::get<CBS_LIST>(*v);
+            if (avKeys.empty())
+                key = cbslist.size();
             else
             {
-                key = v->first.top();
-                v->first.pop();
+                key = avKeys.top();
+                avKeys.pop();
             }
 
-            v->second.push_back(typename callbacksMap::value_type(key, true, 0, std::forward<Observer>(observer)));
+            cbslist.push_back(typename callbacksList::value_type(key, true, 0, std::forward<Observer>(observer)));
 
             FunctionInfo<Event> FunctionInfo{ evt, key };
             return FunctionInfo;
@@ -105,41 +112,42 @@ namespace imajuscule
         {
             //OBS_LG(INFO, "Observable::Notify(%d) #%d", event, m_curNotifStamp);
             auto it = m_observers.find(event);
-            if ((it != m_observers.end()) && (! it->second->second.empty()))
+            if (it != m_observers.end())
             {
-                size_t size1 = it->second->second.size();
-                OBS_LG(INFO, "Observable(%x)::Notify(%d) : size0 %d", this, event, size1);
-
-                m_notifyingEvent = event;
-                m_bIsNotifying = true;
-                m_curNotifStamp++;
-                typename callbacksMap::iterator itM = it->second->second.begin();
-                typename callbacksMap::iterator endM = it->second->second.end();
-
-                for (; itM != endM;)
+                callbacksList & cbslist = std::get<CBS_LIST>(*(it->second));
+                if (!cbslist.empty())
                 {
-                    if (std::get<ACTIVE>(*itM))
-                    {
-                        OBS_LG(INFO, "Observable(%x)::Notify(%d) : size1 %d", this, event, it->second->second.size());
-                        std::get<FUNCTION>(*itM)(Params...);
-                        OBS_LG(INFO, "Observable(%x)::Notify(%d) : size2 %d", this, event, it->second->second.size());
+                    size_t size1 = cbslist.size();
+                    OBS_LG(INFO, "Observable(%x)::Notify(%d) : size0 %d", this, event, size1);
 
-                        // set the timeStamp to allow this notification to be removed by a future notification call in this loop
-                        std::get<NTFSTAMP>(*itM) = m_curNotifStamp;
+                    typename callbacksList::iterator itM = cbslist.begin();
+                    typename callbacksList::iterator endM = cbslist.end();
 
-                        ++itM;
-                    }
-                    else
+                    for (; itM != endM;)
                     {
-                        // push the (future) removed key in stack of availableKeys
-                        it->second->first.push(std::get<KEY>(*itM));
-                        // erase and increment
-                        itM = it->second->second.erase(itM);
-                        OBS_LG(INFO, "Observable(%x)::Notify(%d) : size1 %d (removed a notification)", this, event, it->second->second.size());
+                        if (std::get<ACTIVE>(*itM))
+                        {
+                            // increment recursive level, to prevent this notification from being removed
+                            std::get<RECURSIVE_LEVEL>(*itM)++;
+
+                            OBS_LG(INFO, "Observable(%x)::Notify(%d) : size1 %d", this, event, it->second->second.size());
+                            std::get<FUNCTION>(*itM)(Params...);
+                            OBS_LG(INFO, "Observable(%x)::Notify(%d) : size2 %d", this, event, it->second->second.size());
+                            
+                            std::get<RECURSIVE_LEVEL>(*itM)--;
+
+                            ++itM;
+                        }
+                        else
+                        {
+                            // push the (future) removed key in stack of availableKeys
+                            std::get<AVAILABLE_KEYS>(*(it->second)).push(std::get<KEY>(*itM));
+                            // erase and increment
+                            itM = cbslist.erase(itM);
+                            OBS_LG(INFO, "Observable(%x)::Notify(%d) : size1 %d (removed a notification)", this, event, it->second->second.size());
+                        }
                     }
                 }
-
-                m_bIsNotifying = false;
             }
         }
 
@@ -156,8 +164,10 @@ namespace imajuscule
             auto it1 = m_observers.find(functionInfo.m_event);
             if (it1 != m_observers.end())
             {
-                typename callbacksMap::iterator it = it1->second->second.begin();
-                typename callbacksMap::iterator end = it1->second->second.end();
+                callbacksList & cbslist = std::get<CBS_LIST>(*(it1->second));
+ 
+                typename callbacksList::iterator it = cbslist.begin();
+                typename callbacksList::iterator end = cbslist.end();
 
                 OBS_LG(INFO, "Observable(%x)::Remove(%d) : size before %d", this, functionInfo.m_event, it1->second->second.size());
 
@@ -168,22 +178,18 @@ namespace imajuscule
                     {
                         bFound = true;
 
-                        // perform delayed removal if :
-                        // - this observable is currently notifying
-                        // - AND the notified event is the same as functionInfo.m_event
-                        // - AND the notification has not been executed yet
-
-                        if (m_bIsNotifying && (m_notifyingEvent == functionInfo.m_event) && (std::get<NTFSTAMP>(*it) != m_curNotifStamp))
+                        if (std::get<RECURSIVE_LEVEL>(*it) > 0)
                         {
+                            // notification is being sent, we cannot delete it now.
                             std::get<ACTIVE>(*it) = false;
                             OBS_LG(INFO, "Observable(%x)::Remove(%d) : tagged for removal", this, functionInfo.m_event);
                         }
                         else
                         {
                             // push the (future) removed key in stack of availableKeys
-                            it1->second->first.push(std::get<KEY>(*it));
+                            std::get<AVAILABLE_KEYS>(*(it1->second)).push(std::get<KEY>(*it));
                             // erase
-                            it1->second->second.erase(it);
+                            cbslist.erase(it);
                             OBS_LG(INFO, "Observable(%x)::Remove(%d) : size1 %d (removed a notification)", this, event, it->second->second.size());
                         }
                         break;
@@ -206,8 +212,5 @@ namespace imajuscule
 
     private:
         observers m_observers;
-        bool m_bIsNotifying;
-        Event m_notifyingEvent;
-        int m_curNotifStamp;
     };
 }
