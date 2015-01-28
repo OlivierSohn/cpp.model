@@ -54,8 +54,9 @@ namespace imajuscule
         typedef std::map<Event, eventNotification *> observers;
         std::vector<eventNotification*> m_allocatedPairs;
 
-    public:
-        Observable()
+        Observable():
+            m_deinstantiate(false),
+            m_iCurNotifyCalls(0)
         {
             //OBS_LG(INFO, "Observable::Observable()");
         }
@@ -69,6 +70,20 @@ namespace imajuscule
             {
                 delete *it;
             }
+        }
+
+    public:
+        static Observable<Event, Args...> * instantiate()
+        {
+            return new Observable<Event, Args...>();
+        }
+        // this is publically provided instead of destructor because it's not safe to delete
+        // an observer when it is in one or multiple Notify calls
+        void deinstantiate()
+        {
+            assert(!m_deinstantiate);
+            m_deinstantiate = true;
+            deinstantiateIfNeeded();
         }
 
         template <typename Observer>
@@ -117,6 +132,8 @@ namespace imajuscule
                 callbacksList & cbslist = std::get<CBS_LIST>(*(it->second));
                 if (!cbslist.empty())
                 {
+                    m_iCurNotifyCalls++;
+
                     size_t size1 = cbslist.size();
                     OBS_LG(INFO, "Observable(%x)::Notify(%d) : size0 %d", this, event, size1);
 
@@ -127,13 +144,18 @@ namespace imajuscule
                     {
                         if (std::get<ACTIVE>(*itM))
                         {
-                            // increment recursive level, to prevent this notification from being removed
+                            // increment recursive level, to prevent this notification from being removed immediately
                             std::get<RECURSIVE_LEVEL>(*itM)++;
 
                             OBS_LG(INFO, "Observable(%x)::Notify(%d) : size1 %d", this, event, it->second->second.size());
-                            std::get<FUNCTION>(*itM)(Params...);
-                            OBS_LG(INFO, "Observable(%x)::Notify(%d) : size2 %d", this, event, it->second->second.size());
                             
+                            std::get<FUNCTION>(*itM)(Params...);
+                            
+                            if (m_deinstantiate)
+                                break;
+
+                            OBS_LG(INFO, "Observable(%x)::Notify(%d) : size2 %d", this, event, it->second->second.size());
+
                             std::get<RECURSIVE_LEVEL>(*itM)--;
 
                             ++itM;
@@ -147,6 +169,9 @@ namespace imajuscule
                             OBS_LG(INFO, "Observable(%x)::Notify(%d) : size1 %d (removed a notification)", this, event, it->second->second.size());
                         }
                     }
+
+                    m_iCurNotifyCalls--;
+                    deinstantiateIfNeeded();
                 }
             }
         }
@@ -212,5 +237,13 @@ namespace imajuscule
 
     private:
         observers m_observers;
+        bool m_deinstantiate;
+        int m_iCurNotifyCalls;
+
+        void deinstantiateIfNeeded()
+        {
+            if (m_deinstantiate && (0 == m_iCurNotifyCalls))
+                delete this;
+        }
     };
 }

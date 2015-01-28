@@ -27,6 +27,6 @@ namespace imajuscule
         void removeSpecAndDelete(Persistable * upd);
 
     private:        
-        Observable<PersistableEvent, Persistable*> m_observable;
+        Observable<PersistableEvent, Persistable*> * m_observable;
     };
 }

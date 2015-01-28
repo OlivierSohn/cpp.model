@@ -52,7 +52,7 @@ namespace imajuscule
         snsToRftbls m_snsToRftbls;
         guidsToRftbls m_guidsToRftbls;
 
-        Observable<Event, Referentiable*> m_observable;
+        Observable<Event, Referentiable*> * m_observable;
     };
 
     template <class T>

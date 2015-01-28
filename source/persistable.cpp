@@ -4,17 +4,20 @@ using namespace imajuscule;
 
 Persistable::~Persistable()
 {
-    m_observable.Notify(PersistableEvent::OBJECT_DELETE, this);
+    m_observable->Notify(PersistableEvent::OBJECT_DELETE, this);
+    // perform delayed deletion of observable because we might be inside a Notify call
+    m_observable->deinstantiate();
 }
 
 Persistable::Persistable():
-Updatable()
+Updatable(),
+m_observable(Observable<PersistableEvent, Persistable*>::instantiate())
 {
 }
 
 Observable<PersistableEvent, Persistable*> & Persistable::observable()
 {
-    return m_observable;
+    return *m_observable;
 }
 
 

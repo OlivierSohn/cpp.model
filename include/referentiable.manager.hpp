@@ -17,11 +17,13 @@ using namespace imajuscule;
 
 ReferentiableManagerBase::ReferentiableManagerBase():
 Visitable()
+, m_observable(Observable<Event, Referentiable*>::instantiate())
 {}
 
 ReferentiableManagerBase::~ReferentiableManagerBase()
 {
-    m_observable.Notify(Event::MANAGER_DELETE, NULL);
+    observable().Notify(Event::MANAGER_DELETE, NULL);
+    observable().deinstantiate();
 
     {
         guidsToRftbls::iterator it = m_guidsToRftbls.begin();
@@ -34,7 +36,7 @@ ReferentiableManagerBase::~ReferentiableManagerBase()
 
 Observable<ReferentiableManagerBase::Event, Referentiable*> & ReferentiableManagerBase::observable()
 {
-    return m_observable;
+    return *m_observable;
 }
 
 bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const std::string & sessionName)
@@ -74,7 +76,7 @@ bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const 
 
             r->Init();
 
-            m_observable.Notify(Event::RFTBL_ADD, r);
+            observable().Notify(Event::RFTBL_ADD, r);
         }
     }
     else
@@ -96,7 +98,7 @@ void ReferentiableManagerBase::Remove(Referentiable*r)
         count = m_snsToRftbls.erase(r->sessionName());
         assert(count == 1);
         
-        m_observable.Notify(Event::RFTBL_REMOVE, r);
+        observable().Notify(Event::RFTBL_REMOVE, r);
     }
     else
     {
