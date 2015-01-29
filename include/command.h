@@ -43,7 +43,6 @@ namespace imajuscule
 
         State m_state;
         bool m_obsolete;
-        HistoryManager * m_history;
         Observable<ObsolescenceEvent> * m_obsolescenceObservable;
         std::vector<FunctionInfo<ObsolescenceEvent>> m_reg;
 

@@ -50,7 +50,7 @@ void HistoryManager::EmptyUndos()
     m_undos.clear();
 }
 
-HistoryManager * HistoryManager::getGlobalInstance()
+HistoryManager * HistoryManager::getInstance()
 {
     if (!g_instance)
         g_instance = new HistoryManager();

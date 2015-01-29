@@ -58,7 +58,7 @@ void Command::Execute()
 
     // don't log in history the commands that had no effect (example : backspace when edit location is at begin of input)
     if (bAddToHistory)
-        HistoryManager::getGlobalInstance()->Add(this);
+        HistoryManager::getInstance()->Add(this);
     else
         delete this;
 }

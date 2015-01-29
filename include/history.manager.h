@@ -10,7 +10,7 @@ namespace imajuscule
     public:
         HistoryManager();
         virtual ~HistoryManager();
-        static HistoryManager * getGlobalInstance();
+        static HistoryManager * getInstance();
 
         void setStackCapacity(unsigned int);
         void EmptyStacks();
