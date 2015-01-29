@@ -7,12 +7,152 @@
 
 using namespace imajuscule;
 
+UndoGroup::UndoGroup()
+{}
+
+UndoGroup::~UndoGroup()
+{
+    auto it = m_commands.begin();
+    auto end = m_commands.end();
+    for (; it != end; ++it)
+    {
+        delete *it;
+    }
+}
+
+void UndoGroup::traverseForward(Commands::const_iterator & it, Commands::const_iterator & end) const
+{
+    it = m_commands.begin();
+    end = m_commands.end();
+}
+
+bool UndoGroup::isObsolete()
+{
+    bool bEmpty = true;
+
+    auto it = m_commands.begin();
+    auto end = m_commands.end();
+    while (it != end)
+    {
+        Command * c = *it;
+        if (c->isObsolete())
+        {
+            delete c;
+            it = m_commands.erase(it);
+        }
+        else
+        {
+            bEmpty = false;
+            ++it;
+        }
+    }
+
+    return bEmpty;
+}
+
+void UndoGroup::Add(Command*c)
+{
+    m_commands.push_back(c);
+}
+
+bool UndoGroup::Undo()
+{
+    bool bNotEmpty = false;
+
+    auto it = m_commands.rbegin();
+    auto end = m_commands.rend();
+
+    while(it != end)
+    {
+        Command * c = *it;
+        if (c)
+        {
+            if (c->isObsolete())
+            {
+                delete c;
+                it = std::reverse_iterator<Commands::iterator>(m_commands.erase((std::next(it)).base()));
+                end = m_commands.rend();
+                continue;
+            }
+
+            bNotEmpty = true;
+
+            Command::State s = c->getState();
+            if ((s == Command::EXECUTED) || (s == Command::REDO))
+            {
+                c->Undo();
+            }
+            else
+            {
+                LG(ERR, "UndoGroup::Undo : Command in state %s", Command::StateToString(s));
+                assert(0);
+            }
+        }
+        else
+        {
+            LG(ERR, "UndoGroup::Undo : NULL Command");
+            assert(0);
+        }
+
+        ++it;
+    }
+
+    return bNotEmpty;
+}
+bool UndoGroup::Redo()
+{
+    bool bNotEmpty = false;
+
+    auto it = m_commands.begin();
+    auto end = m_commands.end();
+
+    while (it != end)
+    {
+        Command * c = *it;
+        if (c)
+        {
+            if (c->isObsolete())
+            {
+                delete c;
+                it = m_commands.erase(it);
+                continue;
+            }
+
+            bNotEmpty = true;
+
+            Command::State s = c->getState();
+            if (s == Command::UNDO)
+            {
+                c->Redo();
+            }
+            else
+            {
+                LG(ERR, "UndoGroup::Redo : Command in state %s", Command::StateToString(s));
+                assert(0);
+            }
+        }
+        else
+        {
+            LG(ERR, "UndoGroup::Redo : NULL Command");
+            assert(0);
+        }
+    
+        ++it;
+    }
+
+    return bNotEmpty;
+}
+
+
 HistoryManager * HistoryManager::g_instance = NULL;
 
-HistoryManager::HistoryManager():
+HistoryManager::HistoryManager() :
 m_stacksCapacity(-1)// unsigned -> maximum capacity
 , m_observable(Observable<Event>::instantiate())
-{}
+, m_bAppStateHasNewContent(false)
+{
+    m_appState = m_groups.rbegin();
+}
 
 HistoryManager::~HistoryManager()
 {
@@ -26,43 +166,19 @@ auto HistoryManager::observable()->Observable<Event> &
     return *m_observable;
 }
 
+void HistoryManager::MakeGroup()
+{
+    if (m_bAppStateHasNewContent)
+    {
+        m_bAppStateHasNewContent = false;
+    }
+}
+
 void HistoryManager::EmptyStacks()
 {
-    EmptyRedos();
-    EmptyUndos();
-
-    observable().Notify(Event::UNDOS_CHANGED);
-}
-
-void HistoryManager::EmptyRedos()
-{
-    if (!m_redos.empty())
-    {
-        RedoStack::iterator it = m_redos.begin();
-        RedoStack::iterator end = m_redos.end();
-        for (; it != end; ++it)
-        {
-            delete *it;
-        }
-
-        m_redos.clear();
-
-        observable().Notify(Event::REDOS_CHANGED);
-    }
-}
-
-void HistoryManager::EmptyUndos()
-{
-    UndoStack::iterator it = m_undos.begin();
-    UndoStack::iterator end = m_undos.end();
-    for (; it != end; ++it)
-    {
-        delete *it;
-    }
-
-    m_undos.clear();
-
-    // don't notify "undos changed", it's done by the caller
+    m_groups.clear();
+    m_appState = m_groups.rbegin();
+    m_bAppStateHasNewContent = false;
 }
 
 HistoryManager * HistoryManager::getInstance()
@@ -73,135 +189,97 @@ HistoryManager * HistoryManager::getInstance()
     return g_instance;
 }
 
-void HistoryManager::setStackCapacity(unsigned int size)
-{
-    m_stacksCapacity = size;
-    SizeUndos();
-}
-
 void HistoryManager::Add(Command* c)
 {
-    if (c)
-    {
-        Command::State s = c->getState();
-        if (s == Command::EXECUTED)
-        {
-            if (!c->isObsolete())
-            {
-                EmptyRedos();
-                m_undos.push_back(c);
-                SizeUndos();
+    bool bRedosChanged = false;
 
-                observable().Notify(Event::UNDOS_CHANGED);
-            }
-            else
-            {
-                LG(ERR, "HistoryManager::Add : Command is obsolete");
-                assert(0);
-            }
-        }
-        else
-        {
-            LG(ERR, "HistoryManager::Add : Command in state %s", Command::StateToString(s));
-            assert(0);
-        }
-    }
-    else
+    if (!m_bAppStateHasNewContent)
     {
-        LG(ERR, "HistoryManager::Add : NULL Command");
-        assert(0);
+        m_bAppStateHasNewContent = true;
+        // erase "redos"
+        auto firstRedoIt = m_appState.base();
+        auto end = m_groups.end();
+        if (firstRedoIt != end)
+        {
+            m_groups.erase(firstRedoIt, end);
+            bRedosChanged = true;
+        }
+
+        // new group
+        m_groups.emplace_back();
+        m_appState = m_groups.rbegin();
+    }
+
+    m_appState->Add(c);
+    assert(!m_appState->isObsolete());
+    SizeUndos();
+    // TODO HistoryManager::Add : after SizeUndos, find an algo to recompute m_appState that could have been invalidated
+
+    observable().Notify(Event::UNDOS_CHANGED);
+
+    if (bRedosChanged)
+    {
+        observable().Notify(Event::REDOS_CHANGED);
     }
 }
 
 void HistoryManager::SizeUndos()
 {
-    unsigned int size = m_undos.size();
+    unsigned int size = m_groups.size();
     if (size > m_stacksCapacity)
     {
         unsigned int count = 0;
-        for (auto it = m_undos.begin(); it != m_undos.end();)
+        auto end = m_groups.end();
+        for (auto it = m_groups.begin(); it != end ;)
         {
-            if ((*it)->isObsolete())
+            if (it->isObsolete())
             {
-                delete *it;
                 count++;
-                it = m_undos.erase(it);
+                it = m_groups.erase(it);
             }
             else
                 ++it;
         }
 
-        LG(INFO, "HistoryManager::SizeUndos %u out of %u commands removed because obsolete", count, size);
+        LG(INFO, "HistoryManager::SizeUndos %u out of %u groups removed because empty", count, size);
 
-        size = m_undos.size();
+        size = m_groups.size();
         if (size > m_stacksCapacity)
         {
             unsigned int nElementsRemoved = (size - m_stacksCapacity);
-            UndoStack::iterator it = m_undos.begin();
-            for (unsigned int i = 0; i < nElementsRemoved; i++, ++it)
-            {
-                delete *it;
-            }
+            UndoGroups::iterator it = m_groups.begin();
+            m_groups.erase(it, std::next(it, nElementsRemoved));
 
-            it = m_undos.begin();
-            m_undos.erase(it, it + nElementsRemoved);
-
-            LG(INFO, "HistoryManager::SizeUndos %u first elements removed", nElementsRemoved);
+            LG(INFO, "HistoryManager::SizeUndos %u first groups removed", nElementsRemoved);
         }
     }
 }
 
-unsigned int HistoryManager::CountUndos()
-{
-    return m_undos.size();
-}
-unsigned int HistoryManager::CountRedos()
-{
-    return m_redos.size();
-}
 void HistoryManager::Undo()
 {
     bool bDone = false;
     bool bUndosChanged = false;
     bool bRedosChanged = false;
 
-    while (!m_undos.empty())
+    while (m_appState != m_groups.rend() /*rend must be recomputed at each loop*/)
     {
-        Command * c = m_undos.back();
-        if (c)
+        if (!m_appState->Undo())
         {
-            if (c->isObsolete())
-            {
-                m_undos.pop_back();
-                bUndosChanged = true;
-                delete c;
-                continue;
-            }
+            // remove this empty state and increment
+            bUndosChanged = true;
 
-            Command::State s = c->getState();
-            if ((s == Command::EXECUTED) || (s == Command::REDO))
-            {
-                m_undos.pop_back();
-                bUndosChanged = true;
-                m_redos.push_back(c);
-                bRedosChanged = true;
-                c->Undo();
-                bDone = true;
-                break;
-            }
-            else
-            {
-                LG(ERR, "HistoryManager::Undo : Command in state %s", Command::StateToString(s));
-                assert(0);
-            }
+            m_appState = std::reverse_iterator<UndoGroups::iterator>(m_groups.erase(std::next(m_appState).base()));
         }
         else
         {
-            LG(ERR, "HistoryManager::Undo : NULL Command");
-            assert(0);
+            ++m_appState;
+            bDone = true;
+            bRedosChanged = true;
+            bUndosChanged = true;
+            break;
         }
     }
-
+    
     if (!bDone)
     {
         std::cout << "\a";
@@ -217,46 +295,30 @@ void HistoryManager::Undo()
         observable().Notify(Event::REDOS_CHANGED);
     }
 }
+
 void HistoryManager::Redo()
 {
+    bool bDone = false;
     bool bUndosChanged = false;
     bool bRedosChanged = false;
-    bool bDone = false;
 
-    while (!m_redos.empty())
+    while (m_appState != m_groups.rbegin() /*rbegin must be recomputed at each loop*/ )
     {
-        Command * c = m_redos.back();
-        if (c)
-        {
-            if (c->isObsolete())
-            {
-                m_redos.pop_back();
-                bRedosChanged = true;
-                delete c;
-                continue;
-            }
+        --m_appState;
 
-            Command::State s = c->getState();
-            if (s == Command::UNDO)
-            {
-                m_redos.pop_back();
-                bRedosChanged = true;
-                m_undos.push_back(c);
-                bUndosChanged = true;
-                c->Redo();
-                bDone = true;
-                break;
-            }
-            else
-            {
-                LG(ERR, "HistoryManager::Redo : Command in state %s", Command::StateToString(s));
-                assert(0);
-            }
+        if (!m_appState->Redo())
+        {
+            // remove this empty state
+            bRedosChanged = true;
+
+            m_appState = std::reverse_iterator<UndoGroups::iterator>(m_groups.erase(std::next(m_appState).base()));
         }
         else
         {
-            LG(ERR, "HistoryManager::Redo : NULL Command");
-            assert(0);
+            bDone = true;
+            bRedosChanged = true;
+            bUndosChanged = true;
+            break;
         }
     }
 
@@ -276,17 +338,13 @@ void HistoryManager::Redo()
     }
 }
 
-unsigned int HistoryManager::traverseUndos(UndoStack::const_iterator& begin, UndoStack::const_iterator& end)
+void HistoryManager::traverseUndos(UndoGroups::const_iterator& begin, UndoGroups::const_iterator& end) const
 {
-    begin = m_undos.begin();
-    end = m_undos.end();
-
-    return m_undos.size();
+    begin = m_groups.begin();
+    end = m_appState.base();
 }
-unsigned int HistoryManager::traverseRedos(RedoStack::const_reverse_iterator& begin, RedoStack::const_reverse_iterator& end)
+void HistoryManager::traverseRedos(UndoGroups::const_iterator& begin, UndoGroups::const_iterator& end) const
 {
-    begin = m_redos.rbegin();
-    end = m_redos.rend();
-
-    return m_redos.size();
+    begin = m_appState.base();
+    end = m_groups.end();
 }

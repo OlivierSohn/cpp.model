@@ -1,11 +1,33 @@
 #pragma once
 
-#include <deque>
+#include <list>
 #include "observable.h"
 
 namespace imajuscule
 {
     class Command;
+
+    class UndoGroup
+    {
+    public:
+        UndoGroup();
+        ~UndoGroup();
+
+        void Add(Command*);
+
+        bool isObsolete();
+
+        // Undo and Redo return false if nothing changed (the group was composed of obsolete commands)
+        bool Undo();
+        bool Redo();
+
+        typedef std::list<Command*> Commands;
+        void traverseForward(Commands::const_iterator & it, Commands::const_iterator & end) const;
+    private:
+        typedef std::list<Command*> Commands;
+        Commands m_commands;
+    };
+
     class HistoryManager
     {
     public:
@@ -16,38 +38,34 @@ namespace imajuscule
         };
         Observable<Event> & observable();
         
-        typedef std::deque<Command*> RedoStack;
-        typedef std::deque<Command*> UndoStack;
+        typedef std::list<UndoGroup> UndoGroups;
 
         HistoryManager();
         virtual ~HistoryManager();
         static HistoryManager * getInstance();
 
-        void setStackCapacity(unsigned int);
         void EmptyStacks();
 
         void Add(Command*);
+        void MakeGroup();
 
-        unsigned int CountUndos();
-        unsigned int CountRedos();
         void Undo();
         void Redo();
 
-        // traverse in chronological order (hence reverse iterator for Redos)
-        unsigned int traverseUndos(UndoStack::const_iterator& begin, UndoStack::const_iterator& end);
-        unsigned int traverseRedos(RedoStack::const_reverse_iterator& begin, RedoStack::const_reverse_iterator& end);
+        // traverse in chronological order
+        void traverseUndos(UndoGroups::const_iterator& begin, UndoGroups::const_iterator& end) const;
+        void traverseRedos(UndoGroups::const_iterator& begin, UndoGroups::const_iterator& end) const;
 
     private:
-        UndoStack m_undos;
-        RedoStack m_redos;
-
-        Observable<Event> * m_observable;
-
-        void EmptyRedos();
-        void EmptyUndos();
-        void SizeUndos();
-
         static HistoryManager * g_instance;
+
+        UndoGroups m_groups;
+        Observable<Event> * m_observable;
+        UndoGroups::reverse_iterator m_appState; //everything from rend to m_appState is "Done"
         unsigned int m_stacksCapacity;
+        bool m_bAppStateHasNewContent;
+
+        void NewGroup();
+        void SizeUndos();
     };
 }
