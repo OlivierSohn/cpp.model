@@ -24,7 +24,6 @@ namespace imajuscule
         typedef std::list<Command*> Commands;
         void traverseForward(Commands::const_iterator & it, Commands::const_iterator & end) const;
     private:
-        typedef std::list<Command*> Commands;
         Commands m_commands;
     };
 
