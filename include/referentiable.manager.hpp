@@ -286,7 +286,7 @@ ReferentiableManager<T>::~ReferentiableManager()
 }
 
 template <class T>
-T* ReferentiableManager<T>::newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids)
+Referentiable* ReferentiableManager<T>::newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids)
 {
     LG(INFO, "ReferentiableManager<T>::newReferentiable(%s, %d guids) begin",
         (nameHint.c_str() ? nameHint.c_str() : "NULL"),

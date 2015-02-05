@@ -11,7 +11,8 @@ Updatable::updatables Updatable::m_all;
 Updatable::Updatable() :
 Visitable(),
 m_bHasNewContentForUpdate(true),
-m_bHasBeenUpdated(false)
+m_bHasBeenUpdated(false),
+m_observableUpdatable(Observable<Event, Updatable& /*observed*/, Updatable&/*spec*/>::instantiate())
 {
     m_all.insert(updatables::value_type(this));
 }
@@ -19,6 +20,13 @@ m_bHasBeenUpdated(false)
 Updatable::~Updatable()
 {
     m_all.erase(updatables::value_type(this));
+    m_observableUpdatable->deinstantiate();
+}
+
+auto Updatable::observableUpdatable() -> Observable<Event, Updatable& /*observed*/, Updatable&/*spec*/> &
+{
+    return *m_observableUpdatable;
+
 }
 
 void Updatable::Update()
@@ -83,20 +91,59 @@ bool Updatable::isSpec(spec item) const
 
 void Updatable::addSpec(spec item)
 {
-    assert(!isSpec(item));
+    if (item)
+    {
+        assert(!isSpec(item));
 
-    m_specs.push_back(item);
-    item->addObserver(this);
+        m_specs.push_back(item);
+        item->addObserver(this);
 
-    assert(isConsistent());
+        assert(isConsistent());
+
+        observableUpdatable().Notify(ADD_SPEC, *this, *item);
+
+        observers::iterator it, end;
+        traverseObservers(it, end);
+        for (; it != end; ++it)
+            (*it)->onAddRecursiveSpec(item);
+    }
+}
+
+void Updatable::onAddRecursiveSpec(spec item)
+{
+    observableUpdatable().Notify(ADD_SPEC_RECURSE, *this, *item);
+
+    observers::iterator it, end;
+    traverseObservers(it, end);
+    for (; it != end; ++it)
+        (*it)->onAddRecursiveSpec(item);
+}
+void Updatable::onRemoveRecursiveSpec(spec item)
+{
+    observableUpdatable().Notify(REMOVE_SPEC_RECURSE, *this, *item);
+
+    observers::iterator it, end;
+    traverseObservers(it, end);
+    for (; it != end; ++it)
+        (*it)->onRemoveRecursiveSpec(item);
 }
 
 void Updatable::removeSpec(spec item)
 {
-    item->removeObserver(this);
-    m_specs.remove(item);
+    if (item)
+    {
+        item->removeObserver(this);
+        m_specs.remove(item);
 
-    assert(!isSpec(item));
+        assert(!isSpec(item));
+
+        observableUpdatable().Notify(REMOVE_SPEC, *this, *item);
+
+        observers::iterator it, end;
+        traverseObservers(it, end);
+        for (; it != end; ++it)
+            (*it)->onRemoveRecursiveSpec(item);
+    }
 }
 
 void Updatable::traverseSpecs(specs::iterator & begin, specs::iterator & end)

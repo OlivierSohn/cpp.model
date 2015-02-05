@@ -23,6 +23,9 @@ namespace imajuscule
         ReferentiableManagerBase();
         virtual ~ReferentiableManagerBase();
 
+        virtual std::string defaultNameHint() = 0;
+        virtual Referentiable* newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids) = 0;
+
         // guid is unique
         Referentiable * findByGuid(const std::string & guid);
         // session name is unique per-session
@@ -61,7 +64,8 @@ namespace imajuscule
     public:
         static ReferentiableManager * getInstance();
 
-        T* newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids);
+        std::string defaultNameHint();
+        Referentiable* newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids) override;
 
     private:
         static ReferentiableManager * g_pAnimationManager;

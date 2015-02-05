@@ -54,12 +54,14 @@ namespace imajuscule
         typedef std::map<Event, eventNotification *> observers;
         std::vector<eventNotification*> m_allocatedPairs;
 
+        // constructor is private, please call ::instantiate instead
         Observable():
             m_deinstantiate(false),
             m_iCurNotifyCalls(0)
         {
             //OBS_LG(INFO, "Observable::Observable()");
         }
+        // destructor is private, please call ::deinstantiate instead
         virtual ~Observable()
         {
             //OBS_LG(INFO, "Observable::~Observable() #%d : delete %d pairs", m_curNotifStamp, m_allocatedPairs.size());

@@ -6,6 +6,7 @@
 #include <set>
 
 #include "visitor.h"
+#include "observable.h"
 
 namespace imajuscule
 {
@@ -15,9 +16,17 @@ namespace imajuscule
     typedef Updatable * observer;
     typedef std::list< observer > observers;
 
+    class Updatable;
     class Updatable : public Visitable
     {
     public:
+        enum Event
+        {
+            ADD_SPEC,
+            ADD_SPEC_RECURSE,
+            REMOVE_SPEC,
+            REMOVE_SPEC_RECURSE
+        };
         virtual ~Updatable();
 
         void Update();
@@ -39,6 +48,8 @@ namespace imajuscule
 
         static void onUpdateEnd();
 
+        Observable<Event, Updatable& /*observed*/, Updatable&/*spec*/> & observableUpdatable();
+
     protected:
         Updatable();
 
@@ -57,11 +68,15 @@ namespace imajuscule
         specs m_specs;
         observers m_observers;
 
+        Observable<Event, Updatable& /*observed*/, Updatable&/*spec*/> * m_observableUpdatable;
+
         static void traverseAll(updatables::iterator & begin, updatables::iterator & end);
         bool isObserver(observer item) const;
         void resetUpdateStates();
 
         bool isConsistent() const;
-        bool isSpec(spec item) const;        
+        bool isSpec(spec item) const;
+        void onAddRecursiveSpec(spec item);
+        void onRemoveRecursiveSpec(spec item);
     };
 }

@@ -25,7 +25,7 @@ namespace imajuscule
     class Player;
     class ReferentiableManagerBase;
     class Shot;
-    class Camera;
+    class CameraBase;
     class MotionLayer;
     class CurveTraversal;
 
@@ -58,7 +58,7 @@ namespace imajuscule
         virtual void Visit(Shot*) = 0;
         virtual void Visit(MotionLayer*) = 0;
         virtual void Visit(CurveTraversal*) = 0;
-        virtual void Visit(Camera*) = 0;
+        virtual void Visit(CameraBase*) = 0;
 
     protected:
         Visitor() {}
