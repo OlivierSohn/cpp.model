@@ -5,6 +5,7 @@
 #include "history.manager.h"
 #include "observable.h"
 #include "persistable.h"
+#include "platform.defines.h" 
 #include "referentiable.h"
 #include "referentiable.manager.h"
 #include "session.h"

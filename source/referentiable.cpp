@@ -8,6 +8,14 @@
 
 using namespace imajuscule;
 
+Referentiable::Referentiable() :
+Persistable()
+, m_manager(NULL)
+, m_guid(std::string(""))
+, m_bHasSessionName(false)
+{
+}
+
 Referentiable::Referentiable(ReferentiableManagerBase * manager, const std::string & guid) :
 Persistable()
 , m_manager(manager)
