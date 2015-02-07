@@ -21,8 +21,6 @@ namespace imajuscule
         const std::string & hintName();
         const std::string & creationDate();
 
-//        typedef std::vector<Persistable*> referencers;
-//        void traverseReferencers(referencers::iterator & begin, referencers::iterator & end);
     protected:
         virtual ~Referentiable();
 
@@ -67,7 +65,5 @@ namespace imajuscule
 
         bool m_bHasSessionName;
         virtual void setSessionName(const std::string & sn);
-
-//        referencers m_referencers;
     };
 }

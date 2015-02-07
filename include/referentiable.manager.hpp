@@ -99,6 +99,7 @@ void ReferentiableManagerBase::Remove(Referentiable*r)
         assert(count == 1);
         
         observable().Notify(Event::RFTBL_REMOVE, r);
+        delete r;
     }
     else
     {
@@ -259,18 +260,48 @@ void ReferentiableManagerBase::generateGuid(std::string & sGuid)
 }
 
 
+Referentiable* ReferentiableManagerBase::newReferentiable()
+{
+    ReferentiableNewCmdBase * c = CmdNew();
+
+    if (c->Execute())
+        return c->refAddr();
+    else
+        return NULL;
+}
+
+Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids)
+{
+    ReferentiableNewCmdBase * c = CmdNew(nameHint, guids);
+
+    if (c->Execute())
+        return c->refAddr();
+    else
+        return NULL;
+}
+
 template <class T>
-ReferentiableManager<T> * ReferentiableManager<T>::g_pAnimationManager = NULL;
+ReferentiableNewCmdBase * ReferentiableManager<T>::CmdNew()
+{
+    return new ReferentiableNewCmd<T>();
+}
+template <class T>
+ReferentiableNewCmdBase * ReferentiableManager<T>::CmdNew(const std::string & nameHint, const std::vector<std::string> & guids)
+{
+    return new ReferentiableNewCmd<T>(nameHint, guids);
+}
+template <class T>
+ReferentiableManager<T> * ReferentiableManager<T>::g_pRefManager = NULL;
 
 template <class T>
 ReferentiableManager<T> * ReferentiableManager<T>::getInstance()
 {
-    if (!g_pAnimationManager)
+    if (!g_pRefManager)
     {
-        g_pAnimationManager = new ReferentiableManager<T>();
+        g_pRefManager = new ReferentiableManager<T>();
     }
 
-    return g_pAnimationManager;
+    return g_pRefManager;
 }
 
 template <class T>
@@ -286,7 +317,13 @@ ReferentiableManager<T>::~ReferentiableManager()
 }
 
 template <class T>
-Referentiable* ReferentiableManager<T>::newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids)
+Referentiable* ReferentiableManager<T>::newReferentiableInternal()
+{
+    return newReferentiableInternal(defaultNameHint(), std::vector<std::string>());
+}
+
+template <class T>
+Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids)
 {
     LG(INFO, "ReferentiableManager<T>::newReferentiable(%s, %d guids) begin",
         (nameHint.c_str() ? nameHint.c_str() : "NULL"),
@@ -322,3 +359,102 @@ end:
     return curAnim;
 }
 
+template <class T>
+ReferentiableNewCmd<T>::ReferentiableNewCmd(const std::string & nameHint, const std::vector<std::string> guids) :
+ReferentiableNewCmdBase(nameHint, guids)
+, m_manager(ReferentiableManager<T>::getInstance())
+{
+}
+template <class T>
+ReferentiableNewCmd<T>::ReferentiableNewCmd() :
+ReferentiableNewCmdBase()
+, m_manager(ReferentiableManager<T>::getInstance())
+{
+}
+
+template <class T>
+ReferentiableNewCmd<T>::~ReferentiableNewCmd()
+{}
+
+template <class T>
+ReferentiableManagerBase * ReferentiableNewCmd<T>::manager()
+{
+    return m_manager;
+}
+
+ReferentiableNewCmdBase::ReferentiableNewCmdBase(const std::string & nameHint, const std::vector<std::string> guids) :
+Command()
+, m_bHasParameters(true)
+, m_params({ nameHint, guids })
+, m_after({std::string(), std::string(), NULL})
+{
+}
+
+ReferentiableNewCmdBase::ReferentiableNewCmdBase() :
+Command()
+, m_bHasParameters(false)
+, m_after({ std::string(), std::string(), NULL })
+{
+}
+
+ReferentiableNewCmdBase::~ReferentiableNewCmdBase()
+{}
+
+void ReferentiableNewCmdBase::getDescription(std::string & desc)
+{
+    switch (getState())
+    {
+    case NOT_EXECUTED:
+        desc.append("Waiting for command execution");
+        break;
+    default:
+        desc.append("new Ref. \"");
+        desc.append(m_after.m_sessionName);
+        desc.append("\"");
+        break;
+    }
+}
+
+Referentiable * ReferentiableNewCmdBase::refAddr() const
+{
+    return m_after.m_addr;
+}
+bool ReferentiableNewCmdBase::doExecute()
+{
+    Referentiable * r = NULL;
+
+    if (m_bHasParameters)
+        r = manager()->newReferentiableInternal(m_params.m_nameHint, m_params.m_guids);
+    else
+        r = manager()->newReferentiableInternal();
+
+    m_after.m_GUID = r->guid();
+    m_after.m_sessionName = r->sessionName();
+    m_after.m_addr = r;
+    
+    return true;
+}
+
+void ReferentiableNewCmdBase::doUndo()
+{
+    Referentiable * r = manager()->findByGuid(m_after.m_GUID);
+
+    if ( r )
+    {
+        manager()->Remove(r);
+    }
+    else
+    {
+        LG(ERR, "ReferentiableNewCmd<T>::doUndo : ref not found");
+        assert(0);
+    }
+}
+
+void ReferentiableNewCmdBase::doRedo()
+{
+    std::vector<std::string> guids{ m_after.m_GUID };
+    Referentiable * r = manager()->newReferentiableInternal(m_after.m_sessionName, guids);
+
+    assert(m_after.m_GUID == r->guid());
+    assert(m_after.m_sessionName == r->sessionName());
+}

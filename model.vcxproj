@@ -86,6 +86,7 @@
     <ClInclude Include="include\operation.rasterize.h" />
     <ClInclude Include="include\operation.render.h" />
     <ClInclude Include="include\persistable.h" />
+    <ClInclude Include="include\platform.defines.h" />
     <ClInclude Include="include\referentiable.h" />
     <ClInclude Include="include\referentiable.manager.h" />
     <ClInclude Include="include\referentiable.manager.hpp" />

@@ -24,7 +24,7 @@ namespace imajuscule
 
         virtual ~Command();
 
-        void Execute();
+        bool Execute();
         void Undo();
         void Redo();
 

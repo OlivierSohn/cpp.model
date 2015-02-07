@@ -6,13 +6,17 @@
 
 #include "visitable.h"
 #include "observable.h"
+#include "command.h"
 
 namespace imajuscule
 {
+    class ReferentiableNewCmdBase;
+
     class Referentiable;
     typedef std::vector<Referentiable*> referentiables;
     class ReferentiableManagerBase : public Visitable
     {
+        friend class ReferentiableNewCmdBase;
     public:
         enum class Event
         {
@@ -24,7 +28,8 @@ namespace imajuscule
         virtual ~ReferentiableManagerBase();
 
         virtual std::string defaultNameHint() = 0;
-        virtual Referentiable* newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids) = 0;
+        Referentiable* newReferentiable();
+        Referentiable* newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids);
 
         // guid is unique
         Referentiable * findByGuid(const std::string & guid);
@@ -56,6 +61,11 @@ namespace imajuscule
         guidsToRftbls m_guidsToRftbls;
 
         Observable<Event, Referentiable*> * m_observable;
+
+        virtual Referentiable* newReferentiableInternal() = 0;
+        virtual Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids) = 0;
+        virtual ReferentiableNewCmdBase * CmdNew() = 0;
+        virtual ReferentiableNewCmdBase * CmdNew(const std::string & nameHint, const std::vector<std::string> & guids) = 0;
     };
 
     template <class T>
@@ -65,12 +75,65 @@ namespace imajuscule
         static ReferentiableManager * getInstance();
 
         std::string defaultNameHint();
-        Referentiable* newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids) override;
 
     private:
-        static ReferentiableManager * g_pAnimationManager;
+        static ReferentiableManager * g_pRefManager;
 
         ReferentiableManager();
         virtual ~ReferentiableManager();
+
+        Referentiable* newReferentiableInternal() override;
+        Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids) override;
+        ReferentiableNewCmdBase * CmdNew() override;
+        ReferentiableNewCmdBase * CmdNew(const std::string & nameHint, const std::vector<std::string> & guids) override;
+    };
+
+    class ReferentiableNewCmdBase : public Command
+    {
+    public:
+        void getDescription(std::string & desc) override;
+
+        Referentiable * refAddr() const;
+
+    protected:
+        ReferentiableNewCmdBase(const std::string & nameHint, const std::vector<std::string> guids);
+        ReferentiableNewCmdBase();
+        ~ReferentiableNewCmdBase();
+
+        virtual ReferentiableManagerBase * manager() = 0;
+    private:
+        bool doExecute() override;
+        void doUndo() override;
+        void doRedo() override;
+
+        struct parameters
+        {
+            std::string m_nameHint;
+            std::vector<std::string> m_guids;
+        };
+        bool m_bHasParameters;
+        parameters m_params;
+
+        struct data
+        {
+            std::string m_GUID; // when undone and redone, the GUIDS must match
+            std::string m_sessionName;
+            Referentiable * m_addr;
+        };
+        data m_after;
+    };
+
+    template <class T>
+    class ReferentiableNewCmd : public ReferentiableNewCmdBase
+    {
+        friend class ReferentiableManager < T > ;
+    protected:
+        ReferentiableNewCmd(const std::string & nameHint, const std::vector<std::string> guids);
+        ReferentiableNewCmd();
+        ~ReferentiableNewCmd();
+
+        ReferentiableManagerBase * manager() override;
+    private :
+        ReferentiableManagerBase * m_manager;
     };
 }

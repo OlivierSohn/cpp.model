@@ -48,7 +48,7 @@ auto Command::getState() -> State
     return m_state;
 }
 
-void Command::Execute()
+bool Command::Execute()
 {
     assert(m_state == NOT_EXECUTED);
 
@@ -61,6 +61,8 @@ void Command::Execute()
         HistoryManager::getInstance()->Add(this);
     else
         delete this;
+
+    return bAddToHistory;
 }
 
 void Command::Undo()
