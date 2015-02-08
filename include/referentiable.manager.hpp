@@ -88,7 +88,12 @@ bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const 
     return bRet;
 }
 
-void ReferentiableManagerBase::Remove(Referentiable*r)
+const char * ReferentiableManagerBase::defaultNameHint()
+{
+    return "Referentiable";
+}
+
+void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
 {
     if (r)
     {
@@ -260,6 +265,13 @@ void ReferentiableManagerBase::generateGuid(std::string & sGuid)
 }
 
 
+void ReferentiableManagerBase::RemoveRef(Referentiable*r)
+{
+    ReferentiableDeleteCmdBase * c = CmdDelete(r->guid());
+
+    c->Execute();
+}
+
 Referentiable* ReferentiableManagerBase::newReferentiable()
 {
     ReferentiableNewCmdBase * c = CmdNew();
@@ -289,6 +301,11 @@ template <class T>
 ReferentiableNewCmdBase * ReferentiableManager<T>::CmdNew(const std::string & nameHint, const std::vector<std::string> & guids)
 {
     return new ReferentiableNewCmd<T>(nameHint, guids);
+}
+template <class T>
+ReferentiableDeleteCmdBase * ReferentiableManager<T>::CmdDelete(const std::string & guid)
+{
+    return new ReferentiableDeleteCmd<T>(guid);
 }
 template <class T>
 ReferentiableManager<T> * ReferentiableManager<T>::g_pRefManager = NULL;
@@ -381,17 +398,38 @@ ReferentiableManagerBase * ReferentiableNewCmd<T>::manager()
 {
     return m_manager;
 }
+template <class T>
+ReferentiableDeleteCmd<T>::ReferentiableDeleteCmd(const std::string & guid) :
+ReferentiableDeleteCmdBase(guid)
+, m_manager(ReferentiableManager<T>::getInstance())
+{
+}
+template <class T>
+ReferentiableDeleteCmd<T>::~ReferentiableDeleteCmd()
+{}
+
+template <class T>
+ReferentiableManagerBase * ReferentiableDeleteCmd<T>::manager()
+{
+    return m_manager;
+}
+
+ReferentiableCmdBase::ReferentiableCmdBase() :
+Command()
+{}
+ReferentiableCmdBase::~ReferentiableCmdBase()
+{}
 
 ReferentiableNewCmdBase::ReferentiableNewCmdBase(const std::string & nameHint, const std::vector<std::string> guids) :
-Command()
+ReferentiableCmdBase()
 , m_bHasParameters(true)
 , m_params({ nameHint, guids })
-, m_after({std::string(), std::string(), NULL})
+, m_after({ std::string(), std::string(), NULL })
 {
 }
 
 ReferentiableNewCmdBase::ReferentiableNewCmdBase() :
-Command()
+ReferentiableCmdBase()
 , m_bHasParameters(false)
 , m_after({ std::string(), std::string(), NULL })
 {
@@ -431,7 +469,7 @@ bool ReferentiableNewCmdBase::doExecute()
     m_after.m_GUID = r->guid();
     m_after.m_sessionName = r->sessionName();
     m_after.m_addr = r;
-    
+
     return true;
 }
 
@@ -439,9 +477,9 @@ void ReferentiableNewCmdBase::doUndo()
 {
     Referentiable * r = manager()->findByGuid(m_after.m_GUID);
 
-    if ( r )
+    if (r)
     {
-        manager()->Remove(r);
+        manager()->RemoveRefInternal(r);
     }
     else
     {
@@ -457,4 +495,75 @@ void ReferentiableNewCmdBase::doRedo()
 
     assert(m_after.m_GUID == r->guid());
     assert(m_after.m_sessionName == r->sessionName());
+}
+
+ReferentiableDeleteCmdBase::ReferentiableDeleteCmdBase(const std::string & guid) :
+ReferentiableCmdBase()
+, m_bHasParameters(true)
+, m_params({ guid })
+, m_after({ std::string(), std::string()})
+, m_addr(NULL)
+{
+}
+
+ReferentiableDeleteCmdBase::~ReferentiableDeleteCmdBase()
+{}
+
+void ReferentiableDeleteCmdBase::getDescription(std::string & desc)
+{
+    switch (getState())
+    {
+    case NOT_EXECUTED:
+        desc.append("Waiting for command execution");
+        break;
+    default:
+        desc.append("delete Ref. \"");
+        desc.append(m_after.m_sessionName);
+        desc.append("\"");
+        break;
+    }
+}
+
+Referentiable * ReferentiableDeleteCmdBase::refAddr() const
+{
+    return m_addr;
+}
+bool ReferentiableDeleteCmdBase::doExecute()
+{
+    Referentiable * r = NULL;
+
+    assert(m_bHasParameters);
+
+    r = manager()->findByGuid(m_params.m_guid);
+
+    m_after.m_GUID = r->guid();
+    m_after.m_sessionName = r->sessionName();
+
+    manager()->RemoveRefInternal(r);
+    
+    return true;
+}
+
+void ReferentiableDeleteCmdBase::doUndo()
+{
+    std::vector<std::string> guids{ m_after.m_GUID };
+    Referentiable * r = manager()->newReferentiableInternal(m_after.m_sessionName, guids);
+
+    assert(m_after.m_GUID == r->guid());
+    assert(m_after.m_sessionName == r->sessionName());
+}
+
+void ReferentiableDeleteCmdBase::doRedo()
+{
+    Referentiable * r = manager()->findByGuid(m_after.m_GUID);
+
+    if (r)
+    {
+        manager()->RemoveRefInternal(r);
+    }
+    else
+    {
+        LG(ERR, "ReferentiableNewCmd<T>::doUndo : ref not found");
+        assert(0);
+    }
 }

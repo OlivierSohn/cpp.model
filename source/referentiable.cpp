@@ -57,6 +57,11 @@ ReferentiableManagerBase * Referentiable::getManager()
     return m_manager;
 }
 
+void Referentiable::deinstantiate()
+{
+    // don't involve a command, we don't want this to be logged in history
+    getManager()->RemoveRefInternal(this);
+}
 const std::string & Referentiable::guid()
 {
     return m_guid;

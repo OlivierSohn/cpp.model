@@ -16,10 +16,14 @@ namespace imajuscule
     {
         friend class ReferentiableManagerBase;
     public:
+        void deinstantiate();
+
         const std::string & guid();
         const std::string & sessionName();
         const std::string & hintName();
         const std::string & creationDate();
+
+        ReferentiableManagerBase * getManager();
 
     protected:
         virtual ~Referentiable();
@@ -30,8 +34,6 @@ namespace imajuscule
         Referentiable();
         Referentiable(ReferentiableManagerBase * manager, const std::string & guid);
         Referentiable(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName);
-
-        ReferentiableManagerBase * getManager();
 
         class ReferentiablePersist : public KeysPersist
         {

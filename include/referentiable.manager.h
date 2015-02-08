@@ -11,12 +11,15 @@
 namespace imajuscule
 {
     class ReferentiableNewCmdBase;
+    class ReferentiableDeleteCmdBase;
 
     class Referentiable;
     typedef std::vector<Referentiable*> referentiables;
     class ReferentiableManagerBase : public Visitable
     {
+        friend class Referentiable;
         friend class ReferentiableNewCmdBase;
+        friend class ReferentiableDeleteCmdBase;
     public:
         enum class Event
         {
@@ -27,7 +30,7 @@ namespace imajuscule
         ReferentiableManagerBase();
         virtual ~ReferentiableManagerBase();
 
-        virtual std::string defaultNameHint() = 0;
+        virtual const char * defaultNameHint();
         Referentiable* newReferentiable();
         Referentiable* newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids);
 
@@ -40,7 +43,7 @@ namespace imajuscule
 
         Observable<Event, Referentiable*> & observable();
 
-        void Remove(Referentiable*);
+        void RemoveRef(Referentiable*);
 
         PERSISTABLE_VISITOR_HEADER_IMPL
 
@@ -64,17 +67,20 @@ namespace imajuscule
 
         virtual Referentiable* newReferentiableInternal() = 0;
         virtual Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids) = 0;
+        void RemoveRefInternal(Referentiable*);
         virtual ReferentiableNewCmdBase * CmdNew() = 0;
         virtual ReferentiableNewCmdBase * CmdNew(const std::string & nameHint, const std::vector<std::string> & guids) = 0;
+        virtual ReferentiableDeleteCmdBase * CmdDelete(const std::string & guid) = 0;
     };
 
     template <class T>
     class ReferentiableManager : public ReferentiableManagerBase
     {
+        friend T;
     public:
         static ReferentiableManager * getInstance();
 
-        std::string defaultNameHint();
+        const char * defaultNameHint();
 
     private:
         static ReferentiableManager * g_pRefManager;
@@ -84,11 +90,19 @@ namespace imajuscule
 
         Referentiable* newReferentiableInternal() override;
         Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids) override;
-        ReferentiableNewCmdBase * CmdNew() override;
+        virtual ReferentiableNewCmdBase * CmdNew() override;
         ReferentiableNewCmdBase * CmdNew(const std::string & nameHint, const std::vector<std::string> & guids) override;
+        ReferentiableDeleteCmdBase * CmdDelete(const std::string & guid) override;
     };
 
-    class ReferentiableNewCmdBase : public Command
+    class ReferentiableCmdBase : public Command
+    {
+    protected:
+        virtual ReferentiableManagerBase * manager() = 0;
+        ReferentiableCmdBase();
+        ~ReferentiableCmdBase();
+    };
+    class ReferentiableNewCmdBase : public ReferentiableCmdBase
     {
     public:
         void getDescription(std::string & desc) override;
@@ -100,7 +114,6 @@ namespace imajuscule
         ReferentiableNewCmdBase();
         ~ReferentiableNewCmdBase();
 
-        virtual ReferentiableManagerBase * manager() = 0;
     private:
         bool doExecute() override;
         void doUndo() override;
@@ -126,14 +139,59 @@ namespace imajuscule
     template <class T>
     class ReferentiableNewCmd : public ReferentiableNewCmdBase
     {
-        friend class ReferentiableManager < T > ;
+        friend class ReferentiableManager < T >;
     protected:
         ReferentiableNewCmd(const std::string & nameHint, const std::vector<std::string> guids);
         ReferentiableNewCmd();
         ~ReferentiableNewCmd();
 
         ReferentiableManagerBase * manager() override;
-    private :
+    private:
+        ReferentiableManagerBase * m_manager;
+    };
+
+    class ReferentiableDeleteCmdBase : public ReferentiableCmdBase
+    {
+    public:
+        void getDescription(std::string & desc) override;
+
+        Referentiable * refAddr() const;
+
+    protected:
+        ReferentiableDeleteCmdBase(const std::string & guid);
+        ~ReferentiableDeleteCmdBase();
+
+    private:
+        bool doExecute() override;
+        void doUndo() override;
+        void doRedo() override;
+
+        struct parameters
+        {
+            std::string m_guid;
+        };
+        bool m_bHasParameters;
+        parameters m_params;
+
+        struct data
+        {
+            std::string m_GUID; // when undone and redone, the GUIDS must match
+            std::string m_sessionName;
+        };
+        data m_after;
+        Referentiable * m_addr;
+    };
+
+    template <class T>
+    class ReferentiableDeleteCmd : public ReferentiableDeleteCmdBase
+    {
+        friend class ReferentiableManager < T >;
+    protected:
+        ReferentiableDeleteCmd(const std::string & guid);
+        ~ReferentiableDeleteCmd();
+
+        ReferentiableManagerBase * manager() override;
+    private:
         ReferentiableManagerBase * m_manager;
     };
 }
