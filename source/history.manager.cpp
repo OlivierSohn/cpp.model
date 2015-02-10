@@ -150,6 +150,7 @@ HistoryManager::HistoryManager() :
 m_stacksCapacity(-1)// unsigned -> maximum capacity
 , m_observable(Observable<Event>::instantiate())
 , m_bAppStateHasNewContent(false)
+, m_bIsUndoingOrRedoing(false)
 {
     m_appState = m_groups.rbegin();
 }
@@ -168,6 +169,8 @@ auto HistoryManager::observable()->Observable<Event> &
 
 void HistoryManager::MakeGroup()
 {
+    assert(NULL == CurrentCommand());
+
     if (m_bAppStateHasNewContent)
     {
         m_bAppStateHasNewContent = false;
@@ -189,9 +192,45 @@ HistoryManager * HistoryManager::getInstance()
     return g_instance;
 }
 
+Command * HistoryManager::CurrentCommand()
+{
+    if (m_curCommandStack.empty())
+        return NULL;
+    else
+        return m_curCommandStack.top();
+}
+
+void HistoryManager::PushCurrentCommand(Command*c)
+{
+    m_curCommandStack.push(c);
+}
+void HistoryManager::PopCurrentCommand(Command*c)
+{
+    assert(!m_curCommandStack.empty());
+    assert(m_curCommandStack.top() == c);
+    m_curCommandStack.pop();
+}
+
+bool HistoryManager::IsUndoingOrRedoing()
+{
+    return m_bIsUndoingOrRedoing;
+}
+
 void HistoryManager::Add(Command* c)
 {
     bool bRedosChanged = false;
+
+    if (m_bIsUndoingOrRedoing)
+    {
+        LG(ERR, "HistoryManager::Add : a command was added to history while undoing or redoing");
+        goto end;
+    }
+
+    if (Command * cmd = CurrentCommand())
+    {
+        cmd->addInnerCommand(c);
+        goto end;
+    }
 
     if (!m_bAppStateHasNewContent)
     {
@@ -221,6 +260,9 @@ void HistoryManager::Add(Command* c)
     {
         observable().Notify(Event::REDOS_CHANGED);
     }
+
+end:
+    return;
 }
 
 void HistoryManager::SizeUndos()
@@ -257,6 +299,8 @@ void HistoryManager::SizeUndos()
 
 void HistoryManager::Undo()
 {
+    m_bIsUndoingOrRedoing = true;
+
     bool bDone = false;
     bool bUndosChanged = false;
     bool bRedosChanged = false;
@@ -294,10 +338,14 @@ void HistoryManager::Undo()
     {
         observable().Notify(Event::REDOS_CHANGED);
     }
+
+    m_bIsUndoingOrRedoing = false;
 }
 
 void HistoryManager::Redo()
 {
+    m_bIsUndoingOrRedoing = true;
+
     bool bDone = false;
     bool bUndosChanged = false;
     bool bRedosChanged = false;
@@ -336,6 +384,8 @@ void HistoryManager::Redo()
     {
         observable().Notify(Event::REDOS_CHANGED);
     }
+
+    m_bIsUndoingOrRedoing = false;
 }
 
 void HistoryManager::traverseUndos(UndoGroups::const_iterator& begin, UndoGroups::const_iterator& end) const

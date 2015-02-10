@@ -6,6 +6,9 @@
 namespace imajuscule
 {
     class HistoryManager;
+    class Command;
+    typedef std::vector<Command*> Commands;
+
     class Command
     {
     public:
@@ -27,9 +30,15 @@ namespace imajuscule
         bool Execute();
         void Undo();
         void Redo();
+        void addInnerCommand(Command*);
 
-        State getState();
-        bool isObsolete();
+        void traverseInnerCommands(Commands::iterator & begin, Commands::iterator & end);
+
+        State getState() const;
+        bool isObsolete() const;
+
+        bool validStateToUndo() const;
+        bool validStateToRedo() const;
 
         virtual void getDescription(std::string & desc) = 0;
     protected:
@@ -45,6 +54,8 @@ namespace imajuscule
         bool m_obsolete;
         Observable<ObsolescenceEvent> * m_obsolescenceObservable;
         std::vector<FunctionInfo<ObsolescenceEvent>> m_reg;
+
+        Commands m_innerCommands;
 
         HistoryManager * getHistoryManager();
     };

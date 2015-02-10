@@ -105,6 +105,7 @@
     <ClCompile Include="source\referentiable.cpp" />
     <ClCompile Include="source\session.cpp" />
     <ClCompile Include="source\updatable.cpp" />
+    <ClCompile Include="source\visitable.cpp" />
     <ClCompile Include="source\win32\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

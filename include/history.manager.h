@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <stack>
 #include "observable.h"
 
 namespace imajuscule
@@ -51,6 +52,11 @@ namespace imajuscule
         void Undo();
         void Redo();
 
+        void PushCurrentCommand(Command*);
+        void PopCurrentCommand(Command*);
+        Command * CurrentCommand();
+        bool IsUndoingOrRedoing();
+
         // traverse in chronological order
         void traverseUndos(UndoGroups::const_iterator& begin, UndoGroups::const_iterator& end) const;
         void traverseRedos(UndoGroups::const_iterator& begin, UndoGroups::const_iterator& end) const;
@@ -63,6 +69,9 @@ namespace imajuscule
         UndoGroups::reverse_iterator m_appState; //everything from rend to m_appState is "Done"
         unsigned int m_stacksCapacity;
         bool m_bAppStateHasNewContent;
+
+        bool m_bIsUndoingOrRedoing;
+        std::stack<Command*> m_curCommandStack;
 
         void NewGroup();
         void SizeUndos();

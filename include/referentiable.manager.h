@@ -18,6 +18,7 @@ namespace imajuscule
     class ReferentiableManagerBase : public Visitable
     {
         friend class Referentiable;
+        friend class ReferentiableCmdBase;
         friend class ReferentiableNewCmdBase;
         friend class ReferentiableDeleteCmdBase;
     public:
@@ -97,18 +98,43 @@ namespace imajuscule
 
     class ReferentiableCmdBase : public Command
     {
-    protected:
+    public:
+        Referentiable * refAddr() const;
         virtual ReferentiableManagerBase * manager() = 0;
+        std::string guid() const;
+        std::string hintName() const;
+
+        virtual bool IsReadyToInstantiate() const = 0;
+        virtual bool IsReadyToDeinstantiate() const = 0;
+
+        virtual Referentiable * Instantiate() = 0;
+        virtual void Deinstantiate() = 0;
+    protected:
+        struct data
+        {
+            std::string m_GUID; // when undone and redone, the GUIDS must match
+            std::string m_hintName;
+        };
+        Referentiable * m_addr;
+        data m_after;
+    
         ReferentiableCmdBase();
         ~ReferentiableCmdBase();
+
+        void doInstantiate();
+        void doDeinstantiate();
     };
     class ReferentiableNewCmdBase : public ReferentiableCmdBase
     {
     public:
         void getDescription(std::string & desc) override;
 
-        Referentiable * refAddr() const;
+        bool IsReadyToInstantiate() const;
+        bool IsReadyToDeinstantiate() const;
 
+        Referentiable * Instantiate() override;
+        void Deinstantiate() override;
+    
     protected:
         ReferentiableNewCmdBase(const std::string & nameHint, const std::vector<std::string> guids);
         ReferentiableNewCmdBase();
@@ -126,14 +152,6 @@ namespace imajuscule
         };
         bool m_bHasParameters;
         parameters m_params;
-
-        struct data
-        {
-            std::string m_GUID; // when undone and redone, the GUIDS must match
-            std::string m_sessionName;
-            Referentiable * m_addr;
-        };
-        data m_after;
     };
 
     template <class T>
@@ -155,8 +173,11 @@ namespace imajuscule
     public:
         void getDescription(std::string & desc) override;
 
-        Referentiable * refAddr() const;
+        bool IsReadyToInstantiate() const;
+        bool IsReadyToDeinstantiate() const;
 
+        Referentiable * Instantiate() override;
+        void Deinstantiate() override;
     protected:
         ReferentiableDeleteCmdBase(const std::string & guid);
         ~ReferentiableDeleteCmdBase();
@@ -172,14 +193,6 @@ namespace imajuscule
         };
         bool m_bHasParameters;
         parameters m_params;
-
-        struct data
-        {
-            std::string m_GUID; // when undone and redone, the GUIDS must match
-            std::string m_sessionName;
-        };
-        data m_after;
-        Referentiable * m_addr;
     };
 
     template <class T>
@@ -195,3 +208,5 @@ namespace imajuscule
         ReferentiableManagerBase * m_manager;
     };
 }
+
+#include "referentiable.h"

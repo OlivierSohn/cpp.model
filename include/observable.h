@@ -225,7 +225,11 @@ namespace imajuscule
 
                 OBS_LG(INFO, "Observable(%x)::Remove(%d) : size after %d", this, functionInfo.m_event, it1->second->second.size());
 
-                assert(bFound);
+                if (!bFound)
+                {
+                    LG(ERR, "Observable::Remove : attempt to remove a registration that is not here");
+                    assert(0);
+                }
             }
             else
             {

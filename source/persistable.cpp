@@ -4,7 +4,6 @@ using namespace imajuscule;
 
 Persistable::~Persistable()
 {
-    m_observable->Notify(PersistableEvent::OBJECT_DELETE, this);
     // perform delayed deletion of observable because we might be inside a Notify call
     m_observable->deinstantiate();
 }

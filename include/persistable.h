@@ -8,8 +8,7 @@ namespace imajuscule
 {
     enum PersistableEvent
     {
-        OBJECT_DEFINITION_CHANGED = 0,
-        OBJECT_DELETE
+        OBJECT_DEFINITION_CHANGED = 0
     };
 
     class Persistable : public Updatable

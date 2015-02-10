@@ -12,10 +12,14 @@
 namespace imajuscule
 {
     class ReferentiableManagerBase;
+    class ReferentiableCmdBase;
+    class Command;
     class Referentiable : public Persistable
     {
         friend class ReferentiableManagerBase;
     public:
+        static Referentiable * instantiate(ReferentiableManagerBase * rm);
+        static Referentiable * instantiate(ReferentiableManagerBase * rm, const std::string & hintName);
         void deinstantiate();
 
         const std::string & guid();
@@ -67,5 +71,8 @@ namespace imajuscule
 
         bool m_bHasSessionName;
         virtual void setSessionName(const std::string & sn);
+        static ReferentiableCmdBase* findSpecificInnerCmd(Command *, ReferentiableManagerBase * rm, const std::string & hintName, bool bToInstantiate);
     };
 }
+
+#include "referentiable.manager.h"

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "visitor.h"
+#include "observable.h"
 
 #define PERSISTABLE_VISITOR_PURE_VIRTUAL virtual void accept(Visitor &) = 0;
 
@@ -15,10 +16,19 @@ namespace imajuscule
     class Visitable
     {
     public:
-        virtual ~Visitable(){}
+        enum Event
+        {
+            VISITABLE_DELETE
+        };
+        virtual ~Visitable();
+
+        Observable<Event, Visitable&> &  observableVisitable();
 
         PERSISTABLE_VISITOR_PURE_VIRTUAL
     protected:
-        Visitable() {}
+        Visitable();
+
+    private:
+        Observable<Event, Visitable&> * m_observableVisitable;
     };
 }
