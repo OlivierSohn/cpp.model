@@ -89,9 +89,21 @@ namespace imajuscule
         }
 
         template <typename Observer>
+        void Register(std::vector<Event>&& evts, Observer&& observer)
+        {
+            Register(evts, observer);
+        }
+        template <typename Observer>
+        void Register(const std::vector<Event> & evts, Observer&& observer)
+        {
+            for (auto&r : evts)
+                Register(r, observer);
+        }
+
+        template <typename Observer>
         const FunctionInfo<Event> Register(const Event &evt, Observer&& observer)
         {
-            //OBS_LG(INFO, "Observable::Register(%d) #%d", evt, m_curNotifStamp);
+                //OBS_LG(INFO, "Observable::Register(%d) #%d", evt, m_curNotifStamp);
 
             eventNotification * v;
 

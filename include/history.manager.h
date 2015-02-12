@@ -44,6 +44,8 @@ namespace imajuscule
         virtual ~HistoryManager();
         static HistoryManager * getInstance();
 
+        void Activate(bool);
+        bool isActive() const;
         void EmptyStacks();
 
         void Add(Command*);
@@ -72,6 +74,7 @@ namespace imajuscule
 
         bool m_bIsUndoingOrRedoing;
         std::stack<Command*> m_curCommandStack;
+        bool m_bActivated;
 
         void NewGroup();
         void SizeUndos();

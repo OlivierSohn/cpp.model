@@ -22,10 +22,10 @@ namespace imajuscule
         static Referentiable * instantiate(ReferentiableManagerBase * rm, const std::string & hintName);
         void deinstantiate();
 
-        const std::string & guid();
-        const std::string & sessionName();
-        const std::string & hintName();
-        const std::string & creationDate();
+        const std::string & guid() const;
+        const std::string & sessionName() const;
+        const std::string & hintName() const;
+        const std::string & creationDate() const;
 
         ReferentiableManagerBase * getManager();
 

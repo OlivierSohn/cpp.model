@@ -213,16 +213,16 @@ void Referentiable::deinstantiate()
     }
 }
 
-const std::string & Referentiable::guid()
+const std::string & Referentiable::guid() const
 {
     return m_guid;
 }
-const std::string & Referentiable::hintName()
+const std::string & Referentiable::hintName() const
 {
     return m_hintName;
 }
 
-const std::string & Referentiable::sessionName()
+const std::string & Referentiable::sessionName() const
 {
     if (!m_bHasSessionName)
     {   
@@ -238,7 +238,7 @@ void Referentiable::setSessionName(const std::string & sn)
     m_sessionName = sn;
     m_bHasSessionName = true;
 }
-const std::string & Referentiable::creationDate()
+const std::string & Referentiable::creationDate() const
 {
     return m_dateOfCreation;
 }

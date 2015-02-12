@@ -151,6 +151,7 @@ m_stacksCapacity(-1)// unsigned -> maximum capacity
 , m_observable(Observable<Event>::instantiate())
 , m_bAppStateHasNewContent(false)
 , m_bIsUndoingOrRedoing(false)
+, m_bActivated(true)
 {
     m_appState = m_groups.rbegin();
 }
@@ -167,6 +168,14 @@ auto HistoryManager::observable()->Observable<Event> &
     return *m_observable;
 }
 
+void HistoryManager::Activate(bool bVal)
+{
+    m_bActivated = bVal;
+}
+bool HistoryManager::isActive() const
+{
+    return m_bActivated;
+}
 void HistoryManager::MakeGroup()
 {
     assert(NULL == CurrentCommand());
@@ -225,6 +234,9 @@ void HistoryManager::Add(Command* c)
         LG(ERR, "HistoryManager::Add : a command was added to history while undoing or redoing");
         goto end;
     }
+
+    if (!isActive())
+        goto end;
 
     if (Command * cmd = CurrentCommand())
     {
