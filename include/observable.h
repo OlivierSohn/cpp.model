@@ -89,15 +89,19 @@ namespace imajuscule
         }
 
         template <typename Observer>
-        void Register(std::vector<Event>&& evts, Observer&& observer)
+        std::vector<FunctionInfo<Event>> Register(std::vector<Event>&& evts, Observer&& observer)
         {
-            Register(evts, observer);
+            return Register(evts, observer);
         }
         template <typename Observer>
-        void Register(const std::vector<Event> & evts, Observer&& observer)
+        std::vector<FunctionInfo<Event>> Register(const std::vector<Event> & evts, Observer&& observer)
         {
+            std::vector<FunctionInfo<Event>> rv;
+
             for (auto&r : evts)
-                Register(r, observer);
+                rv.push_back(Register(r, observer));
+
+            return rv;
         }
 
         template <typename Observer>
