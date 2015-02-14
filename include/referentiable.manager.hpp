@@ -8,6 +8,7 @@
 
 #include "referentiable.h"
 #include "referentiable.manager.h"
+#include "history.manager.h"
 #include "os.log.h"
 #include <cassert>
 #include <algorithm>
@@ -224,7 +225,7 @@ bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r)
 
 void ReferentiableManagerBase::generateGuid(std::string & sGuid)
 {
-    LG(INFO, "ReferentiableManagerBase::generateGuid : begin");
+    //LG(INFO, "ReferentiableManagerBase::generateGuid : begin");
 
     sGuid.clear();
 #ifdef _WIN32
@@ -268,7 +269,7 @@ void ReferentiableManagerBase::generateGuid(std::string & sGuid)
     sGuid.assign(uuid);
 #endif
 
-    LG(INFO, "ReferentiableManagerBase::generateGuid returns %s", sGuid.c_str());
+    //LG(INFO, "ReferentiableManagerBase::generateGuid returns %s", sGuid.c_str());
 }
 
 
@@ -396,9 +397,9 @@ ReferentiableManager<T>::~ReferentiableManager()
 template <class T>
 Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids)
 {
-    LG(INFO, "ReferentiableManager<T>::newReferentiable(%s, %d guids) begin",
+    /*LG(INFO, "ReferentiableManager<T>::newReferentiable(%s, %d guids) begin",
         (nameHint.c_str() ? nameHint.c_str() : "NULL"),
-        guids.size());
+        guids.size());*/
 
     T * ref = NULL;
 
@@ -426,7 +427,7 @@ Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::stri
 
 end:
 
-    LG((ref ? INFO : ERR), "ReferentiableManager<T>::newReferentiable(...) returns 0x%x", ref);
+    //LG((ref ? INFO : ERR), "ReferentiableManager<T>::newReferentiable(...) returns 0x%x", ref);
     return ref;
 }
 

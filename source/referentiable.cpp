@@ -91,7 +91,7 @@ const std::string & Referentiable::sessionName() const
 
 void Referentiable::setSessionName(const std::string & sn)
 {
-    LG(INFO, "Referentiable::setSessionName(%s)", sn.empty()?"NULL" : sn.c_str());
+    //LG(INFO, "Referentiable::setSessionName(%s)", sn.empty()?"NULL" : sn.c_str());
     m_sessionName = sn;
     m_bHasSessionName = true;
 }
