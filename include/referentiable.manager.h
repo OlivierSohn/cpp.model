@@ -31,8 +31,8 @@ namespace imajuscule
         ReferentiableManagerBase();
         virtual ~ReferentiableManagerBase();
 
-        virtual const char * defaultNameHint();
         Referentiable* newReferentiable();
+        Referentiable* newReferentiable(const std::string & nameHint);
         Referentiable* newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids);
 
         // guid is unique
@@ -49,6 +49,7 @@ namespace imajuscule
         PERSISTABLE_VISITOR_HEADER_IMPL
 
     protected:
+        virtual const char * defaultNameHint();
         // pure virtual because the session names are unique "per object type"
         bool ComputeSessionName(Referentiable*);
 
@@ -66,10 +67,11 @@ namespace imajuscule
 
         Observable<Event, Referentiable*> * m_observable;
 
-        virtual Referentiable* newReferentiableInternal() = 0;
+        Referentiable* newReferentiableFromInnerCommand(const std::string & nameHint, const std::vector<std::string> & guids);
+        ReferentiableCmdBase* findSpecificInnerCmd(Command *, const std::string & hintName, bool bToInstantiate);
+
         virtual Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids) = 0;
         void RemoveRefInternal(Referentiable*);
-        virtual ReferentiableNewCmdBase * CmdNew() = 0;
         virtual ReferentiableNewCmdBase * CmdNew(const std::string & nameHint, const std::vector<std::string> & guids) = 0;
         virtual ReferentiableDeleteCmdBase * CmdDelete(const std::string & guid) = 0;
     };
@@ -89,9 +91,7 @@ namespace imajuscule
         ReferentiableManager();
         virtual ~ReferentiableManager();
 
-        Referentiable* newReferentiableInternal() override;
         Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids) override;
-        virtual ReferentiableNewCmdBase * CmdNew() override;
         ReferentiableNewCmdBase * CmdNew(const std::string & nameHint, const std::vector<std::string> & guids) override;
         ReferentiableDeleteCmdBase * CmdDelete(const std::string & guid) override;
     };
@@ -150,7 +150,6 @@ namespace imajuscule
             std::string m_nameHint;
             std::vector<std::string> m_guids;
         };
-        bool m_bHasParameters;
         parameters m_params;
     };
 
@@ -160,7 +159,6 @@ namespace imajuscule
         friend class ReferentiableManager < T >;
     protected:
         ReferentiableNewCmd(const std::string & nameHint, const std::vector<std::string> guids);
-        ReferentiableNewCmd();
         ~ReferentiableNewCmd();
 
         ReferentiableManagerBase * manager() override;

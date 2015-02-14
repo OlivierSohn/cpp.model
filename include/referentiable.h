@@ -71,7 +71,6 @@ namespace imajuscule
 
         bool m_bHasSessionName;
         virtual void setSessionName(const std::string & sn);
-        static ReferentiableCmdBase* findSpecificInnerCmd(Command *, ReferentiableManagerBase * rm, const std::string & hintName, bool bToInstantiate);
     };
 }
 

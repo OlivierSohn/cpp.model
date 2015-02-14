@@ -114,7 +114,7 @@ void Command::Undo()
 
             default:
                 // doUndo of this command has NOT triggered UNDO of inner command, so do it
-                c->doUndo();
+                c->Undo();
                 break;
             }
         }
@@ -152,7 +152,7 @@ void Command::Redo()
 
             default:
                 // doRedo of this command has NOT triggered REDO of inner command, so do it
-                c->doRedo();
+                c->Redo();
                 break;
             }
         }
