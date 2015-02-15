@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "persistable.h"
-
+#include "observable.h"
 #include "os.storage.keys.h"
 
 namespace imajuscule
@@ -21,6 +21,11 @@ namespace imajuscule
         static Referentiable * instantiate(ReferentiableManagerBase * rm);
         static Referentiable * instantiate(ReferentiableManagerBase * rm, const std::string & hintName);
         void deinstantiate();
+        enum Event
+        {
+            WILL_BE_DELETED
+        };
+        Observable<Event, Referentiable*> & observableReferentiable();
 
         const std::string & guid() const;
         const std::string & sessionName() const;
@@ -71,6 +76,7 @@ namespace imajuscule
         std::string m_hintName; // persisted
         std::string m_sessionName; // not persisted
         std::string m_dateOfCreation; // persisted
+        Observable<Event, Referentiable*> * m_observableReferentiable;
 
         bool m_bHidden;
         bool m_bHasSessionName;

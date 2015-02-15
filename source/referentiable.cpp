@@ -15,6 +15,7 @@ Persistable()
 , m_guid(std::string(""))
 , m_bHasSessionName(false)
 , m_bHidden(false)
+, m_observableReferentiable(Observable<Event, Referentiable*>::instantiate())
 {
 }
 
@@ -24,6 +25,7 @@ Persistable()
 , m_guid(guid)
 , m_bHasSessionName(false)
 , m_bHidden(false)
+, m_observableReferentiable(Observable<Event, Referentiable*>::instantiate())
 {
     assert(m_manager);
 }
@@ -35,6 +37,7 @@ Persistable()
 , m_hintName(hintName)
 , m_bHasSessionName(false)
 , m_bHidden(false)
+, m_observableReferentiable(Observable<Event, Referentiable*>::instantiate())
 {
     assert(m_manager);
 
@@ -54,7 +57,9 @@ Persistable()
 }
 
 Referentiable::~Referentiable()
-{}
+{
+    m_observableReferentiable->deinstantiate();
+}
 
 ReferentiableManagerBase * Referentiable::getManager()
 {
@@ -71,6 +76,11 @@ Referentiable* Referentiable::instantiate(ReferentiableManagerBase * rm, const s
 void Referentiable::deinstantiate()
 {
     getManager()->RemoveRef(this);
+}
+
+auto Referentiable::observableReferentiable() -> Observable<Event, Referentiable*> &
+{
+    return *m_observableReferentiable;
 }
 
 void Referentiable::Hide()
