@@ -208,3 +208,17 @@ const char * Command::StateToString(State s)
         return "UNKNOWN";
     }
 }
+
+void Command::getExtendedDescription(std::string & desc)
+{
+    unsigned int nInner = m_innerCommands.size();
+    if (nInner > 0)
+    {
+        desc.append("(+");
+        desc.append(std::to_string(nInner));
+        desc.append(")");
+    }
+    std::string descCmd;
+    getDescription(descCmd);
+    desc.append(descCmd);
+}

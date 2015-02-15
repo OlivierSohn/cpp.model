@@ -40,6 +40,7 @@ namespace imajuscule
         bool validStateToUndo() const;
         bool validStateToRedo() const;
 
+        void getExtendedDescription(std::string & desc);
         virtual void getDescription(std::string & desc) = 0;
     protected:
         Command(Observable<ObsolescenceEvent> * o = NULL);
