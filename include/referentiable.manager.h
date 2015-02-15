@@ -71,7 +71,7 @@ namespace imajuscule
         Referentiable* newReferentiableFromInnerCommand(const std::string & nameHint, const std::vector<std::string> & guids);
         ReferentiableCmdBase* findSpecificInnerCmd(Command *, const std::string & hintName, bool bToInstantiate);
 
-        virtual Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids) = 0;
+        virtual Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible = true) = 0;
         void RemoveRefInternal(Referentiable*);
         virtual ReferentiableNewCmdBase * CmdNew(const std::string & nameHint, const std::vector<std::string> & guids) = 0;
         virtual ReferentiableDeleteCmdBase * CmdDelete(const std::string & guid) = 0;
@@ -92,7 +92,7 @@ namespace imajuscule
         ReferentiableManager();
         virtual ~ReferentiableManager();
 
-        Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids) override;
+        Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible) override;
         ReferentiableNewCmdBase * CmdNew(const std::string & nameHint, const std::vector<std::string> & guids) override;
         ReferentiableDeleteCmdBase * CmdDelete(const std::string & guid) override;
     };

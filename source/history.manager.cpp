@@ -231,12 +231,16 @@ void HistoryManager::Add(Command* c)
 
     if (m_bIsUndoingOrRedoing)
     {
-        LG(ERR, "HistoryManager::Add : a command was added to history while undoing or redoing");
+        LG(ERR, "HistoryManager::Add : Memory leak : a command was added to history while undoing or redoing");
         goto end;
     }
 
     if (!isActive())
+    {
+        // memory leak
+        LG(ERR, "HistoryManager::Add : Memory leak : a command was added to history while inactive");
         goto end;
+    }
 
     if (Command * cmd = CurrentCommand())
     {

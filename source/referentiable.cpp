@@ -14,6 +14,7 @@ Persistable()
 , m_manager(NULL)
 , m_guid(std::string(""))
 , m_bHasSessionName(false)
+, m_bHidden(false)
 {
 }
 
@@ -22,6 +23,7 @@ Persistable()
 , m_manager(manager)
 , m_guid(guid)
 , m_bHasSessionName(false)
+, m_bHidden(false)
 {
     assert(m_manager);
 }
@@ -32,6 +34,7 @@ Persistable()
 , m_guid(guid)
 , m_hintName(hintName)
 , m_bHasSessionName(false)
+, m_bHidden(false)
 {
     assert(m_manager);
 
@@ -68,6 +71,15 @@ Referentiable* Referentiable::instantiate(ReferentiableManagerBase * rm, const s
 void Referentiable::deinstantiate()
 {
     getManager()->RemoveRef(this);
+}
+
+void Referentiable::Hide()
+{
+    m_bHidden = true;
+}
+bool Referentiable::isHidden()
+{
+    return m_bHidden;
 }
 
 const std::string & Referentiable::guid() const

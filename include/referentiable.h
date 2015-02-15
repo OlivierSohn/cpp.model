@@ -29,6 +29,9 @@ namespace imajuscule
 
         ReferentiableManagerBase * getManager();
 
+        void Hide();
+        bool isHidden();
+
     protected:
         virtual ~Referentiable();
 
@@ -69,6 +72,7 @@ namespace imajuscule
         std::string m_sessionName; // not persisted
         std::string m_dateOfCreation; // persisted
 
+        bool m_bHidden;
         bool m_bHasSessionName;
         virtual void setSessionName(const std::string & sn);
     };

@@ -275,30 +275,37 @@ void ReferentiableManagerBase::generateGuid(std::string & sGuid)
 
 void ReferentiableManagerBase::RemoveRef(Referentiable*r)
 {
-    bool bDone = false;
-
     HistoryManager * h = HistoryManager::getInstance();
 
-    if (Command * c = h->CurrentCommand())
+    if (h->isActive())
     {
-        if (h->IsUndoingOrRedoing())
+        bool bDone = false;
+
+        if (Command * c = h->CurrentCommand())
         {
-            if (ReferentiableCmdBase * rc = findSpecificInnerCmd(c, r->hintName(), false))
+            if (h->IsUndoingOrRedoing())
             {
-                rc->Deinstantiate();
-                bDone = true;
-            }
-            else
-            {
-                LG(ERR, "ReferentiableManagerBase::RemoveRef : corresponding inner command not found");
-                assert(0);
+                if (ReferentiableCmdBase * rc = findSpecificInnerCmd(c, r->hintName(), false))
+                {
+                    rc->Deinstantiate();
+                    bDone = true;
+                }
+                else
+                {
+                    LG(ERR, "ReferentiableManagerBase::RemoveRef : corresponding inner command not found");
+                    assert(0);
+                }
             }
         }
-    }
 
-    if (!bDone)
+        if (!bDone)
+        {
+            CmdDelete(r->guid())->Execute();
+        }
+    }
+    else
     {
-        CmdDelete(r->guid())->Execute();
+        RemoveRefInternal(r);
     }
 }
 
@@ -313,14 +320,23 @@ Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & na
 }
 Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids)
 {
-    Referentiable * r = newReferentiableFromInnerCommand(nameHint, guids);
+    Referentiable * r = NULL;
 
-    if (!r)
+    if (HistoryManager::getInstance()->isActive())
     {
-        ReferentiableNewCmdBase * c = CmdNew(nameHint, guids);
+        r = newReferentiableFromInnerCommand(nameHint, guids);
 
-        if (c->Execute())
-            r = c->refAddr();
+        if (!r)
+        {
+            ReferentiableNewCmdBase * c = CmdNew(nameHint, guids);
+
+            if (c->Execute())
+                r = c->refAddr();
+        }
+    }
+    else
+    {
+        r = newReferentiableInternal(nameHint, guids, false);
     }
 
     return r;
@@ -336,13 +352,11 @@ Referentiable* ReferentiableManagerBase::newReferentiableFromInnerCommand(const 
     {
         if (h->IsUndoingOrRedoing())
         {
-            // retrieve an inner commmand that corresponds to this particular instantiation
-            // using {this,hintName} as key. 
-            // In some cases a key can correspond to multiple inner commands... so we might end up with a different state
-            // from the original after a undo / redo (e.g. 2 formulas of two param<float> with same hint name could be exchanged
-            // if they have the same Referentiable as direct father).
-            // -> issue a user warning when this case is detected?
-            // TODO is there another better mechanism?
+            // retrieve an inner commmand that corresponds to this particular instantiation, using {this,hintName} as key. 
+            // In some cases a key can correspond to multiple inner commands so we might end up with a different state
+            // after a undo + redo cycle, e.g. 2 formulas of two param<float> with same hint name could be exchanged
+            // if they have the same Referentiable as direct father.
+            // TODO? issue a user warning when this case is detected? is there another better mechanism?
 
             if (ReferentiableCmdBase * rc = findSpecificInnerCmd(c, nameHint, true))
             {
@@ -388,14 +402,13 @@ ReferentiableManagerBase()
 {
 }
 
-
 template <class T>
 ReferentiableManager<T>::~ReferentiableManager()
 {
 }
 
 template <class T>
-Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids)
+Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible)
 {
     /*LG(INFO, "ReferentiableManager<T>::newReferentiable(%s, %d guids) begin",
         (nameHint.c_str() ? nameHint.c_str() : "NULL"),
@@ -417,6 +430,8 @@ Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::stri
     }
 
     ref = new T(this, guid, nameHint);
+    if (!bVisible)
+        ref->Hide();
     if (!ComputeSessionName(ref))
     {
         LG(ERR, "ReferentiableManager<T>::newReferentiable : ComputeSessionName failed (uuid: %s)", guid.c_str());

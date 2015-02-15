@@ -27,7 +27,7 @@ namespace imajuscule
 
         virtual ~Command();
 
-        bool Execute();
+        bool Execute(); // return false if Command has no effect
         void Undo();
         void Redo();
         void addInnerCommand(Command*);

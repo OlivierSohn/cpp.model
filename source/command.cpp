@@ -61,7 +61,7 @@ bool Command::Execute()
 
     assert(m_innerCommands.empty());
 
-    bool bAddToHistory = doExecute();
+    bool bRelevant = doExecute();
 
     m_state = EXECUTED;
 
@@ -69,12 +69,12 @@ bool Command::Execute()
     h->PopCurrentCommand(this);
 
     // don't log in history the commands that had no effect (example : backspace when edit location is at begin of input)
-    if (bAddToHistory)
-        HistoryManager::getInstance()->Add(this);
+    if (bRelevant)
+        h->Add(this);
     else
         delete this;
 
-    return bAddToHistory;
+    return bRelevant;
 }
 
 void Command::traverseInnerCommands(Commands::iterator & begin, Commands::iterator & end)
