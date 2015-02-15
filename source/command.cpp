@@ -21,6 +21,20 @@ Command::~Command()
     for (auto c : m_innerCommands) delete c;
 }
 
+bool Command::isInnerCommand(Command * command)
+{
+    bool bRet = false;
+
+    for (auto c : m_innerCommands)
+    {
+        if (c == command)
+        {
+            bRet = true;
+            break;
+        }
+    }
+    return bRet;
+}
 void Command::onObsolete()
 {
     // on purpose, obsolescence doesn't propagate to inner commands

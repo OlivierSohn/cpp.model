@@ -43,6 +43,8 @@ namespace imajuscule
         virtual void getDescription(std::string & desc) = 0;
     protected:
         Command(Observable<ObsolescenceEvent> * o = NULL);
+        bool isInnerCommand(Command * c);
+
     private:
         virtual bool doExecute() = 0;
         virtual void doUndo() = 0;
