@@ -1,8 +1,7 @@
 #include "command.h"
 #include "history.manager.h"
-#include "os.log.h"
 #include <iostream>
-#include <cassert>
+#include "os.log.h"
 #include <algorithm>
 
 using namespace imajuscule;
@@ -85,13 +84,13 @@ bool UndoGroup::Undo()
             else
             {
                 LG(ERR, "UndoGroup::Undo : Command in state %s", Command::StateToString(s));
-                assert(0);
+                A(0);
             }
         }
         else
         {
             LG(ERR, "UndoGroup::Undo : NULL Command");
-            assert(0);
+            A(0);
         }
 
         ++it;
@@ -128,13 +127,13 @@ bool UndoGroup::Redo()
             else
             {
                 LG(ERR, "UndoGroup::Redo : Command in state %s", Command::StateToString(s));
-                assert(0);
+                A(0);
             }
         }
         else
         {
             LG(ERR, "UndoGroup::Redo : NULL Command");
-            assert(0);
+            A(0);
         }
     
         ++it;
@@ -178,7 +177,7 @@ bool HistoryManager::isActive() const
 }
 void HistoryManager::MakeGroup()
 {
-    assert(NULL == CurrentCommand());
+    A(NULL == CurrentCommand());
 
     if (m_bAppStateHasNewContent)
     {
@@ -215,8 +214,8 @@ void HistoryManager::PushCurrentCommand(Command*c)
 }
 void HistoryManager::PopCurrentCommand(Command*c)
 {
-    assert(!m_curCommandStack.empty());
-    assert(m_curCommandStack.top() == c);
+    A(!m_curCommandStack.empty());
+    A(m_curCommandStack.top() == c);
     m_curCommandStack.pop();
 }
 
@@ -266,7 +265,7 @@ void HistoryManager::Add(Command* c)
     }
 
     m_appState->Add(c);
-    assert(!m_appState->isObsolete());
+    A(!m_appState->isObsolete());
     SizeUndos();
     // TODO HistoryManager::Add : after SizeUndos, find an algo to recompute m_appState that could have been invalidated
 

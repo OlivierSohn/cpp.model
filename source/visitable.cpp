@@ -1,5 +1,4 @@
 #include "visitable.h"
-#include <cassert>
 #include "os.log.h"
 
 using namespace imajuscule;

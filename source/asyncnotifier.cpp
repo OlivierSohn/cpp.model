@@ -1,5 +1,5 @@
 #include "asyncnotifier.h"
-#include <cassert>
+#include "os.log.h"
 
 using namespace imajuscule;
 
@@ -29,8 +29,8 @@ void AsyncNotifier::runScheduledNotifications()
         (*it)->doNotify();
     }
 
-    // assert that end iterator didn't change (even if size of list has changed)
-    assert(end == g_scheduled.end());
+    // make sure that end iterator didn't change (even if size of list has changed)
+    A(end == g_scheduled.end());
 
     g_scheduled.clear();
 }

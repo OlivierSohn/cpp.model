@@ -2,6 +2,7 @@
 
 #include <string>
 #include "observable.h"
+#include "os.log.h"
 
 namespace imajuscule
 {
@@ -63,3 +64,7 @@ namespace imajuscule
         HistoryManager * getHistoryManager();
     };
 }
+
+#include "history.manager.h"
+
+#define inCmd (HistoryManager::getInstance()->CurrentCommand())

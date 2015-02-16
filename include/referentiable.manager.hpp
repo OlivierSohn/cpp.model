@@ -10,7 +10,6 @@
 #include "referentiable.manager.h"
 #include "history.manager.h"
 #include "os.log.h"
-#include <cassert>
 #include <algorithm>
 #include "os.log.format.h"
 
@@ -58,7 +57,7 @@ bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const 
             else
             {
                 LG(ERR, "ReferentiableManagerBase::Register : guid already present");
-                assert(0);
+                A(0);
             }
         }
 
@@ -72,7 +71,7 @@ bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const 
             else
             {
                 LG(ERR, "ReferentiableManagerBase::Register : an element was not found in guid map but found in session names map!");
-                assert(0);
+                A(0);
             }
 
             r->Init();
@@ -83,7 +82,7 @@ bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const 
     else
     {
         LG(ERR, "ReferentiableManagerBase::Register : NULL param");
-        assert(0);
+        A(0);
     }
 
     return bRet;
@@ -108,17 +107,17 @@ void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
         delete r;
 
         size_t count = m_guidsToRftbls.erase(guid);
-        assert(count == 1);
+        A(count == 1);
         
         count = m_snsToRftbls.erase(sessionName);
-        assert(count == 1);
+        A(count == 1);
 
         observable().Notify(Event::RFTBL_REMOVE, r); // must be placed after actual delete (use case : delete of joint makes the parent NULL so the joint ui manager draws a joint at root which must be removed)
     }
     else
     {
         LG(ERR, "ReferentiableManagerBase::Remove : NULL param");
-        assert(0);
+        A(0);
     }
 }
 
@@ -144,7 +143,7 @@ void FormatDateForComparison(std::string & date)
 
                     newDate.append(date.substr(10));
 
-                    assert(newDate.size() == date.size());
+                    A(newDate.size() == date.size());
 
                     date.swap(newDate);
                 }
@@ -157,7 +156,7 @@ struct pred
 {
     bool operator()(Referentiable * const & a, Referentiable * const & b) const
     {
-        assert(a && b);
+        A(a && b);
         std::string date1 = a->creationDate();
         std::string date2 = b->creationDate();
         FormatDateForComparison(date1);
@@ -218,7 +217,7 @@ bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r)
     else
     {
         LG(ERR, "ReferentiableManagerBase::ComputeSessionName: r is NULL");
-        assert(0);
+        A(0);
     }
 
     return bRet;
@@ -294,7 +293,7 @@ void ReferentiableManagerBase::RemoveRef(Referentiable*r)
                 else
                 {
                     LG(ERR, "ReferentiableManagerBase::RemoveRef : corresponding inner command not found");
-                    assert(0);
+                    A(0);
                 }
             }
         }
@@ -366,7 +365,7 @@ Referentiable* ReferentiableManagerBase::newReferentiableFromInnerCommand(const 
             else
             {
                 LG(ERR, "ReferentiableManagerBase::newReferentiable : corresponding inner command not found");
-                assert(0);
+                A(0);
             }
         }
     }
@@ -494,8 +493,8 @@ void ReferentiableCmdBase::doInstantiate()
 
     m_addr = r;
 
-    assert(m_after.m_GUID == r->guid());
-    assert(m_after.m_hintName == r->hintName());
+    A(m_after.m_GUID == r->guid());
+    A(m_after.m_hintName == r->hintName());
 }
 
 void ReferentiableCmdBase::doDeinstantiate()
@@ -509,7 +508,7 @@ void ReferentiableCmdBase::doDeinstantiate()
     else
     {
         LG(ERR, "ReferentiableCmdBase::doDeinstantiate : ref not found");
-        assert(0);
+        A(0);
     }
 
     m_addr = NULL;
@@ -581,7 +580,7 @@ bool ReferentiableNewCmdBase::doExecute()
     m_after.m_GUID = r->guid();
     m_after.m_hintName = r->hintName();
     
-    assert(m_params.m_nameHint == m_after.m_hintName);
+    A(m_params.m_nameHint == m_after.m_hintName);
     m_addr = r;
 
     return true;
@@ -645,7 +644,7 @@ bool ReferentiableDeleteCmdBase::doExecute()
 {
     Referentiable * r = NULL;
 
-    assert(m_bHasParameters);
+    A(m_bHasParameters);
 
     r = manager()->findByGuid(m_params.m_guid);
 
@@ -670,7 +669,7 @@ void ReferentiableDeleteCmdBase::doRedo()
 
 ReferentiableCmdBase* ReferentiableManagerBase::findSpecificInnerCmd(Command * c, const std::string & hintName, bool bToInstantiate)
 {
-    assert(c);
+    A(c);
     ReferentiableCmdBase* pRet = NULL;
 
     unsigned int countResults = 0;
@@ -702,7 +701,7 @@ ReferentiableCmdBase* ReferentiableManagerBase::findSpecificInnerCmd(Command * c
                         if (countResults > 1)
                         {
                             LG(ERR, "ReferentiableManagerBase(0x%x)::findSpecificInnerCmd(0x%x, %s, %s) : multiple (%d) results", this, c, hintName.c_str(), bToInstantiate ? "true" : "false", countResults);
-                            assert(0);
+                            A(0);
                         }
                     }
                 }

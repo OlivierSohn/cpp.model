@@ -1,6 +1,5 @@
 #include "command.h"
 #include "history.manager.h"
-#include <cassert>
 #include "os.log.h"
 
 using namespace imajuscule;
@@ -42,12 +41,12 @@ void Command::onObsolete()
     if (m_obsolete)
     {
         LG(ERR, "Command::onObsolete() design error : called at least twice");
-        assert(0);
+        A(0);
     }
     else
     {
         m_obsolete = true;
-        assert(m_obsolescenceObservable);
+        A(m_obsolescenceObservable);
         if (m_obsolescenceObservable)
         {
             m_obsolescenceObservable->Remove(m_reg);
@@ -71,9 +70,9 @@ bool Command::Execute()
     HistoryManager* h = HistoryManager::getInstance();
     h->PushCurrentCommand(this);
 
-    assert(m_state == NOT_EXECUTED);
+    A(m_state == NOT_EXECUTED);
 
-    assert(m_innerCommands.empty());
+    A(m_innerCommands.empty());
 
     bool bRelevant = doExecute();
 
@@ -139,7 +138,7 @@ void Command::Undo()
     else
     {
         LG(ERR, "Command::Undo : state is %d", m_state);
-        assert(0);
+        A(0);
     }
 }
 
@@ -177,7 +176,7 @@ void Command::Redo()
     else
     {
         LG(ERR, "Command::Redo : state is %d", m_state);
-        assert(0);
+        A(0);
     }
 }
 
@@ -188,7 +187,7 @@ void Command::addInnerCommand(Command*c)
     else
     {
         LG(ERR, "Command::addInnerCommand : NULL param");
-        assert(0);
+        A(0);
     }
 }
 

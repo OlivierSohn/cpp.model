@@ -5,7 +5,6 @@
 #include "os.log.h"
 #include "os.log.format.h"
 #include "session.h"
-#include <cassert>
 
 using namespace imajuscule;
 
@@ -27,7 +26,7 @@ Persistable()
 , m_bHidden(false)
 , m_observableReferentiable(Observable<Event, Referentiable*>::instantiate())
 {
-    assert(m_manager);
+    A(m_manager);
 }
 
 Referentiable::Referentiable(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName) :
@@ -39,7 +38,7 @@ Persistable()
 , m_bHidden(false)
 , m_observableReferentiable(Observable<Event, Referentiable*>::instantiate())
 {
-    assert(m_manager);
+    A(m_manager);
 
     time_t result;
     result = time(NULL);
@@ -106,7 +105,7 @@ const std::string & Referentiable::sessionName() const
     if (!m_bHasSessionName)
     {   
         LG(ERR, "Referentiable::sessionName : referentiable has no session name");
-        assert(0);
+        A(0);
     }
     return m_sessionName;
 }

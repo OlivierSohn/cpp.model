@@ -1,5 +1,4 @@
 #include "updatable.h"
-#include <cassert>
 #include <algorithm>
 #include "os.log.h"
 
@@ -93,12 +92,12 @@ void Updatable::addSpec(spec item)
 {
     if (item)
     {
-        assert(!isSpec(item));
+        A(!isSpec(item));
 
         m_specs.push_back(item);
         item->addObserver(this);
 
-        assert(isConsistent());
+        A(isConsistent());
 
         observableUpdatable().Notify(ADD_SPEC, *this, *item);
 
@@ -135,7 +134,7 @@ void Updatable::removeSpec(spec item)
         item->removeObserver(this);
         m_specs.remove(item);
 
-        assert(!isSpec(item));
+        A(!isSpec(item));
 
         observableUpdatable().Notify(REMOVE_SPEC, *this, *item);
 
@@ -226,7 +225,7 @@ bool Updatable::isObserver(observer item) const
 
 void Updatable::addObserver(observer item)
 {
-    assert(!isObserver(item));
+    A(!isObserver(item));
 
     m_observers.push_back(item);
 }

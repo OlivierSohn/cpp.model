@@ -1,14 +1,12 @@
 #pragma once
 
-#include "os.log.h"
-
 #include <functional>
 #include <map>
 #include <vector>
 #include <list>
 #include <stack>
 #include <tuple>
-#include <cassert>
+#include "os.log.h"
 
 #define OBSERVABLE_LOG 0
 # if OBSERVABLE_LOG
@@ -83,7 +81,7 @@ namespace imajuscule
         // an observer when it is in one or multiple Notify calls
         void deinstantiate()
         {
-            assert(!m_deinstantiate);
+            A(!m_deinstantiate);
             m_deinstantiate = true;
             deinstantiateIfNeeded();
         }
@@ -244,13 +242,13 @@ namespace imajuscule
                 if (!bFound)
                 {
                     LG(ERR, "Observable::Remove : attempt to remove a registration that is not here");
-                    assert(0);
+                    A(0);
                 }
             }
             else
             {
                 LG(ERR, "Observable::Remove : attempt to remove a registration that doesn't exist");
-                assert(0);
+                A(0);
             }
         }
 
