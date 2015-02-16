@@ -241,14 +241,12 @@ namespace imajuscule
 
                 if (!bFound)
                 {
-                    LG(ERR, "Observable::Remove : attempt to remove a registration that is not here");
-                    A(0);
+                    A(!"attempt to remove a registration that is not here");
                 }
             }
             else
             {
-                LG(ERR, "Observable::Remove : attempt to remove a registration that doesn't exist");
-                A(0);
+                A(!"attempt to remove a registration that doesn't exist");
             }
         }
 

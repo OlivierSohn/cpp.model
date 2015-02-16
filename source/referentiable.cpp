@@ -102,11 +102,7 @@ const std::string & Referentiable::hintName() const
 
 const std::string & Referentiable::sessionName() const
 {
-    if (!m_bHasSessionName)
-    {   
-        LG(ERR, "Referentiable::sessionName : referentiable has no session name");
-        A(0);
-    }
+    A(m_bHasSessionName);
     return m_sessionName;
 }
 

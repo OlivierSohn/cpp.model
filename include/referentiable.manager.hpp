@@ -42,7 +42,7 @@ Observable<ReferentiableManagerBase::Event, Referentiable*> & ReferentiableManag
 bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const std::string & sessionName)
 {
     bool bRet = false;
-    if (r)
+    if_A (r)
     {
         r->setSessionName(sessionName);
 
@@ -56,8 +56,7 @@ bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const 
             }
             else
             {
-                LG(ERR, "ReferentiableManagerBase::Register : guid already present");
-                A(0);
+                A(!"guid already present");
             }
         }
 
@@ -70,19 +69,13 @@ bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const 
             }
             else
             {
-                LG(ERR, "ReferentiableManagerBase::Register : an element was not found in guid map but found in session names map!");
-                A(0);
+                A(!"an element was not found in guid map but found in session names map!");
             }
 
             r->Init();
 
             observable().Notify(Event::RFTBL_ADD, r);
         }
-    }
-    else
-    {
-        LG(ERR, "ReferentiableManagerBase::Register : NULL param");
-        A(0);
     }
 
     return bRet;
@@ -95,7 +88,7 @@ const char * ReferentiableManagerBase::defaultNameHint()
 
 void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
 {
-    if (r)
+    if_A (r)
     {
         std::string guid = r->guid();
         std::string sessionName = r->sessionName();
@@ -113,11 +106,6 @@ void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
         A(count == 1);
 
         observable().Notify(Event::RFTBL_REMOVE, r); // must be placed after actual delete (use case : delete of joint makes the parent NULL so the joint ui manager draws a joint at root which must be removed)
-    }
-    else
-    {
-        LG(ERR, "ReferentiableManagerBase::Remove : NULL param");
-        A(0);
     }
 }
 
@@ -202,7 +190,7 @@ bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r)
 {
     bool bRet = false;
 
-    if (r)
+    if_A (r)
     {
         std::string sessionName = r->hintName();
 
@@ -213,11 +201,6 @@ bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r)
             sessionName.append("1");
         }
         bRet = RegisterWithSessionName(r, sessionName);
-    }
-    else
-    {
-        LG(ERR, "ReferentiableManagerBase::ComputeSessionName: r is NULL");
-        A(0);
     }
 
     return bRet;
@@ -292,8 +275,7 @@ void ReferentiableManagerBase::RemoveRef(Referentiable*r)
                 }
                 else
                 {
-                    LG(ERR, "ReferentiableManagerBase::RemoveRef : corresponding inner command not found");
-                    A(0);
+                    A(!"corresponding inner command not found");
                 }
             }
         }
@@ -364,8 +346,7 @@ Referentiable* ReferentiableManagerBase::newReferentiableFromInnerCommand(const 
             }
             else
             {
-                LG(ERR, "ReferentiableManagerBase::newReferentiable : corresponding inner command not found");
-                A(0);
+                A("corresponding inner command not found");
             }
         }
     }
@@ -501,14 +482,9 @@ void ReferentiableCmdBase::doDeinstantiate()
 {
     Referentiable * r = manager()->findByGuid(m_after.m_GUID);
 
-    if (r)
+    if_A (r)
     {
         manager()->RemoveRefInternal(r);
-    }
-    else
-    {
-        LG(ERR, "ReferentiableCmdBase::doDeinstantiate : ref not found");
-        A(0);
     }
 
     m_addr = NULL;

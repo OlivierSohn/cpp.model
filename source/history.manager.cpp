@@ -89,8 +89,7 @@ bool UndoGroup::Undo()
         }
         else
         {
-            LG(ERR, "UndoGroup::Undo : NULL Command");
-            A(0);
+            A(!"NULL Command");
         }
 
         ++it;
@@ -107,8 +106,7 @@ bool UndoGroup::Redo()
 
     while (it != end)
     {
-        Command * c = *it;
-        if (c)
+        if(Command * c = *it)
         {
             if (c->isObsolete())
             {
@@ -132,8 +130,7 @@ bool UndoGroup::Redo()
         }
         else
         {
-            LG(ERR, "UndoGroup::Redo : NULL Command");
-            A(0);
+            A(!"NULL Command");
         }
     
         ++it;

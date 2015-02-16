@@ -40,8 +40,7 @@ void Command::onObsolete()
 
     if (m_obsolete)
     {
-        LG(ERR, "Command::onObsolete() design error : called at least twice");
-        A(0);
+        A(!"design error : called at least twice");
     }
     else
     {
@@ -182,13 +181,8 @@ void Command::Redo()
 
 void Command::addInnerCommand(Command*c)
 {
-    if(c)
+    if_A(c)
         m_innerCommands.push_back(c);
-    else
-    {
-        LG(ERR, "Command::addInnerCommand : NULL param");
-        A(0);
-    }
 }
 
 const char * Command::StateToString(State s)
