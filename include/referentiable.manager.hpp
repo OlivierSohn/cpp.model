@@ -471,11 +471,12 @@ void ReferentiableCmdBase::doInstantiate()
 {
     std::vector<std::string> guids{ m_after.m_GUID };
     Referentiable * r = manager()->newReferentiableInternal(m_after.m_hintName, guids);
-
     m_addr = r;
-
-    A(m_after.m_GUID == r->guid());
-    A(m_after.m_hintName == r->hintName());
+    if_A(r)
+    {
+        A(m_after.m_GUID == r->guid());
+        A(m_after.m_hintName == r->hintName());
+    }
 }
 
 void ReferentiableCmdBase::doDeinstantiate()
