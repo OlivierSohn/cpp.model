@@ -6,6 +6,21 @@
 
 using namespace imajuscule;
 
+void HistoryManager::logObsoleteCommand(Command*c)
+{
+    logCommand(c, "[obsolete] ");
+}
+
+void HistoryManager::logCommand(Command*c, const char * pre)
+{
+    A(c);
+    std::string pad;
+    pad.insert(pad.end(), m_curCommandStack.size(), ' ');
+    std::string desc;
+    c->getExtendedDescription(desc);
+    LG(INFO, "%s%s%s", pad.c_str(), pre ? pre : "", desc.c_str());
+}
+
 UndoGroup::UndoGroup()
 {}
 
@@ -36,6 +51,7 @@ bool UndoGroup::isObsolete()
         Command * c = *it;
         if (c->isObsolete())
         {
+            HistoryManager::getInstance()->logObsoleteCommand(c);
             delete c;
             it = m_commands.erase(it);
         }
@@ -68,6 +84,7 @@ bool UndoGroup::Undo()
         {
             if (c->isObsolete())
             {
+                HistoryManager::getInstance()->logObsoleteCommand(c);
                 delete c;
                 it = std::reverse_iterator<Commands::iterator>(m_commands.erase((std::next(it)).base()));
                 end = m_commands.rend();
@@ -110,6 +127,7 @@ bool UndoGroup::Redo()
         {
             if (c->isObsolete())
             {
+                HistoryManager::getInstance()->logObsoleteCommand(c);
                 delete c;
                 it = m_commands.erase(it);
                 continue;
@@ -207,6 +225,7 @@ Command * HistoryManager::CurrentCommand()
 
 void HistoryManager::PushCurrentCommand(Command*c)
 {
+    logCommand(c);
     m_curCommandStack.push(c);
 }
 void HistoryManager::PopCurrentCommand(Command*c)

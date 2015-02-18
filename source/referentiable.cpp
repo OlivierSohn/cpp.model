@@ -60,7 +60,7 @@ Referentiable::~Referentiable()
     m_observableReferentiable->deinstantiate();
 }
 
-ReferentiableManagerBase * Referentiable::getManager()
+ReferentiableManagerBase * Referentiable::getManager() const
 {
     return m_manager;
 }

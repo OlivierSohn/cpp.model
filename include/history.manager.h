@@ -37,7 +37,9 @@ namespace imajuscule
             REDOS_CHANGED
         };
         Observable<Event> & observable();
-        
+        void logCommand(Command*c, const char * pre = NULL);
+        void logObsoleteCommand(Command*c);
+
         typedef std::list<UndoGroup> UndoGroups;
 
         HistoryManager();

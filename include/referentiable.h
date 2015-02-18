@@ -32,7 +32,7 @@ namespace imajuscule
         const std::string & hintName() const;
         const std::string & creationDate() const;
 
-        ReferentiableManagerBase * getManager();
+        ReferentiableManagerBase * getManager() const;
 
         void Hide();
         bool isHidden();
@@ -83,5 +83,3 @@ namespace imajuscule
         virtual void setSessionName(const std::string & sn);
     };
 }
-
-#include "referentiable.manager.h"

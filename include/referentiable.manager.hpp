@@ -258,36 +258,19 @@ void ReferentiableManagerBase::generateGuid(std::string & sGuid)
 
 void ReferentiableManagerBase::RemoveRef(Referentiable*r)
 {
-    HistoryManager * h = HistoryManager::getInstance();
-
-    if (h->isActive())
+    if_A(r)
     {
-        bool bDone = false;
+        HistoryManager * h = HistoryManager::getInstance();
 
-        if (Command * c = h->CurrentCommand())
+        if (h->isActive())
         {
-            if (h->IsUndoingOrRedoing())
-            {
-                if (ReferentiableCmdBase * rc = findSpecificInnerCmd(c, r->hintName(), false))
-                {
-                    rc->Deinstantiate();
-                    bDone = true;
-                }
-                else
-                {
-                    A(!"corresponding inner command not found");
-                }
-            }
+            if (!ReferentiableDeleteCmdBase::ExecuteFromInnerCommand(*r))
+                ReferentiableDeleteCmdBase::Execute(*r);
         }
-
-        if (!bDone)
+        else
         {
-            CmdDelete(r->guid())->Execute();
+            RemoveRefInternal(r);
         }
-    }
-    else
-    {
-        RemoveRefInternal(r);
     }
 }
 
@@ -304,17 +287,12 @@ Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & na
 {
     Referentiable * r = NULL;
 
-    if (HistoryManager::getInstance()->isActive())
+    HistoryManager * h = HistoryManager::getInstance();
+
+    if (h->isActive())
     {
-        r = newReferentiableFromInnerCommand(nameHint, guids);
-
-        if (!r)
-        {
-            ReferentiableNewCmdBase * c = CmdNew(nameHint, guids);
-
-            if (c->Execute())
-                r = c->refAddr();
-        }
+        if (!ReferentiableNewCmdBase::ExecuteFromInnerCommand(*this, nameHint, guids, r))
+            r = ReferentiableNewCmdBase::Execute(*this, nameHint, guids);
     }
     else
     {
@@ -322,46 +300,6 @@ Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & na
     }
 
     return r;
-}
-
-Referentiable* ReferentiableManagerBase::newReferentiableFromInnerCommand(const std::string & nameHint, const std::vector<std::string> & guids)
-{
-    Referentiable * r = NULL;
-
-    HistoryManager * h = HistoryManager::getInstance();
-
-    if (Command * c = h->CurrentCommand())
-    {
-        if (h->IsUndoingOrRedoing())
-        {
-            // retrieve an inner commmand that corresponds to this particular instantiation, using {this,hintName} as key. 
-            // In some cases a key can correspond to multiple inner commands so we might end up with a different state
-            // after a undo + redo cycle, e.g. 2 formulas of two param<float> with same hint name could be exchanged
-            // if they have the same Referentiable as direct father.
-            // TODO? issue a user warning when this case is detected? is there another better mechanism?
-
-            if (ReferentiableCmdBase * rc = findSpecificInnerCmd(c, nameHint, true))
-            {
-                r = rc->Instantiate();
-            }
-            else
-            {
-                A("corresponding inner command not found");
-            }
-        }
-    }
-
-    return r;
-}
-template <class T>
-ReferentiableNewCmdBase * ReferentiableManager<T>::CmdNew(const std::string & nameHint, const std::vector<std::string> & guids)
-{
-    return new ReferentiableNewCmd<T>(nameHint, guids);
-}
-template <class T>
-ReferentiableDeleteCmdBase * ReferentiableManager<T>::CmdDelete(const std::string & guid)
-{
-    return new ReferentiableDeleteCmd<T>(guid);
 }
 template <class T>
 ReferentiableManager<T> * ReferentiableManager<T>::g_pRefManager = NULL;
@@ -427,265 +365,270 @@ end:
     return ref;
 }
 
-template <class T>
-ReferentiableNewCmd<T>::ReferentiableNewCmd(const std::string & nameHint, const std::vector<std::string> guids) :
-ReferentiableNewCmdBase(nameHint, guids)
-, m_manager(ReferentiableManager<T>::getInstance())
+
+bool ReferentiableCmdBase::data::operator!=(const Command::data& other) const 
 {
+    auto pOther = dynamic_cast<const ReferentiableCmdBase::data * >(&other);
+    if_A(pOther)
+    {
+        if (m_manager != pOther->m_manager)
+            return true;
+        if (m_action != pOther->m_action)
+            return true;
+        if (m_hintName != pOther->m_hintName)
+            return true;
+
+        return false;
+    }
+    return true;
 }
-template <class T>
-ReferentiableNewCmd<T>::~ReferentiableNewCmd()
+std::string ReferentiableCmdBase::data::getDesc() const 
+{
+    std::string desc;
+    return desc;
+}
+
+ReferentiableCmdBase::data::data(Action a, std::string hintName, ReferentiableManagerBase * rm):
+Command::data()
+, m_action(a)
+, m_hintName(hintName)
+, m_manager(rm)
 {}
-
-template <class T>
-ReferentiableManagerBase * ReferentiableNewCmd<T>::manager()
+auto ReferentiableCmdBase::data::instantiate(Action a, std::string hintName, ReferentiableManagerBase * rm) -> data*
 {
-    return m_manager;
-}
-template <class T>
-ReferentiableDeleteCmd<T>::ReferentiableDeleteCmd(const std::string & guid) :
-ReferentiableDeleteCmdBase(guid)
-, m_manager(ReferentiableManager<T>::getInstance())
-{
-}
-template <class T>
-ReferentiableDeleteCmd<T>::~ReferentiableDeleteCmd()
-{}
-
-template <class T>
-ReferentiableManagerBase * ReferentiableDeleteCmd<T>::manager()
-{
-    return m_manager;
+    return new data(a, hintName, rm);
 }
 
-ReferentiableCmdBase::ReferentiableCmdBase() :
-Command()
-, m_addr(NULL)
-, m_after({ std::string(), std::string() })
+auto ReferentiableCmdBase::other(Action a)->Action
+{
+    switch (a)
+    {
+    case ACTION_DELETE:
+        return ACTION_NEW;
+        break;
+    case ACTION_NEW:
+        return ACTION_DELETE;
+        break;
+    default:
+    case ACTION_UNKNOWN:
+        A(0);
+        return ACTION_UNKNOWN;
+        break;
+    }
+}
+
+ReferentiableCmdBase::ReferentiableCmdBase(ReferentiableManagerBase * manager, const std::string & nameHint, Action action) :
+Command(new data(other(action), nameHint, manager), new data(action, nameHint, manager))
+, m_manager(manager)
+, m_hintName(nameHint)
 {}
 ReferentiableCmdBase::~ReferentiableCmdBase()
 {}
 
+bool ReferentiableCmdBase::doExecute(const Command::data & data)
+{
+    bool bDone = false;
+
+    const ReferentiableCmdBase::data * pData = dynamic_cast<const ReferentiableCmdBase::data*>(&data);
+    if_A(pData)
+    {
+        switch (pData->m_action)
+        {
+        case ACTION_DELETE:
+            doDeinstantiate();
+            bDone = true;
+            break;
+        case ACTION_NEW:
+            doInstantiate();
+            bDone = true;
+            break;
+        case ACTION_UNKNOWN:
+            A(!"unknown action");
+            break;
+        }
+
+    }
+    return bDone;
+}
 
 void ReferentiableCmdBase::doInstantiate()
 {
-    std::vector<std::string> guids{ m_after.m_GUID };
-    Referentiable * r = manager()->newReferentiableInternal(m_after.m_hintName, guids);
-    m_addr = r;
+    std::vector<std::string> guids;
+    bool bGUID = false;
+    if (!m_GUID.empty())
+    {
+        bGUID = true;
+        guids.push_back(m_GUID);
+    }
+    Referentiable * r = manager()->newReferentiableInternal(m_hintName, guids);
+
     if_A(r)
     {
-        A(m_after.m_GUID == r->guid());
-        A(m_after.m_hintName == r->hintName());
+        if (!bGUID)
+            m_GUID = r->guid();
+        else
+            A(m_GUID == r->guid());
+
+        A(m_hintName == r->hintName());
     }
+
+    CommandResult res(true, r);
+    observable().Notify(Event::RESULT, &res);
 }
 
 void ReferentiableCmdBase::doDeinstantiate()
 {
-    Referentiable * r = manager()->findByGuid(m_after.m_GUID);
+    Referentiable * r = manager()->findByGuid(m_GUID);
 
     if_A (r)
     {
         manager()->RemoveRefInternal(r);
     }
-
-    m_addr = NULL;
 }
 
-ReferentiableNewCmdBase::ReferentiableNewCmdBase(const std::string & nameHint, const std::vector<std::string> guids) :
-ReferentiableCmdBase()
-, m_params({ nameHint, guids })
+ReferentiableCmdBase::CommandResult::CommandResult(bool bSuccess, Referentiable*ref):
+Command::CommandResult(bSuccess)
+, m_addr(ref)
+{}
+Referentiable * ReferentiableCmdBase::CommandResult::addr() const {
+    return m_addr;
+}
+
+
+ReferentiableNewCmdBase::ReferentiableNewCmdBase(ReferentiableManagerBase & manager, const std::string & nameHint, const std::vector<std::string> guids) :
+ReferentiableCmdBase(&manager, nameHint, ACTION_NEW)
+, m_guids(guids)
 {
 }
 
 ReferentiableNewCmdBase::~ReferentiableNewCmdBase()
 {}
 
-bool ReferentiableNewCmdBase::IsReadyToInstantiate() const
+void ReferentiableNewCmdBase::Instantiate()
 {
-    return validStateToRedo();
-}
-bool ReferentiableNewCmdBase::IsReadyToDeinstantiate() const
-{
-    return validStateToUndo();
-}
-Referentiable * ReferentiableNewCmdBase::Instantiate()
-{
-    Redo();
-    return refAddr();
+    if (getState() == NOT_EXECUTED)
+        Command::Execute();
+    else
+        Redo();
 }
 void ReferentiableNewCmdBase::Deinstantiate()
 {
     Undo();
 }
 
-void ReferentiableNewCmdBase::getDescription(std::string & desc)
+void ReferentiableNewCmdBase::getSentenceDescription(std::string & desc)
 {
-    switch (getState())
-    {
-    case NOT_EXECUTED:
-        desc.append("Waiting for command execution");
-        break;
-    default:
-        desc.append("new Ref. \"");
-        desc.append(m_after.m_hintName);
-        desc.append("\"");
-        break;
-    }
+    desc.append("new Ref. \"");
+    desc.append(m_hintName);
+    desc.append("\"");
 }
 
-Referentiable * ReferentiableCmdBase::refAddr() const
+bool ReferentiableNewCmdBase::ExecuteFromInnerCommand(ReferentiableManagerBase & rm, const std::string & nameHint, const std::vector<std::string> guids, Referentiable*& oRefAddr)
 {
-    return m_addr;
+    oRefAddr = NULL;
+
+    Command::data * before = data::instantiate(ACTION_DELETE, nameHint, &rm);
+    Command::data * after = data::instantiate(ACTION_NEW, nameHint, &rm);
+
+    CommandResult r;
+    resFunc f(RESULT_BY_REF(r));
+
+    bool bDone = Command::ExecuteFromInnerCommand(
+        typeid(ReferentiableNewCmdBase),
+        *before,
+        *after,
+        NULL,
+        &f);
+
+    if (before)
+        delete before;
+    if (after)
+        delete after;
+    
+    if (bDone)
+    {
+        A(r.Success());
+        oRefAddr = r.addr();
+    }
+
+    return bDone;
+}
+Referentiable* ReferentiableNewCmdBase::Execute(ReferentiableManagerBase & rm, const std::string & nameHint, const std::vector<std::string> guids)
+{
+    auto c = new ReferentiableNewCmdBase(rm, nameHint, guids);
+    CommandResult r;
+    auto reg = CommandResult::ListenToResult(*c, r);
+
+    if (c->Command::Execute())
+        c->observable().Remove(reg);
+
+    return (r.Success()? r.addr() : NULL);
 }
 
 std::string ReferentiableCmdBase::guid() const
 {
-    return m_after.m_GUID;
+    return m_GUID;
 }
 std::string ReferentiableCmdBase::hintName() const
 {
-    return m_after.m_hintName;
+    return m_hintName;
+}
+ReferentiableManagerBase * ReferentiableCmdBase::manager() const
+{
+    if_A(m_manager)
+        return m_manager;
+    return NULL;
 }
 
 
-bool ReferentiableNewCmdBase::doExecute()
+ReferentiableDeleteCmdBase::ReferentiableDeleteCmdBase(Referentiable & r) :
+ReferentiableCmdBase(r.getManager(), r.hintName(), ACTION_DELETE)
 {
-    Referentiable * r = NULL;
-
-    r = manager()->newReferentiableInternal(m_params.m_nameHint, m_params.m_guids);
-
-    m_after.m_GUID = r->guid();
-    m_after.m_hintName = r->hintName();
-    
-    A(m_params.m_nameHint == m_after.m_hintName);
-    m_addr = r;
-
-    return true;
-}
-
-void ReferentiableNewCmdBase::doUndo()
-{
-    doDeinstantiate();
-}
-
-void ReferentiableNewCmdBase::doRedo()
-{
-    doInstantiate();
-}
-
-ReferentiableDeleteCmdBase::ReferentiableDeleteCmdBase(const std::string & guid) :
-ReferentiableCmdBase()
-, m_bHasParameters(true)
-, m_params({ guid })
-{
+    m_GUID = r.guid();
 }
 
 ReferentiableDeleteCmdBase::~ReferentiableDeleteCmdBase()
 {}
 
-void ReferentiableDeleteCmdBase::getDescription(std::string & desc)
+void ReferentiableDeleteCmdBase::getSentenceDescription(std::string & desc)
 {
-    switch (getState())
-    {
-    case NOT_EXECUTED:
-        desc.append("Waiting for command execution");
-        break;
-    default:
-        desc.append("delete Ref. \"");
-        desc.append(m_after.m_hintName);
-        desc.append("\"");
-        break;
-    }
+    desc.append("delete Ref. \"");
+    desc.append(m_hintName);
+    desc.append("\"");
 }
 
-bool ReferentiableDeleteCmdBase::IsReadyToInstantiate() const
-{
-    return validStateToUndo();
-}
-bool ReferentiableDeleteCmdBase::IsReadyToDeinstantiate() const
-{
-    return validStateToRedo();
-}
-
-Referentiable * ReferentiableDeleteCmdBase::Instantiate()
+void ReferentiableDeleteCmdBase::Instantiate()
 {
     Undo();
-    return refAddr();
 }
 void ReferentiableDeleteCmdBase::Deinstantiate()
 {
-    Redo();
+    if (getState() == NOT_EXECUTED)
+        Command::Execute();
+    else
+        Redo();
 }
-
-bool ReferentiableDeleteCmdBase::doExecute()
+bool ReferentiableDeleteCmdBase::ExecuteFromInnerCommand(Referentiable & r)
 {
-    Referentiable * r = NULL;
+    std::string nameHint = r.hintName();
+    ReferentiableManagerBase * rm = r.getManager();
+    
+    Command::data * before = data::instantiate(ACTION_NEW, nameHint, rm);
+    Command::data * after = data::instantiate(ACTION_DELETE, nameHint, rm);
 
-    A(m_bHasParameters);
+    bool bDone = Command::ExecuteFromInnerCommand(
+        typeid(ReferentiableNewCmdBase),
+        *before,
+        *after);
 
-    r = manager()->findByGuid(m_params.m_guid);
+    if (before)
+        delete before;
+    if (after)
+        delete after;
 
-    m_after.m_GUID = r->guid();
-    m_after.m_hintName = r->hintName();
-
-    manager()->RemoveRefInternal(r);
-
-    m_addr = NULL;
-
-    return true;
+    return bDone;
 }
-
-void ReferentiableDeleteCmdBase::doUndo()
+void ReferentiableDeleteCmdBase::Execute(Referentiable & r)
 {
-    doInstantiate();
+    (new ReferentiableDeleteCmdBase(r))->Command::Execute();
 }
-void ReferentiableDeleteCmdBase::doRedo()
-{
-    doDeinstantiate();
-}
-
-ReferentiableCmdBase* ReferentiableManagerBase::findSpecificInnerCmd(Command * c, const std::string & hintName, bool bToInstantiate)
-{
-    A(c);
-    ReferentiableCmdBase* pRet = NULL;
-
-    unsigned int countResults = 0;
-    Commands::iterator it, end;
-    c->traverseInnerCommands(it, end);
-    for (; it != end; ++it)
-    {
-        if (ReferentiableCmdBase* rc = dynamic_cast<ReferentiableCmdBase*>(*it))
-        {
-            if (rc->manager() == this)
-            {
-                if (rc->hintName() == hintName)
-                {
-                    bool bOk = false;
-                    if (bToInstantiate)
-                    {
-                        bOk = rc->IsReadyToInstantiate();
-                    }
-                    else
-                    {
-                        bOk = rc->IsReadyToDeinstantiate();
-                    }
-
-                    if (bOk)
-                    {
-                        countResults++;
-                        pRet = rc;
-
-                        if (countResults > 1)
-                        {
-                            LG(ERR, "ReferentiableManagerBase(0x%x)::findSpecificInnerCmd(0x%x, %s, %s) : multiple (%d) results", this, c, hintName.c_str(), bToInstantiate ? "true" : "false", countResults);
-                            A(0);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    return pRet;
-}
-

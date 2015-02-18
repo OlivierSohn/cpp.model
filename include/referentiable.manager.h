@@ -68,13 +68,8 @@ namespace imajuscule
 
         Observable<Event, Referentiable*> * m_observable;
 
-        Referentiable* newReferentiableFromInnerCommand(const std::string & nameHint, const std::vector<std::string> & guids);
-        ReferentiableCmdBase* findSpecificInnerCmd(Command *, const std::string & hintName, bool bToInstantiate);
-
         virtual Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible = true) = 0;
         void RemoveRefInternal(Referentiable*);
-        virtual ReferentiableNewCmdBase * CmdNew(const std::string & nameHint, const std::vector<std::string> & guids) = 0;
-        virtual ReferentiableDeleteCmdBase * CmdDelete(const std::string & guid) = 0;
     };
 
     template <class T>
@@ -93,119 +88,101 @@ namespace imajuscule
         virtual ~ReferentiableManager();
 
         Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible) override;
-        ReferentiableNewCmdBase * CmdNew(const std::string & nameHint, const std::vector<std::string> & guids) override;
-        ReferentiableDeleteCmdBase * CmdDelete(const std::string & guid) override;
     };
 
     class ReferentiableCmdBase : public Command
     {
     public:
         Referentiable * refAddr() const;
-        virtual ReferentiableManagerBase * manager() = 0;
+        ReferentiableManagerBase * manager() const;
         std::string guid() const;
         std::string hintName() const;
 
-        virtual bool IsReadyToInstantiate() const = 0;
-        virtual bool IsReadyToDeinstantiate() const = 0;
-
-        virtual Referentiable * Instantiate() = 0;
+        virtual void Instantiate() = 0;
         virtual void Deinstantiate() = 0;
     protected:
-        struct data
+        enum Action
         {
-            std::string m_GUID; // when undone and redone, the GUIDS must match
-            std::string m_hintName;
+            ACTION_NEW,
+            ACTION_DELETE,
+            ACTION_UNKNOWN
         };
-        Referentiable * m_addr;
-        data m_after;
+        static Action other(Action);
+        struct data : public Command::data
+        {
+            Action m_action;
+            std::string m_hintName;
+            ReferentiableManagerBase * m_manager;
+
+            bool operator!=(const Command::data& other) const override;
+            std::string getDesc() const override;
+
+            data(Action, std::string hintName, ReferentiableManagerBase * rm);
+            static data * instantiate(Action, std::string hintName, ReferentiableManagerBase * rm);
+        };
+
+        std::string m_hintName;
+        std::string m_GUID;
     
-        ReferentiableCmdBase();
+        ReferentiableCmdBase(ReferentiableManagerBase * manager, const std::string & nameHint, Action action);
         ~ReferentiableCmdBase();
 
         void doInstantiate();
         void doDeinstantiate();
+
+        bool doExecute(const Command::data &) override;
+
+        class CommandResult : public Command::CommandResult
+        {
+            SUBCR;
+        public:
+            CommandResult(bool bSuccess, Referentiable*);
+
+            Referentiable * addr() const;
+        private:
+            Referentiable * m_addr;
+        };
+
+    private:
+        ReferentiableManagerBase * m_manager;
     };
     class ReferentiableNewCmdBase : public ReferentiableCmdBase
     {
+        friend class ReferentiableManagerBase;
     public:
-        void getDescription(std::string & desc) override;
+        void getSentenceDescription(std::string & desc) override;
 
-        bool IsReadyToInstantiate() const;
-        bool IsReadyToDeinstantiate() const;
-
-        Referentiable * Instantiate() override;
+        void Instantiate() override;
         void Deinstantiate() override;
     
     protected:
-        ReferentiableNewCmdBase(const std::string & nameHint, const std::vector<std::string> guids);
-        ReferentiableNewCmdBase();
+        ReferentiableNewCmdBase(ReferentiableManagerBase & rm, const std::string & nameHint, const std::vector<std::string> guids);
         ~ReferentiableNewCmdBase();
 
+        std::vector<std::string> m_guids;
     private:
-        bool doExecute() override;
-        void doUndo() override;
-        void doRedo() override;
-
-        struct parameters
-        {
-            std::string m_nameHint;
-            std::vector<std::string> m_guids;
-        };
-        parameters m_params;
-    };
-
-    template <class T>
-    class ReferentiableNewCmd : public ReferentiableNewCmdBase
-    {
-        friend class ReferentiableManager < T >;
-    protected:
-        ReferentiableNewCmd(const std::string & nameHint, const std::vector<std::string> guids);
-        ~ReferentiableNewCmd();
-
-        ReferentiableManagerBase * manager() override;
-    private:
-        ReferentiableManagerBase * m_manager;
+        static bool ExecuteFromInnerCommand(ReferentiableManagerBase & rm, const std::string & nameHint, const std::vector<std::string> guids, Referentiable*& oRefAddr);
+        static Referentiable* Execute(ReferentiableManagerBase & rm, const std::string & nameHint, const std::vector<std::string> guids);
     };
 
     class ReferentiableDeleteCmdBase : public ReferentiableCmdBase
     {
+        friend class ReferentiableManagerBase;
     public:
-        void getDescription(std::string & desc) override;
+        void getSentenceDescription(std::string & desc) override;
 
-        bool IsReadyToInstantiate() const;
-        bool IsReadyToDeinstantiate() const;
-
-        Referentiable * Instantiate() override;
+        void Instantiate() override;
         void Deinstantiate() override;
+
     protected:
-        ReferentiableDeleteCmdBase(const std::string & guid);
+        ReferentiableDeleteCmdBase(Referentiable&);
         ~ReferentiableDeleteCmdBase();
 
     private:
-        bool doExecute() override;
-        void doUndo() override;
-        void doRedo() override;
-
-        struct parameters
-        {
-            std::string m_guid;
-        };
-        bool m_bHasParameters;
-        parameters m_params;
+        static bool ExecuteFromInnerCommand(Referentiable&);
+        static void Execute(Referentiable &);
     };
 
-    template <class T>
-    class ReferentiableDeleteCmd : public ReferentiableDeleteCmdBase
-    {
-        friend class ReferentiableManager < T >;
-    protected:
-        ReferentiableDeleteCmd(const std::string & guid);
-        ~ReferentiableDeleteCmd();
-
-        ReferentiableManagerBase * manager() override;
-    private:
-        ReferentiableManagerBase * m_manager;
-    };
 }
 
 #include "referentiable.h"
