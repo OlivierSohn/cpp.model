@@ -6,14 +6,15 @@
 using namespace imajuscule;
 
 Command::Command(data * pDataBefore, data * pDataAfter, Referentiable * r, Observable<ObsolescenceEvent> * o) :
-m_state(NOT_EXECUTED)
+Undoable()
 , m_pAfter(pDataAfter)
 , m_pBefore(pDataBefore)
-, m_obsolete(false)
 , m_obsolescenceObservable(o)
 , m_manager(r?(r->getManager()):NULL)
 , m_guid(r?r->guid():std::string())
 , m_observable(Observable<Event, const CommandResult *>::instantiate())
+, m_bInTransaction(false)
+, m_curGroup(NULL)
 {
     if (m_obsolescenceObservable)
         m_reg.push_back(m_obsolescenceObservable->Register(IS_OBSOLETE, std::bind(&Command::onObsolete, this)));
@@ -25,10 +26,10 @@ Command::~Command()
     if (m_pBefore)
         delete m_pBefore;
 
-    if (m_obsolescenceObservable && !m_obsolete)
+    if (m_obsolescenceObservable && !isObsolete())
         m_obsolescenceObservable->Remove(m_reg);
 
-    for (auto c : m_innerCommands) delete c;
+    for (auto g : m_innerGroups) delete g;
 
     m_observable->deinstantiate();
 }
@@ -47,32 +48,17 @@ auto Command::After() const -> data *
     return m_pAfter;
 }
 
-
-bool Command::isInnerCommand(Command * command)
-{
-    bool bRet = false;
-
-    for (auto c : m_innerCommands)
-    {
-        if (c == command)
-        {
-            bRet = true;
-            break;
-        }
-    }
-    return bRet;
-}
 void Command::onObsolete()
 {
     // on purpose, obsolescence doesn't propagate to inner commands
 
-    if (m_obsolete)
+    if (isObsolete())
     {
         A(!"design error : called at least twice");
     }
     else
     {
-        m_obsolete = true;
+        setIsObsolete();
         A(m_obsolescenceObservable);
         if (m_obsolescenceObservable)
         {
@@ -82,28 +68,18 @@ void Command::onObsolete()
     }
 }
 
-bool Command::isObsolete() const
-{
-    return m_obsolete;
-}
-
-auto Command::getState() const -> State
-{
-    return m_state;
-}
-
 bool Command::Execute()
 {
     HistoryManager* h = HistoryManager::getInstance();
     h->PushCurrentCommand(this);
 
-    A(m_state == NOT_EXECUTED);
+    A(validStateToExecute());
 
-    A(m_innerCommands.empty());
+    A(m_innerGroups.empty());
 
     bool bRelevant = doExecute();
 
-    m_state = EXECUTED;
+    setState(EXECUTED);
 
     // Pop before adding to history, else it will be added as inner command of itself
     h->PopCurrentCommand(this);
@@ -117,128 +93,117 @@ bool Command::Execute()
     return bRelevant;
 }
 
-void Command::traverseInnerCommands(Commands::iterator & begin, Commands::iterator & end)
+void Command::traverseInnerGroups(UndoGroups::iterator&begin, UndoGroups::iterator&end)
 {
-    begin = m_innerCommands.begin();
-    end = m_innerCommands.end();
+    begin = m_innerGroups.begin();
+    end = m_innerGroups.end();
 }
 
-bool Command::validStateToUndo() const
+bool Command::Undo()
 {
-    return ((m_state == EXECUTED) || (m_state == REDO));
-}
-bool Command::validStateToRedo() const
-{
-    return (m_state == UNDO);
-}
-void Command::Undo()
-{
+    bool bRelevant = false;
+
     if (validStateToUndo())
     {
         HistoryManager* h = HistoryManager::getInstance();
         h->PushCurrentCommand(this);
 
-        doUndo();
+        bRelevant = doUndo();
 
-        for (auto c : m_innerCommands)
+        for (auto g : m_innerGroups)
         {
-            if (c->isObsolete())
-            {
-                HistoryManager::getInstance()->logObsoleteCommand(c);
-                continue;
-            }
-
-            switch (c->getState())
-            {
-            case UNDO:
-                // doUndo of this command has triggered UNDO of inner command, so skip it
-                continue;
-                break;
-
-            default:
-                // doUndo of this command has NOT triggered UNDO of inner command, so do it
-                c->Undo();
-                break;
-            }
+            if (g->Undo())
+                bRelevant = true;
         }
 
-        m_state = UNDO;
+        setState(UNDONE);
+
         h->PopCurrentCommand(this);
     }
     else
     {
-        LG(ERR, "Command::Undo : state is %d", m_state);
+        LG(ERR, "Command::Undo : state is %d", getState());
         A(0);
     }
+
+    return bRelevant;
 }
 
-void Command::Redo()
+bool Command::Redo()
 {
+    bool bRelevant = false;
+
     if (validStateToRedo())
     {
         HistoryManager* h = HistoryManager::getInstance();
         h->PushCurrentCommand(this);
 
-        doRedo();
+        bRelevant = doRedo();
 
-        for (auto c : m_innerCommands)
+        for (auto g : m_innerGroups)
         {
-            if (c->isObsolete())
-            {
-                HistoryManager::getInstance()->logObsoleteCommand(c);
-                continue;
-            }
-
-            switch (c->getState())
-            {
-            case REDO:
-                // doRedo of this command has triggered REDO of inner command, so skip it
-                continue;
-                break;
-
-            default:
-                // doRedo of this command has NOT triggered REDO of inner command, so do it
-                c->Redo();
-                break;
-            }
+            if (g->Redo())
+                bRelevant = true;
         }
 
-        m_state = REDO;
+        setState(REDONE);
+
         h->PopCurrentCommand(this);
     }
     else
     {
-        LG(ERR, "Command::Redo : state is %d", m_state);
+        LG(ERR, "Command::Redo : state is %d", getState());
         A(0);
     }
+
+    return bRelevant;
 }
 
-void Command::addInnerCommand(Command*c)
+void Command::startTransaction()
+{
+    if_A(!m_bInTransaction)
+    {
+        m_bInTransaction = true;
+    }
+}
+void Command::endTransaction()
+{
+    if_A(m_bInTransaction)
+    {
+        if (m_curGroup)
+        {
+            m_innerGroups.push_back(m_curGroup);
+            m_curGroup = NULL;
+        }
+        m_bInTransaction = false;
+    }
+}
+void Command::Add(Command*c)
 {
     if_A(c)
-        m_innerCommands.push_back(c);
-}
-
-const char * Command::StateToString(State s)
-{
-    switch (s)
     {
-    case NOT_EXECUTED:
-        return "NOT_EXECUTED";
-    case EXECUTED:
-        return "EXECUTED";
-    case UNDO:
-        return "UNDO";
-    case REDO:
-        return "REDO";
-    default:
-        return "UNKNOWN";
+        UndoGroup * g;
+
+        if (m_bInTransaction)
+        {
+            if (!m_curGroup)
+                m_curGroup = new UndoGroup();
+
+            g = m_curGroup;
+        }
+        else
+        {
+            g = new UndoGroup();
+            m_innerGroups.push_back(g);
+        }
+
+        g->Add(c);
     }
 }
 
 void Command::getExtendedDescription(std::string & desc)
 {
-    unsigned int nInner = m_innerCommands.size();
+    unsigned int nInner = m_innerGroups.size();
     if (nInner > 0)
     {
         desc.append("(+");
@@ -278,11 +243,15 @@ void Command::getDescription(std::string & desc)
         break;
     }
 }
-Command::CommandExec::CommandExec(Command* c, Type t) :
-m_command(c)
+Command::CommandExec::CommandExec(UndoGroup *g, Command* c, ExecType t, const resFunc *f) :
+m_group(g)
+, m_command(c)
 , m_type(t)
+, m_pResFunc(f)
 {
     A(m_command);
+    A(m_group); 
+    A(t != ExecType::NONE);
 }
 
 Command::data::data()
@@ -308,14 +277,14 @@ bool Command::doExecute()
     return doExecute(*After());
 }
 
-void Command::doUndo()
+bool Command::doUndo()
 {
-    doExecute(*Before());
+    return doExecute(*Before());
 }
 
-void Command::doRedo()
+bool Command::doRedo()
 {
-    doExecute(*After());
+    return doExecute(*After());
 }
 
 bool Command::ExecuteFromInnerCommand(const std::type_info & commandType, const data & dataBefore, const data & dataAfter, Referentiable*pRef, const resFunc * pResFunc)
@@ -325,11 +294,12 @@ bool Command::ExecuteFromInnerCommand(const std::type_info & commandType, const 
 
     if (Command * c = h->CurrentCommand())
     {
-        if (h->IsUndoingOrRedoing())
+        ExecType t;
+        if (h->IsUndoingOrRedoing(t))
         {
             if (c)
             {
-                if (!(bDone = c->ExecFromInnerCommand(commandType, dataBefore, dataAfter, pRef, pResFunc)))
+                if (!(bDone = c->ExecFromInnerCommand(t, commandType, dataBefore, dataAfter, pRef, pResFunc)))
                 {
                     // since we have a current command and are undoing or redoing, the inner command should be there
                     A(!"corresponding inner command not found");
@@ -341,64 +311,89 @@ bool Command::ExecuteFromInnerCommand(const std::type_info & commandType, const 
     return bDone;
 }
 
-bool Command::ExecFromInnerCommand(const std::type_info & commandType, const data & dataBefore, const data & dataAfter, Referentiable * pRef, const resFunc * pResFunc)
+bool Command::ExecFromInnerCommand(ExecType t, const std::type_info & commandType, const data & dataBefore, const data & dataAfter, Referentiable * pRef, const resFunc * pResFunc)
 {
     bool bDone = false;
 
-    auto v = ListInnerCommandsReadyFor(commandType, dataBefore, dataAfter, pRef );
+    auto v = ListInnerCommandsReadyFor(t, commandType, dataBefore, dataAfter, pRef, pResFunc);
     if (!v.empty())
     {
         unsigned int size = v.size();
         if (size > 1)
         {
-            LG(ERR, "Command::ExecFromInnerCommand(0x%x, %s) : multiple (%d) results", this, (pRef?pRef->sessionName().c_str():"NULL"), size);
+            LG(ERR, "Command::ExecFromInnerCommand(0x%x, %s) : multiple (%d) results", this, (pRef ? pRef->sessionName().c_str() : "NULL"), size);
             A(0);
         }
 
         auto & commandExec = v[0];
-        Command * c = commandExec.m_command;
-        if_A(c)
-        {
-            FunctionInfo<Event> reg;
-            if (pResFunc)
-                reg = c->observable().Register(Event::RESULT, *pResFunc);
-            
-            switch (commandExec.m_type)
-            {
-            case CommandExec::UNDO:
-                c->Undo();
-                bDone = true;
-                break;
-            case CommandExec::REDO:
-                c->Redo();
-                bDone = true;
-                break;
-            default:
-                A(!"unknown type");
-                break;
-            }
-
-            if (pResFunc)
-                c->observable().Remove(reg);
-        }
+        bDone = commandExec.Run();
     }
     return bDone;
 }
-auto Command::ListInnerCommandsReadyFor(const std::type_info & commandType, const data & dataBefore, const data & dataAfter, Referentiable*pRef)->std::vector < CommandExec >
+
+bool Command::CommandExec::Run()
+{
+    bool bDone = false;
+
+    if_A(m_command)
+    {
+        if_A(m_group)
+        {
+            if_A(!m_command->isObsolete()) // else the command will be deleted by the group
+            {
+                FunctionInfo<Event> reg;
+                if (m_pResFunc)
+                    reg = m_command->observable().Register(Event::RESULT, *m_pResFunc);
+
+                switch (m_type)
+                {
+                case ExecType::UNDO:
+                    m_group->UndoUntil(m_command);
+                    A(m_command->getState() == UNDONE);
+                    bDone = true;
+                    break;
+                case ExecType::REDO:
+                    m_group->RedoUntil(m_command);
+                    A(m_command->getState() == REDONE);
+                    bDone = true;
+                    break;
+                default:
+                    A(!"unknown type");
+                    break;
+                }
+
+                if (m_pResFunc)
+                    m_command->observable().Remove(reg);
+            }
+        }
+    }
+
+    return bDone;
+}
+auto Command::ListInnerCommandsReadyFor(ExecType t, const std::type_info & commandType, const data & dataBefore, const data & dataAfter, Referentiable*pRef, const resFunc * pResFunc)->std::vector < CommandExec >
 {
     std::vector < CommandExec > v;
 
-    Commands::iterator it, end;
-    traverseInnerCommands(it, end);
-    for (; it != end; ++it)
+    UndoGroups::iterator itG, endG;
+    traverseInnerGroups(itG, endG);
+    for (; itG != endG; ++itG)
     {
-        Command * c = *it;
-        if_A (c)
+        UndoGroup * g = *itG;
+        if_A(g)
         {
-            CommandExec::Type t;
-            if (c->ReadyFor(commandType, dataBefore, dataAfter, pRef, t))
+            // UndoGroups are not ordered in a Command so traversing forward or backward should have no implication
+            UndoGroup::Commands::iterator it, end;
+            (*itG)->traverseForward(it, end);
+            for (; it != end; ++it)
             {
-                v.emplace_back(c, t);
+                Command * c = *it;
+                if_A(c)
+                {
+                    if (c->ReadyFor(t, commandType, dataBefore, dataAfter, pRef))
+                    {
+                        v.emplace_back(g, c, t, pResFunc);
+                    }
+                }
             }
         }
     }
@@ -406,9 +401,12 @@ auto Command::ListInnerCommandsReadyFor(const std::type_info & commandType, cons
     return v;
 }
 
-bool Command::ReadyFor(const std::type_info & commandType, const data & Now, const data & Then, Referentiable * pRef, CommandExec::Type & t)
+bool Command::ReadyFor(ExecType t, const std::type_info & commandType, const data & Now, const data & Then, Referentiable * pRef)
 {
     bool bRet = false;
+
+    if (isObsolete())
+        goto end;
 
     if (typeid(*this) == commandType)
     {
@@ -416,17 +414,19 @@ bool Command::ReadyFor(const std::type_info & commandType, const data & Now, con
         {
             switch (getState())
             {
-            case Command::State::NOT_EXECUTED:
+            case State::NOT_EXECUTED:
                 A(!"found an unexecuted inner command");
                 goto end;
                 break;
-            case Command::State::UNDO:
-                t = CommandExec::REDO;
+            case State::UNDONE:
+                if (t != ExecType::REDO)
+                    goto end;
                 break;
 
-            case Command::State::EXECUTED:
-            case Command::State::REDO:
-                t = CommandExec::UNDO;
+            case State::EXECUTED:
+            case State::REDONE:
+                if (t != ExecType::UNDO)
+                    goto end;
                 break;
             default:
                 LG(ERR, "ParamChangeFormulaCmd::doExecuteFromInnerCmd : unhandled state %d", getState());
@@ -435,7 +435,7 @@ bool Command::ReadyFor(const std::type_info & commandType, const data & Now, con
                 break;
             }
 
-            if (t == CommandExec::REDO)
+            if (t == ExecType::REDO)
             {
                 if ((Now == *Before()) && (Then == *After()))
                 {
@@ -444,7 +444,7 @@ bool Command::ReadyFor(const std::type_info & commandType, const data & Now, con
             }
             else
             {
-                A(t == CommandExec::UNDO);
+                A(t == ExecType::UNDO);
                 if ((Now == *After()) && (Then == *Before()))
                 {
                     bRet = true;
@@ -452,6 +452,7 @@ bool Command::ReadyFor(const std::type_info & commandType, const data & Now, con
             }
         }
     }
+
 end:
     return bRet;
 }

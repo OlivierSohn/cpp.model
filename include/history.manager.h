@@ -3,29 +3,39 @@
 #include <list>
 #include <stack>
 #include "observable.h"
+#include "undoable.h"
+#include "command.h"
 
 namespace imajuscule
 {
     class Command;
 
-    class UndoGroup
+    // an UndoGroup is a way to order commands for Undo/Redo
+    class UndoGroup : public Undoable
     {
     public:
         UndoGroup();
         ~UndoGroup();
 
-        void Add(Command*);
+        void Add(Command*) override;
 
-        bool isObsolete();
+        bool Execute() override;
+        bool Undo() override;
+        bool Redo() override;
 
-        // Undo and Redo return false if nothing changed (the group was composed of obsolete commands)
-        bool Undo();
-        bool Redo();
+        bool UndoUntil(Command*c /*including c*/);
+        bool RedoUntil(Command*c /*including c*/);
 
         typedef std::list<Command*> Commands;
         void traverseForward(Commands::const_iterator & it, Commands::const_iterator & end) const;
+    
+        virtual bool isObsolete() const;
+
     private:
-        Commands m_commands;
+        mutable Commands m_commands; // mutable because isObsolete() can delete commands
+
+        bool UndoInternal(Command * limit, bool bStrict = false);
+        bool RedoInternal(Command * limit, bool bStrict = false);
     };
 
     class HistoryManager
@@ -51,6 +61,8 @@ namespace imajuscule
         void EmptyStacks();
 
         void Add(Command*);
+        void StartTransaction();
+        void EndTransaction();
         void MakeGroup();
 
         void Undo();
@@ -59,7 +71,7 @@ namespace imajuscule
         void PushCurrentCommand(Command*);
         void PopCurrentCommand(Command*);
         Command * CurrentCommand();
-        bool IsUndoingOrRedoing();
+        bool IsUndoingOrRedoing(Command::ExecType & t);
 
         // traverse in chronological order
         void traverseUndos(UndoGroups::const_iterator& begin, UndoGroups::const_iterator& end) const;
@@ -74,7 +86,7 @@ namespace imajuscule
         unsigned int m_stacksCapacity;
         bool m_bAppStateHasNewContent;
 
-        bool m_bIsUndoingOrRedoing;
+        Command::ExecType m_curExecType;
         std::stack<Command*> m_curCommandStack;
         bool m_bActivated;
 
@@ -82,3 +94,5 @@ namespace imajuscule
         void SizeUndos();
     };
 }
+
+#define inCmd (HistoryManager::getInstance()->CurrentCommand())

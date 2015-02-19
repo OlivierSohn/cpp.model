@@ -21,7 +21,8 @@ void HistoryManager::logCommand(Command*c, const char * pre)
     LG(INFO, "%s%s%s", pad.c_str(), pre ? pre : "", desc.c_str());
 }
 
-UndoGroup::UndoGroup()
+UndoGroup::UndoGroup():
+Undoable()
 {}
 
 UndoGroup::~UndoGroup()
@@ -40,7 +41,7 @@ void UndoGroup::traverseForward(Commands::const_iterator & it, Commands::const_i
     end = m_commands.end();
 }
 
-bool UndoGroup::isObsolete()
+bool UndoGroup::isObsolete() const
 {
     bool bEmpty = true;
 
@@ -70,17 +71,55 @@ void UndoGroup::Add(Command*c)
     m_commands.push_back(c);
 }
 
-bool UndoGroup::Undo()
+bool UndoGroup::Execute()
+{
+    A(validStateToExecute());
+
+    bool bNotEmpty = false;
+
+    auto it = m_commands.begin();
+    auto end = m_commands.end();
+    while (it != end)
+    {
+        Command * c = *it;
+        if_A(c)
+        {
+            if (c->isObsolete())
+            {
+                HistoryManager::getInstance()->logObsoleteCommand(c);
+                delete c;
+                it = m_commands.erase(it);
+                continue;
+            }
+
+            bNotEmpty = true;
+
+            A(c->getState() == EXECUTED);
+        }
+
+        ++it;
+    }
+
+    setState(EXECUTED);
+
+    return bNotEmpty;
+}
+
+bool UndoGroup::Undo(){ return UndoInternal(NULL); }
+bool UndoGroup::UndoUntil(Command *limit){ return UndoInternal(limit, true); }
+bool UndoGroup::UndoInternal(Command *limit, bool bStrict)
 {
     bool bNotEmpty = false;
 
     auto it = m_commands.rbegin();
     auto end = m_commands.rend();
 
+    bool bFoundLimit = false;
+
     while(it != end)
     {
         Command * c = *it;
-        if (c)
+        if_A (c)
         {
             if (c->isObsolete())
             {
@@ -93,37 +132,44 @@ bool UndoGroup::Undo()
 
             bNotEmpty = true;
 
-            Command::State s = c->getState();
-            if ((s == Command::EXECUTED) || (s == Command::REDO))
+            if (c->validStateToUndo()) // command can have been undone by a call to UndoUntil
             {
-                c->Undo();
+                bool bRelevant = c->Undo();
+                // Assert commented out : a relevant (executed) command can become irrelevant for undo/redo e.g. SetFormula("", "0.")
+                // -> should I introduce the notion of undoability?
+                //    and have 2 different commands: ParamInitializeFormula(not undoable) and ParamChangeForula(undoable) ?
+                //A(bRelevant);
             }
-            else
+
+            if (c == limit)
             {
-                LG(ERR, "UndoGroup::Undo : Command in state %s", Command::StateToString(s));
-                A(0);
+                bFoundLimit = true;
+                break;
             }
-        }
-        else
-        {
-            A(!"NULL Command");
         }
 
         ++it;
     }
 
+    if (bStrict)
+        A(bFoundLimit);
+    
     return bNotEmpty;
 }
-bool UndoGroup::Redo()
+bool UndoGroup::Redo(){ return RedoInternal(NULL); }
+bool UndoGroup::RedoUntil(Command * limit){ return RedoInternal(limit, true); }
+bool UndoGroup::RedoInternal(Command * limit, bool bStrict)
 {
     bool bNotEmpty = false;
 
     auto it = m_commands.begin();
     auto end = m_commands.end();
+    bool bFoundLimit = false;
 
     while (it != end)
     {
-        if(Command * c = *it)
+        Command * c = *it;
+        if_A(c)
         {
             if (c->isObsolete())
             {
@@ -135,24 +181,27 @@ bool UndoGroup::Redo()
 
             bNotEmpty = true;
 
-            Command::State s = c->getState();
-            if (s == Command::UNDO)
+            if(c->validStateToRedo())// command can have been undone by a call to RedoUntil
             {
-                c->Redo();
+                bool bRelevant = c->Redo();
+                // Assert commented out : a relevant (executed) command can become irrelevant for undo/redo e.g. SetFormula("", "0.")
+                // -> should I introduce the notion of undoability?
+                //    and have 2 different commands: ParamInitializeFormula(not undoable) and ParamChangeForula(undoable) ?
+                //A(bRelevant);
             }
-            else
+
+            if (c == limit)
             {
-                LG(ERR, "UndoGroup::Redo : Command in state %s", Command::StateToString(s));
-                A(0);
+                bFoundLimit = true;
+                break;
             }
-        }
-        else
-        {
-            A(!"NULL Command");
         }
     
         ++it;
     }
+
+    if (bStrict)
+        A(bFoundLimit);
 
     return bNotEmpty;
 }
@@ -164,7 +213,7 @@ HistoryManager::HistoryManager() :
 m_stacksCapacity(-1)// unsigned -> maximum capacity
 , m_observable(Observable<Event>::instantiate())
 , m_bAppStateHasNewContent(false)
-, m_bIsUndoingOrRedoing(false)
+, m_curExecType(Command::ExecType::NONE)
 , m_bActivated(true)
 {
     m_appState = m_groups.rbegin();
@@ -199,6 +248,15 @@ void HistoryManager::MakeGroup()
         m_bAppStateHasNewContent = false;
     }
 }
+void HistoryManager::StartTransaction(){
+    if (Command * cc = CurrentCommand())
+        cc->startTransaction();
+}
+void HistoryManager::EndTransaction(){
+    if (Command * cc = CurrentCommand())
+        cc->endTransaction();
+}
+
 
 void HistoryManager::EmptyStacks()
 {
@@ -235,18 +293,19 @@ void HistoryManager::PopCurrentCommand(Command*c)
     m_curCommandStack.pop();
 }
 
-bool HistoryManager::IsUndoingOrRedoing()
+bool HistoryManager::IsUndoingOrRedoing(Command::ExecType & t)
 {
-    return m_bIsUndoingOrRedoing;
+    t = m_curExecType;
+    return (t != Command::ExecType::NONE);
 }
 
 void HistoryManager::Add(Command* c)
 {
     bool bRedosChanged = false;
 
-    if (m_bIsUndoingOrRedoing)
+    if (m_curExecType != Command::ExecType::NONE)
     {
-        LG(ERR, "HistoryManager::Add : Memory leak : a command was added to history while undoing or redoing");
+        LG(ERR, "HistoryManager::Add : Memory leak : a command was added to history while %s", (m_curExecType==Command::ExecType::UNDO)?"undoing":"redoing");
         goto end;
     }
 
@@ -259,7 +318,7 @@ void HistoryManager::Add(Command* c)
 
     if (Command * cmd = CurrentCommand())
     {
-        cmd->addInnerCommand(c);
+        cmd->Add(c);
         goto end;
     }
 
@@ -330,7 +389,7 @@ void HistoryManager::SizeUndos()
 
 void HistoryManager::Undo()
 {
-    m_bIsUndoingOrRedoing = true;
+    m_curExecType = Command::ExecType::UNDO;
 
     bool bDone = false;
     bool bUndosChanged = false;
@@ -370,12 +429,12 @@ void HistoryManager::Undo()
         observable().Notify(Event::REDOS_CHANGED);
     }
 
-    m_bIsUndoingOrRedoing = false;
+    m_curExecType = Command::ExecType::NONE;
 }
 
 void HistoryManager::Redo()
 {
-    m_bIsUndoingOrRedoing = true;
+    m_curExecType = Command::ExecType::REDO;
 
     bool bDone = false;
     bool bUndosChanged = false;
@@ -416,7 +475,7 @@ void HistoryManager::Redo()
         observable().Notify(Event::REDOS_CHANGED);
     }
 
-    m_bIsUndoingOrRedoing = false;
+    m_curExecType = Command::ExecType::NONE;
 }
 
 void HistoryManager::traverseUndos(UndoGroups::const_iterator& begin, UndoGroups::const_iterator& end) const

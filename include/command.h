@@ -1,17 +1,20 @@
 #pragma once
 
 #include <string>
+#include <list>
 #include "observable.h"
-#include "os.log.h"
 #include "referentiable.h"
+#include "undoable.h"
 
 namespace imajuscule
 {
     class HistoryManager;
-    class Command;
-    typedef std::vector<Command*> Commands;
+    class UndoGroup;
 
-    class Command
+    // A command has "inner" commands organized by groups (groups define a precedence constraints between their elements)
+    // The initial intent was to have a single group containing all inner commands. But when redone / undone, the command wil need to call its sub commands in a non-linear way,
+    // hence the need to have multiple groups.
+    class Command : public Undoable
     {
         ////////////////////////////////
         /// original Command definition
@@ -22,55 +25,51 @@ namespace imajuscule
         {
             IS_OBSOLETE // means that the command should not be considered by HistoryManager anymore
         };
-        enum State
-        {
-            NOT_EXECUTED,
-            EXECUTED,
-            UNDO,
-            REDO
-        };
-        static const char * StateToString(State);
 
         virtual ~Command();
 
-        bool Execute(); // return false if Command has no effect
-        void Undo();
-        void Redo();
-        void addInnerCommand(Command*);
 
-        void traverseInnerCommands(Commands::iterator & begin, Commands::iterator & end);
+        bool Execute() override; // return false if Command has no effect
+        bool Undo() override;
+        bool Redo() override;
 
-        State getState() const;
-        bool isObsolete() const;
-
-        bool validStateToUndo() const;
-        bool validStateToRedo() const;
+        void Add(Command*) override;
+        void startTransaction();
+        void endTransaction();
 
         void getExtendedDescription(std::string & desc);
         void getDescription(std::string & desc);
         virtual void getSentenceDescription(std::string & desc) = 0;
 
     protected:
-        bool isInnerCommand(Command * c);
-
         virtual bool doExecute();
-        virtual void doUndo();
-        virtual void doRedo();
+        virtual bool doUndo();
+        virtual bool doRedo();
 
     private:
         void onObsolete();
 
-        State m_state;
-        bool m_obsolete;
         Observable<ObsolescenceEvent> * m_obsolescenceObservable;
         std::vector<FunctionInfo<ObsolescenceEvent>> m_reg;
 
-        Commands m_innerCommands;
+        typedef std::list<UndoGroup*> UndoGroups;
+        UndoGroups m_innerGroups;
+        bool m_bInTransaction;
+        UndoGroup * m_curGroup;
+
+        void traverseInnerGroups(UndoGroups::iterator&begin, UndoGroups::iterator&end);
 
     public:
         ////////////////////////////////
         /// generic referentiable Command definition
         ////////////////////////////////
+
+        enum ExecType
+        {
+            UNDO,
+            REDO,
+            NONE
+        };
 
         class CommandResult
         {
@@ -118,34 +117,31 @@ namespace imajuscule
         ReferentiableManagerBase * m_manager;
         Observable<Event, const CommandResult *> * m_observable;
 
-        struct CommandExec
+        class CommandExec
         {
-            Command* m_command;
-            enum Type
-            {
-                UNDO,
-                REDO
-            };
-            Type m_type;
-
-            CommandExec(Command*, Type);
+        public:
+            CommandExec(UndoGroup *, Command*, ExecType, const resFunc *);
+            bool Run();
+        private:
+            UndoGroup * m_group; // the group to which the command belongs
+            Command* m_command; // the actual command
+            const resFunc * m_pResFunc; // the result function for the actual command
+            ExecType m_type; // the type of execution
         };
     public:
-        bool ExecFromInnerCommand(const std::type_info & commandType, const data & dataBefore, const data & dataAfter, Referentiable* ref = NULL, const resFunc * pResFunc = NULL);
+        bool ExecFromInnerCommand(ExecType t, const std::type_info & commandType, const data & dataBefore, const data & dataAfter, Referentiable* ref = NULL, const resFunc * pResFunc = NULL);
     protected:
         static bool ExecuteFromInnerCommand(const std::type_info & commandType, const data & dataBefore, const data & dataAfter, Referentiable* ref = NULL, const resFunc * pResFunc = NULL);
-        std::vector<CommandExec> ListInnerCommandsReadyFor(const std::type_info & commandType, const data & dataBefore, const data & dataAfter, Referentiable * ref = NULL);
-        virtual bool ReadyFor(const std::type_info & commandType, const data & dataBefore, const data & dataAfter, Referentiable * ref /*optional*/, CommandExec::Type & t);
+        std::vector<CommandExec> ListInnerCommandsReadyFor(ExecType t, const std::type_info & commandType, const data & dataBefore, const data & dataAfter, Referentiable * ref = NULL, const resFunc * pResFunc = NULL);
+        virtual bool ReadyFor(ExecType t, const std::type_info & commandType, const data & dataBefore, const data & dataAfter, Referentiable * ref /*optional*/);
 
         virtual bool doExecute(const data & Data) = 0;
     };
 }
 
-#include "history.manager.h"
+// headers for macros
 
-#define inCmd (HistoryManager::getInstance()->CurrentCommand())
-
-
+#include "os.log.h"
 // depending on where this MACRO is used, CommandResult will be XXX::CommandResult or YYY::CommandResult
 
 #define RESULT_BY_REF(r) \

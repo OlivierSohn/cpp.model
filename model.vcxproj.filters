@@ -72,6 +72,9 @@
     <ClInclude Include="include\platform.defines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\undoable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\persistable.cpp">
@@ -99,6 +102,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\visitable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\undoable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
