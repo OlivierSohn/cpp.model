@@ -382,7 +382,7 @@ auto Command::ListInnerCommandsReadyFor(ExecType t, const std::type_info & comma
         if_A(g)
         {
             // UndoGroups are not ordered in a Command so traversing forward or backward should have no implication
-            UndoGroup::Commands::iterator it, end;
+            UndoGroup::Commands::const_iterator it, end;
             (*itG)->traverseForward(it, end);
             for (; it != end; ++it)
             {
