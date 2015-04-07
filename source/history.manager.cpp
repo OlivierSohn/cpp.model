@@ -283,7 +283,7 @@ Command * HistoryManager::CurrentCommand()
 
 void HistoryManager::PushCurrentCommand(Command*c)
 {
-    logCommand(c);
+    //logCommand(c);
     m_curCommandStack.push(c);
 }
 void HistoryManager::PopCurrentCommand(Command*c)

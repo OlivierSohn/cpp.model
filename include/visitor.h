@@ -9,6 +9,7 @@ namespace imajuscule
     class ParamBase;
     class ParamSet;
     class Joint;
+    class KinChain;
     class SimSTAIBody;
     class RasterSTAIBody;
     class SpecWM;
@@ -39,6 +40,7 @@ namespace imajuscule
         virtual void Visit(ParamBase*) = 0;
         virtual void Visit(ParamSet*) = 0;
         virtual void Visit(Joint*) = 0;
+        virtual void Visit(KinChain*) = 0;
         virtual void Visit(RasterSTAIBody*) = 0;
         virtual void Visit(SimSTAIBody*) = 0;
         virtual void Visit(SpecWM*) = 0;

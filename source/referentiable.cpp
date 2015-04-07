@@ -117,6 +117,25 @@ const std::string & Referentiable::creationDate() const
     return m_dateOfCreation;
 }
 
+std::string Referentiable::extendedName() const
+{
+    std::string ret = m_sessionName;
+
+    if (Referentiable * mra = mainRefAttr())
+    {
+        ret.append("(");
+        ret.append(mra->sessionName());
+        ret.append(")");
+    }
+
+    return ret;
+}
+
+Referentiable * Referentiable::mainRefAttr() const
+{
+    return NULL;
+}
+
 eResult Referentiable::ReferentiablePersist::Save()
 {
     eResult res = ILE_SUCCESS;

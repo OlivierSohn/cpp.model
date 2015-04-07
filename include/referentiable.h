@@ -29,6 +29,7 @@ namespace imajuscule
 
         const std::string & guid() const;
         const std::string & sessionName() const;
+        std::string extendedName() const;
         const std::string & hintName() const;
         const std::string & creationDate() const;
 
@@ -81,5 +82,7 @@ namespace imajuscule
         bool m_bHidden;
         bool m_bHasSessionName;
         virtual void setSessionName(const std::string & sn);
+
+        virtual Referentiable * mainRefAttr() const;
     };
 }
