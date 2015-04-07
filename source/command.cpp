@@ -250,9 +250,12 @@ m_group(g)
 , m_pResFunc(f)
 {
     A(m_command);
-    A(m_group); 
+    A(m_group);
     A(t != ExecType::NONE);
 }
+
+Command::CommandExec::~CommandExec()
+{}
 
 Command::data::data()
 {}

@@ -1,0 +1,462 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		09429CAD1AD38243001513DA /* asyncnotifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A21AD357F70099DA54 /* asyncnotifier.cpp */; };
+		09429CAE1AD38243001513DA /* command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A31AD357F70099DA54 /* command.cpp */; };
+		09429CAF1AD38243001513DA /* history.manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A41AD357F70099DA54 /* history.manager.cpp */; };
+		09429CB01AD38243001513DA /* persistable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A51AD357F70099DA54 /* persistable.cpp */; };
+		09429CB11AD38243001513DA /* referentiable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A61AD357F70099DA54 /* referentiable.cpp */; };
+		09429CB21AD38243001513DA /* session.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A71AD357F70099DA54 /* session.cpp */; };
+		09429CB31AD38243001513DA /* undoable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A81AD357F70099DA54 /* undoable.cpp */; };
+		09429CB41AD38243001513DA /* updatable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A91AD357F70099DA54 /* updatable.cpp */; };
+		09429CB51AD38243001513DA /* visitable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662AA1AD357F70099DA54 /* visitable.cpp */; };
+		097662AF1AD357F70099DA54 /* asyncnotifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662901AD357F70099DA54 /* asyncnotifier.h */; };
+		097662B01AD357F70099DA54 /* command.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662911AD357F70099DA54 /* command.h */; };
+		097662B11AD357F70099DA54 /* history.manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662921AD357F70099DA54 /* history.manager.h */; };
+		097662B21AD357F70099DA54 /* model.allincludes.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662931AD357F70099DA54 /* model.allincludes.h */; };
+		097662B31AD357F70099DA54 /* observable.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662941AD357F70099DA54 /* observable.h */; };
+		097662B41AD357F70099DA54 /* persistable.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662951AD357F70099DA54 /* persistable.h */; };
+		097662B51AD357F70099DA54 /* platform.defines.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662961AD357F70099DA54 /* platform.defines.h */; };
+		097662B61AD357F70099DA54 /* referentiable.cmd.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662971AD357F70099DA54 /* referentiable.cmd.h */; };
+		097662B71AD357F70099DA54 /* referentiable.cmd.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 097662981AD357F70099DA54 /* referentiable.cmd.hpp */; };
+		097662B81AD357F70099DA54 /* referentiable.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662991AD357F70099DA54 /* referentiable.h */; };
+		097662B91AD357F70099DA54 /* referentiable.manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 0976629A1AD357F70099DA54 /* referentiable.manager.h */; };
+		097662BA1AD357F70099DA54 /* referentiable.manager.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0976629B1AD357F70099DA54 /* referentiable.manager.hpp */; };
+		097662BB1AD357F70099DA54 /* session.h in Headers */ = {isa = PBXBuildFile; fileRef = 0976629C1AD357F70099DA54 /* session.h */; };
+		097662BC1AD357F70099DA54 /* undoable.h in Headers */ = {isa = PBXBuildFile; fileRef = 0976629D1AD357F70099DA54 /* undoable.h */; };
+		097662BD1AD357F70099DA54 /* updatable.h in Headers */ = {isa = PBXBuildFile; fileRef = 0976629E1AD357F70099DA54 /* updatable.h */; };
+		097662BE1AD357F70099DA54 /* visitable.h in Headers */ = {isa = PBXBuildFile; fileRef = 0976629F1AD357F70099DA54 /* visitable.h */; };
+		097662BF1AD357F70099DA54 /* visitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662A01AD357F70099DA54 /* visitor.h */; };
+		097662C01AD357F70099DA54 /* asyncnotifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A21AD357F70099DA54 /* asyncnotifier.cpp */; };
+		097662C11AD357F70099DA54 /* command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A31AD357F70099DA54 /* command.cpp */; };
+		097662C21AD357F70099DA54 /* history.manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A41AD357F70099DA54 /* history.manager.cpp */; };
+		097662C31AD357F70099DA54 /* persistable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A51AD357F70099DA54 /* persistable.cpp */; };
+		097662C41AD357F70099DA54 /* referentiable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A61AD357F70099DA54 /* referentiable.cpp */; };
+		097662C51AD357F70099DA54 /* session.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A71AD357F70099DA54 /* session.cpp */; };
+		097662C61AD357F70099DA54 /* undoable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A81AD357F70099DA54 /* undoable.cpp */; };
+		097662C71AD357F70099DA54 /* updatable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A91AD357F70099DA54 /* updatable.cpp */; };
+		097662C81AD357F70099DA54 /* visitable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662AA1AD357F70099DA54 /* visitable.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		09429C941AD38207001513DA /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		09429C961AD38207001513DA /* libmodel.ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmodel.ios.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		097662751AD355F20099DA54 /* libmodel.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmodel.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		097662901AD357F70099DA54 /* asyncnotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asyncnotifier.h; sourceTree = "<group>"; };
+		097662911AD357F70099DA54 /* command.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = command.h; sourceTree = "<group>"; };
+		097662921AD357F70099DA54 /* history.manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = history.manager.h; sourceTree = "<group>"; };
+		097662931AD357F70099DA54 /* model.allincludes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model.allincludes.h; sourceTree = "<group>"; };
+		097662941AD357F70099DA54 /* observable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = observable.h; sourceTree = "<group>"; };
+		097662951AD357F70099DA54 /* persistable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = persistable.h; sourceTree = "<group>"; };
+		097662961AD357F70099DA54 /* platform.defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.defines.h; sourceTree = "<group>"; };
+		097662971AD357F70099DA54 /* referentiable.cmd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.cmd.h; sourceTree = "<group>"; };
+		097662981AD357F70099DA54 /* referentiable.cmd.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.cmd.hpp; sourceTree = "<group>"; };
+		097662991AD357F70099DA54 /* referentiable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.h; sourceTree = "<group>"; };
+		0976629A1AD357F70099DA54 /* referentiable.manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.manager.h; sourceTree = "<group>"; };
+		0976629B1AD357F70099DA54 /* referentiable.manager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.manager.hpp; sourceTree = "<group>"; };
+		0976629C1AD357F70099DA54 /* session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = session.h; sourceTree = "<group>"; };
+		0976629D1AD357F70099DA54 /* undoable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = undoable.h; sourceTree = "<group>"; };
+		0976629E1AD357F70099DA54 /* updatable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = updatable.h; sourceTree = "<group>"; };
+		0976629F1AD357F70099DA54 /* visitable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = visitable.h; sourceTree = "<group>"; };
+		097662A01AD357F70099DA54 /* visitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = visitor.h; sourceTree = "<group>"; };
+		097662A21AD357F70099DA54 /* asyncnotifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = asyncnotifier.cpp; sourceTree = "<group>"; };
+		097662A31AD357F70099DA54 /* command.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = command.cpp; sourceTree = "<group>"; };
+		097662A41AD357F70099DA54 /* history.manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = history.manager.cpp; sourceTree = "<group>"; };
+		097662A51AD357F70099DA54 /* persistable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = persistable.cpp; sourceTree = "<group>"; };
+		097662A61AD357F70099DA54 /* referentiable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = referentiable.cpp; sourceTree = "<group>"; };
+		097662A71AD357F70099DA54 /* session.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = session.cpp; sourceTree = "<group>"; };
+		097662A81AD357F70099DA54 /* undoable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = undoable.cpp; sourceTree = "<group>"; };
+		097662A91AD357F70099DA54 /* updatable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = updatable.cpp; sourceTree = "<group>"; };
+		097662AA1AD357F70099DA54 /* visitable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = visitable.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		09429C931AD38207001513DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		097662721AD355F20099DA54 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0976626C1AD355F20099DA54 = {
+			isa = PBXGroup;
+			children = (
+				0976628F1AD357F70099DA54 /* include */,
+				097662A11AD357F70099DA54 /* source */,
+				097662761AD355F20099DA54 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		097662761AD355F20099DA54 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				097662751AD355F20099DA54 /* libmodel.a */,
+				09429C961AD38207001513DA /* libmodel.ios.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0976628F1AD357F70099DA54 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				097662901AD357F70099DA54 /* asyncnotifier.h */,
+				097662911AD357F70099DA54 /* command.h */,
+				097662921AD357F70099DA54 /* history.manager.h */,
+				097662931AD357F70099DA54 /* model.allincludes.h */,
+				097662941AD357F70099DA54 /* observable.h */,
+				097662951AD357F70099DA54 /* persistable.h */,
+				097662961AD357F70099DA54 /* platform.defines.h */,
+				097662971AD357F70099DA54 /* referentiable.cmd.h */,
+				097662981AD357F70099DA54 /* referentiable.cmd.hpp */,
+				097662991AD357F70099DA54 /* referentiable.h */,
+				0976629A1AD357F70099DA54 /* referentiable.manager.h */,
+				0976629B1AD357F70099DA54 /* referentiable.manager.hpp */,
+				0976629C1AD357F70099DA54 /* session.h */,
+				0976629D1AD357F70099DA54 /* undoable.h */,
+				0976629E1AD357F70099DA54 /* updatable.h */,
+				0976629F1AD357F70099DA54 /* visitable.h */,
+				097662A01AD357F70099DA54 /* visitor.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		097662A11AD357F70099DA54 /* source */ = {
+			isa = PBXGroup;
+			children = (
+				097662A21AD357F70099DA54 /* asyncnotifier.cpp */,
+				097662A31AD357F70099DA54 /* command.cpp */,
+				097662A41AD357F70099DA54 /* history.manager.cpp */,
+				097662A51AD357F70099DA54 /* persistable.cpp */,
+				097662A61AD357F70099DA54 /* referentiable.cpp */,
+				097662A71AD357F70099DA54 /* session.cpp */,
+				097662A81AD357F70099DA54 /* undoable.cpp */,
+				097662A91AD357F70099DA54 /* updatable.cpp */,
+				097662AA1AD357F70099DA54 /* visitable.cpp */,
+			);
+			path = source;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		097662731AD355F20099DA54 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				097662B31AD357F70099DA54 /* observable.h in Headers */,
+				097662B21AD357F70099DA54 /* model.allincludes.h in Headers */,
+				097662B11AD357F70099DA54 /* history.manager.h in Headers */,
+				097662B61AD357F70099DA54 /* referentiable.cmd.h in Headers */,
+				097662BE1AD357F70099DA54 /* visitable.h in Headers */,
+				097662B91AD357F70099DA54 /* referentiable.manager.h in Headers */,
+				097662BD1AD357F70099DA54 /* updatable.h in Headers */,
+				097662B41AD357F70099DA54 /* persistable.h in Headers */,
+				097662BF1AD357F70099DA54 /* visitor.h in Headers */,
+				097662B01AD357F70099DA54 /* command.h in Headers */,
+				097662B51AD357F70099DA54 /* platform.defines.h in Headers */,
+				097662BB1AD357F70099DA54 /* session.h in Headers */,
+				097662BA1AD357F70099DA54 /* referentiable.manager.hpp in Headers */,
+				097662AF1AD357F70099DA54 /* asyncnotifier.h in Headers */,
+				097662B71AD357F70099DA54 /* referentiable.cmd.hpp in Headers */,
+				097662BC1AD357F70099DA54 /* undoable.h in Headers */,
+				097662B81AD357F70099DA54 /* referentiable.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		09429C951AD38207001513DA /* model.ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 09429CAB1AD38207001513DA /* Build configuration list for PBXNativeTarget "model.ios" */;
+			buildPhases = (
+				09429C921AD38207001513DA /* Sources */,
+				09429C931AD38207001513DA /* Frameworks */,
+				09429C941AD38207001513DA /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = model.ios;
+			productName = model.ios;
+			productReference = 09429C961AD38207001513DA /* libmodel.ios.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		097662741AD355F20099DA54 /* model */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 097662791AD355F20099DA54 /* Build configuration list for PBXNativeTarget "model" */;
+			buildPhases = (
+				097662711AD355F20099DA54 /* Sources */,
+				097662721AD355F20099DA54 /* Frameworks */,
+				097662731AD355F20099DA54 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = model;
+			productName = model;
+			productReference = 097662751AD355F20099DA54 /* libmodel.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0976626D1AD355F20099DA54 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0620;
+				ORGANIZATIONNAME = Olivier;
+				TargetAttributes = {
+					09429C951AD38207001513DA = {
+						CreatedOnToolsVersion = 6.2;
+					};
+					097662741AD355F20099DA54 = {
+						CreatedOnToolsVersion = 6.2;
+					};
+				};
+			};
+			buildConfigurationList = 097662701AD355F20099DA54 /* Build configuration list for PBXProject "model" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 0976626C1AD355F20099DA54;
+			productRefGroup = 097662761AD355F20099DA54 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				097662741AD355F20099DA54 /* model */,
+				09429C951AD38207001513DA /* model.ios */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		09429C921AD38207001513DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				09429CAD1AD38243001513DA /* asyncnotifier.cpp in Sources */,
+				09429CAE1AD38243001513DA /* command.cpp in Sources */,
+				09429CAF1AD38243001513DA /* history.manager.cpp in Sources */,
+				09429CB01AD38243001513DA /* persistable.cpp in Sources */,
+				09429CB11AD38243001513DA /* referentiable.cpp in Sources */,
+				09429CB21AD38243001513DA /* session.cpp in Sources */,
+				09429CB31AD38243001513DA /* undoable.cpp in Sources */,
+				09429CB41AD38243001513DA /* updatable.cpp in Sources */,
+				09429CB51AD38243001513DA /* visitable.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		097662711AD355F20099DA54 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				097662C71AD357F70099DA54 /* updatable.cpp in Sources */,
+				097662C01AD357F70099DA54 /* asyncnotifier.cpp in Sources */,
+				097662C11AD357F70099DA54 /* command.cpp in Sources */,
+				097662C51AD357F70099DA54 /* session.cpp in Sources */,
+				097662C81AD357F70099DA54 /* visitable.cpp in Sources */,
+				097662C41AD357F70099DA54 /* referentiable.cpp in Sources */,
+				097662C31AD357F70099DA54 /* persistable.cpp in Sources */,
+				097662C61AD357F70099DA54 /* undoable.cpp in Sources */,
+				097662C21AD357F70099DA54 /* history.manager.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		09429CA71AD38207001513DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		09429CA81AD38207001513DA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		097662771AD355F20099DA54 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"$(PROJECT_DIR)/../os.log/include\"",
+					"\"$(PROJECT_DIR)/../os.storage/include\"",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		097662781AD355F20099DA54 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"$(PROJECT_DIR)/../os.log/include\"",
+					"\"$(PROJECT_DIR)/../os.storage/include\"",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		0976627A1AD355F20099DA54 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		0976627B1AD355F20099DA54 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		09429CAB1AD38207001513DA /* Build configuration list for PBXNativeTarget "model.ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				09429CA71AD38207001513DA /* Debug */,
+				09429CA81AD38207001513DA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		097662701AD355F20099DA54 /* Build configuration list for PBXProject "model" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				097662771AD355F20099DA54 /* Debug */,
+				097662781AD355F20099DA54 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		097662791AD355F20099DA54 /* Build configuration list for PBXNativeTarget "model" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0976627A1AD355F20099DA54 /* Debug */,
+				0976627B1AD355F20099DA54 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0976626D1AD355F20099DA54 /* Project object */;
+}

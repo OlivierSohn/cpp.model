@@ -99,7 +99,7 @@ namespace imajuscule
             virtual bool operator!=(const data&) const = 0;
             virtual std::string getDesc() const = 0;
 
-            ~data();
+            virtual ~data();
             data();
         };
     protected:
@@ -121,6 +121,8 @@ namespace imajuscule
         {
         public:
             CommandExec(UndoGroup *, Command*, ExecType, const resFunc *);
+            virtual ~CommandExec();
+
             bool Run();
         private:
             UndoGroup * m_group; // the group to which the command belongs
