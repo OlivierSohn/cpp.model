@@ -1,43 +1,48 @@
 #pragma once
 
+#include <vector>
+#include <stack>
+
 namespace imajuscule
 {
     class Command;
+    class Undoable;
+    typedef std::vector<Undoable*> Undoables;
     class Undoable
     {
     public:
-        enum State
-        {
-            NOT_EXECUTED,
-            EXECUTED,
-            UNDONE,
-            REDONE
-        };
-        static const char * StateToString(State);
-
+        virtual ~Undoable();
         // return false if Command has no effect
         virtual bool Execute() = 0;
         virtual bool Undo() = 0;
         virtual bool Redo() = 0;
+        virtual bool Undo(Undoable * limit, bool bStrict, bool & bFoundLimit) = 0;
+        virtual bool Redo(Undoable * limit, bool bStrict, bool & bFoundLimit) = 0;
         
-        virtual void Add(Command*) = 0;
+        
+        void Add(Undoable*); // adds an undoable in the list of sub element or to the current subelement if it exists (see StartSubElement)
+        
+        void StartSubElement();
+        void EndSubElement();
+        
+        void traverseForward(Undoables::iterator & begin, Undoables::iterator& end) const;
 
-        State getState() const;
+        void traverseForwardRecurse(Undoables &) const;
+        
+        bool contains(Undoable * u);
+        
+            
         bool isObsolete() const;
-
-        bool validStateToExecute() const;
-        bool validStateToUndo() const;
-        bool validStateToRedo() const;
 
     protected:
         Undoable();
-        virtual ~Undoable();
 
-        void setState(State state);
         void setIsObsolete();
 
+        mutable Undoables m_undoables; // mutable because isObsolete() can delete commands
+
     private:
-        State m_state;
+        std::stack<Undoable*> m_curSubElts;
         bool m_obsolete;
     };
 }

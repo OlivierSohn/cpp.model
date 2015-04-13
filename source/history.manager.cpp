@@ -27,34 +27,22 @@ Undoable()
 
 UndoGroup::~UndoGroup()
 {
-    auto it = m_commands.begin();
-    auto end = m_commands.end();
-    for (; it != end; ++it)
-    {
-        delete *it;
-    }
-}
-
-void UndoGroup::traverseForward(Commands::const_iterator & it, Commands::const_iterator & end) const
-{
-    it = m_commands.begin();
-    end = m_commands.end();
 }
 
 bool UndoGroup::isObsolete() const
 {
     bool bEmpty = true;
 
-    auto it = m_commands.begin();
-    auto end = m_commands.end();
+    auto it = m_undoables.begin();
+    auto end = m_undoables.end();
     while (it != end)
     {
-        Command * c = *it;
-        if (c->isObsolete())
+        Undoable * u = *it;
+        if (u->isObsolete())
         {
-            HistoryManager::getInstance()->logObsoleteCommand(c);
-            delete c;
-            it = m_commands.erase(it);
+            //HistoryManager::getInstance()->logObsoleteCommand(c);
+            delete u;
+            it = m_undoables.erase(it);
         }
         else
         {
@@ -66,86 +54,51 @@ bool UndoGroup::isObsolete() const
     return bEmpty;
 }
 
-void UndoGroup::Add(Command*c)
-{
-    m_commands.push_back(c);
-}
-
 bool UndoGroup::Execute()
 {
-    A(validStateToExecute());
-
-    bool bNotEmpty = false;
-
-    auto it = m_commands.begin();
-    auto end = m_commands.end();
-    while (it != end)
-    {
-        Command * c = *it;
-        if_A(c)
-        {
-            if (c->isObsolete())
-            {
-                HistoryManager::getInstance()->logObsoleteCommand(c);
-                delete c;
-                it = m_commands.erase(it);
-                continue;
-            }
-
-            bNotEmpty = true;
-
-            A(c->getState() == EXECUTED);
-        }
-
-        ++it;
-    }
-
-    setState(EXECUTED);
-
-    return bNotEmpty;
+    A(0);
+    return false;
 }
 
-bool UndoGroup::Undo(){ return UndoInternal(NULL); }
-bool UndoGroup::UndoUntil(Command *limit){ return UndoInternal(limit, true); }
-bool UndoGroup::UndoInternal(Command *limit, bool bStrict)
+bool UndoGroup::Undo(){ bool bFoundLimit; return Undo(NULL, false, bFoundLimit); }
+bool UndoGroup::UndoUntil(Undoable *limit){ bool bFoundLimit; return Undo(limit, true, bFoundLimit); }
+bool UndoGroup::Undo(Undoable *limit, bool bStrict, bool & bFoundLimit)
 {
     bool bNotEmpty = false;
 
-    auto it = m_commands.rbegin();
-    auto end = m_commands.rend();
+    auto it = m_undoables.rbegin();
+    auto end = m_undoables.rend();
 
-    bool bFoundLimit = false;
+    bFoundLimit = false;
 
     while(it != end)
     {
-        Command * c = *it;
-        if_A (c)
+        Undoable * u = *it;
+        if_A (u)
         {
-            if (c->isObsolete())
+            if (u->isObsolete())
             {
-                HistoryManager::getInstance()->logObsoleteCommand(c);
-                delete c;
-                it = std::reverse_iterator<Commands::iterator>(m_commands.erase((std::next(it)).base()));
-                end = m_commands.rend();
+                //HistoryManager::getInstance()->logObsoleteCommand(c);
+                delete u;
+                it = std::reverse_iterator<Undoables::iterator>(m_undoables.erase((std::next(it)).base()));
+                end = m_undoables.rend();
                 continue;
             }
 
             bNotEmpty = true;
 
-            if (c->validStateToUndo()) // command can have been undone by a call to UndoUntil
+            //if (u->validStateToUndo()) // command can have been undone by a call to UndoUntil
             {
-                bool bRelevant = c->Undo();
+                /*bool bRelevant = */
+                u->Undo(limit, false, bFoundLimit);
                 // Assert commented out : a relevant (executed) command can become irrelevant for undo/redo e.g. SetFormula("", "0.")
                 // -> should I introduce the notion of undoability?
                 //    and have 2 different commands: ParamInitializeFormula(not undoable) and ParamChangeForula(undoable) ?
                 //A(bRelevant);
             }
-
-            if (c == limit)
-            {
-                bFoundLimit = true;
+            
+            if(bFoundLimit)
                 break;
-            }
         }
 
         ++it;
@@ -156,45 +109,43 @@ bool UndoGroup::UndoInternal(Command *limit, bool bStrict)
     
     return bNotEmpty;
 }
-bool UndoGroup::Redo(){ return RedoInternal(NULL); }
-bool UndoGroup::RedoUntil(Command * limit){ return RedoInternal(limit, true); }
-bool UndoGroup::RedoInternal(Command * limit, bool bStrict)
+bool UndoGroup::Redo(){ bool bFoundLimit; return Redo(NULL, false, bFoundLimit); }
+bool UndoGroup::RedoUntil(Undoable * limit){ bool bFoundLimit; return Redo(limit, true, bFoundLimit); }
+bool UndoGroup::Redo(Undoable * limit, bool bStrict, bool & bFoundLimit)
 {
     bool bNotEmpty = false;
 
-    auto it = m_commands.begin();
-    auto end = m_commands.end();
-    bool bFoundLimit = false;
+    auto it = m_undoables.begin();
+    auto end = m_undoables.end();
+    bFoundLimit = false;
 
     while (it != end)
     {
-        Command * c = *it;
-        if_A(c)
+        Undoable * u = *it;
+        if_A(u)
         {
-            if (c->isObsolete())
+            if (u->isObsolete())
             {
-                HistoryManager::getInstance()->logObsoleteCommand(c);
-                delete c;
-                it = m_commands.erase(it);
+                //HistoryManager::getInstance()->logObsoleteCommand(c);
+                delete u;
+                it = m_undoables.erase(it);
                 continue;
             }
 
             bNotEmpty = true;
 
-            if(c->validStateToRedo())// command can have been undone by a call to RedoUntil
+//            if(u->validStateToRedo())// command can have been undone by a call to RedoUntil
             {
-                bool bRelevant = c->Redo();
+                /*bool bRelevant =*/
+                u->Redo(limit, false, bFoundLimit);
                 // Assert commented out : a relevant (executed) command can become irrelevant for undo/redo e.g. SetFormula("", "0.")
                 // -> should I introduce the notion of undoability?
                 //    and have 2 different commands: ParamInitializeFormula(not undoable) and ParamChangeForula(undoable) ?
                 //A(bRelevant);
             }
-
-            if (c == limit)
-            {
-                bFoundLimit = true;
+            
+            if(bFoundLimit)
                 break;
-            }
         }
     
         ++it;
@@ -250,11 +201,11 @@ void HistoryManager::MakeGroup()
 }
 void HistoryManager::StartTransaction(){
     if (Command * cc = CurrentCommand())
-        cc->startTransaction();
+        cc->StartSubElement();
 }
 void HistoryManager::EndTransaction(){
     if (Command * cc = CurrentCommand())
-        cc->endTransaction();
+        cc->EndSubElement();
 }
 
 

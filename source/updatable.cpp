@@ -18,6 +18,12 @@ m_observableUpdatable(Observable<Event, Updatable& /*observed*/, Updatable&/*spe
 
 Updatable::~Updatable()
 {
+    while(!m_specs.empty())
+    {
+        removeSpec(m_specs.front());
+        A(!"some specs needs to be cleaned up");
+    }
+    
     m_all.erase(updatables::value_type(this));
     m_observableUpdatable->deinstantiate();
 }

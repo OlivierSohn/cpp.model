@@ -10,32 +10,26 @@ namespace imajuscule
 {
     class Command;
 
-    // an UndoGroup is a way to order commands for Undo/Redo
+    // an UndoGroup is a way to sequence undoables for Undo/Redo
     class UndoGroup : public Undoable
     {
     public:
         UndoGroup();
         ~UndoGroup();
 
-        void Add(Command*) override;
-
         bool Execute() override;
         bool Undo() override;
         bool Redo() override;
 
-        bool UndoUntil(Command*c /*including c*/);
-        bool RedoUntil(Command*c /*including c*/);
-
-        typedef std::list<Command*> Commands;
-        void traverseForward(Commands::const_iterator & it, Commands::const_iterator & end) const;
+        bool UndoUntil(Undoable*u /*including u*/);
+        bool RedoUntil(Undoable*u /*including u*/);
     
         virtual bool isObsolete() const;
 
     private:
-        mutable Commands m_commands; // mutable because isObsolete() can delete commands
 
-        bool UndoInternal(Command * limit, bool bStrict = false);
-        bool RedoInternal(Command * limit, bool bStrict = false);
+        bool Undo(Undoable * limit, bool bStrict, bool & bFoundLimit) override;
+        bool Redo(Undoable * limit, bool bStrict, bool & bFoundLimit) override;
     };
 
     class HistoryManager

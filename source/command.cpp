@@ -7,14 +7,13 @@ using namespace imajuscule;
 
 Command::Command(data * pDataBefore, data * pDataAfter, Referentiable * r, Observable<ObsolescenceEvent> * o) :
 Undoable()
+, m_state(NOT_EXECUTED)
 , m_pAfter(pDataAfter)
 , m_pBefore(pDataBefore)
 , m_obsolescenceObservable(o)
 , m_manager(r?(r->getManager()):NULL)
 , m_guid(r?r->guid():std::string())
 , m_observable(Observable<Event, const CommandResult *>::instantiate())
-, m_bInTransaction(false)
-, m_curGroup(NULL)
 {
     if (m_obsolescenceObservable)
         m_reg.push_back(m_obsolescenceObservable->Register(IS_OBSOLETE, std::bind(&Command::onObsolete, this)));
@@ -28,8 +27,6 @@ Command::~Command()
 
     if (m_obsolescenceObservable && !isObsolete())
         m_obsolescenceObservable->Remove(m_reg);
-
-    for (auto g : m_innerGroups) delete g;
 
     m_observable->deinstantiate();
 }
@@ -75,7 +72,7 @@ bool Command::Execute()
 
     A(validStateToExecute());
 
-    A(m_innerGroups.empty());
+    A(m_undoables.empty());
 
     bool bRelevant = doExecute();
 
@@ -93,12 +90,6 @@ bool Command::Execute()
     return bRelevant;
 }
 
-void Command::traverseInnerGroups(UndoGroups::iterator&begin, UndoGroups::iterator&end)
-{
-    begin = m_innerGroups.begin();
-    end = m_innerGroups.end();
-}
-
 bool Command::Undo()
 {
     bool bRelevant = false;
@@ -107,23 +98,22 @@ bool Command::Undo()
     {
         HistoryManager* h = HistoryManager::getInstance();
         h->PushCurrentCommand(this);
-
+        
+        // placed after subcommands loop for scenario "new animation / UNDO"
+        // But we shouldn't run subcommands before, it breaks the logic (eg deinstantiates stuff too early) so I put it back here
         bRelevant = doUndo();
-
-        for (auto g : m_innerGroups)
+        
+        Undoables::reverse_iterator it = m_undoables.rbegin();
+        Undoables::reverse_iterator end = m_undoables.rend();
+        for (;it!=end;++it)
         {
-            if (g->Undo())
+            if ((*it)->Undo())
                 bRelevant = true;
         }
 
         setState(UNDONE);
 
         h->PopCurrentCommand(this);
-    }
-    else
-    {
-        LG(ERR, "Command::Undo : state is %d", getState());
-        A(0);
     }
 
     return bRelevant;
@@ -140,7 +130,7 @@ bool Command::Redo()
 
         bRelevant = doRedo();
 
-        for (auto g : m_innerGroups)
+        for (auto g : m_undoables)
         {
             if (g->Redo())
                 bRelevant = true;
@@ -150,60 +140,28 @@ bool Command::Redo()
 
         h->PopCurrentCommand(this);
     }
-    else
-    {
-        LG(ERR, "Command::Redo : state is %d", getState());
-        A(0);
-    }
 
     return bRelevant;
 }
 
-void Command::startTransaction()
+bool Command::Undo(Undoable * limit, bool bStrict, bool & bFoundLimit)
 {
-    if_A(!m_bInTransaction)
-    {
-        m_bInTransaction = true;
-    }
+    if (this == limit)
+        bFoundLimit = true;
+
+    return Undo();
 }
-void Command::endTransaction()
+bool Command::Redo(Undoable * limit, bool bStrict, bool & bFoundLimit)
 {
-    if_A(m_bInTransaction)
-    {
-        if (m_curGroup)
-        {
-            m_innerGroups.push_back(m_curGroup);
-            m_curGroup = NULL;
-        }
-        m_bInTransaction = false;
-    }
-}
-void Command::Add(Command*c)
-{
-    if_A(c)
-    {
-        UndoGroup * g;
-
-        if (m_bInTransaction)
-        {
-            if (!m_curGroup)
-                m_curGroup = new UndoGroup();
-
-            g = m_curGroup;
-        }
-        else
-        {
-            g = new UndoGroup();
-            m_innerGroups.push_back(g);
-        }
-
-        g->Add(c);
-    }
+    if (this == limit)
+        bFoundLimit = true;
+    
+    return Redo();
 }
 
 void Command::getExtendedDescription(std::string & desc)
 {
-    unsigned int nInner = m_innerGroups.size();
+    unsigned int nInner = m_undoables.size();
     if (nInner > 0)
     {
         desc.append("(+");
@@ -321,15 +279,10 @@ bool Command::ExecFromInnerCommand(ExecType t, const std::type_info & commandTyp
     auto v = ListInnerCommandsReadyFor(t, commandType, dataBefore, dataAfter, pRef, pResFunc);
     if (!v.empty())
     {
-        unsigned int size = v.size();
-        if (size > 1)
-        {
-            LG(ERR, "Command::ExecFromInnerCommand(0x%x, %s) : multiple (%d) results", this, (pRef ? pRef->sessionName().c_str() : "NULL"), size);
-            A(0);
-        }
-
-        auto & commandExec = v[0];
-        bDone = commandExec.Run();
+        if(t == ExecType::UNDO)
+            bDone = v.back().Run();
+        else
+            bDone = v.front().Run();
     }
     return bDone;
 }
@@ -337,39 +290,43 @@ bool Command::ExecFromInnerCommand(ExecType t, const std::type_info & commandTyp
 bool Command::CommandExec::Run()
 {
     bool bDone = false;
-
+    
     if_A(m_command)
     {
-        if_A(m_group)
+        if_A(!m_command->isObsolete()) // else the command will be deleted by the group
         {
-            if_A(!m_command->isObsolete()) // else the command will be deleted by the group
+            FunctionInfo<Event> reg;
+            if (m_pResFunc)
+                reg = m_command->observable().Register(Event::RESULT, *m_pResFunc);
+            
+            switch (m_type)
             {
-                FunctionInfo<Event> reg;
-                if (m_pResFunc)
-                    reg = m_command->observable().Register(Event::RESULT, *m_pResFunc);
-
-                switch (m_type)
-                {
                 case ExecType::UNDO:
-                    m_group->UndoUntil(m_command);
+                    if(m_group)
+                        m_group->UndoUntil(m_command);
+                    else
+                        m_command->Undo();
                     A(m_command->getState() == UNDONE);
                     bDone = true;
                     break;
                 case ExecType::REDO:
-                    m_group->RedoUntil(m_command);
+                    if(m_group)
+                        m_group->RedoUntil(m_command);
+                    else
+                        m_command->Redo();
                     A(m_command->getState() == REDONE);
                     bDone = true;
                     break;
                 default:
                     A(!"unknown type");
                     break;
-                }
-
-                if (m_pResFunc)
-                    m_command->observable().Remove(reg);
             }
+            
+            if (m_pResFunc)
+                m_command->observable().Remove(reg);
         }
     }
+    
 
     return bDone;
 }
@@ -377,28 +334,36 @@ auto Command::ListInnerCommandsReadyFor(ExecType t, const std::type_info & comma
 {
     std::vector < CommandExec > v;
 
-    UndoGroups::iterator itG, endG;
-    traverseInnerGroups(itG, endG);
+    Undoables::iterator itG, endG;
+    traverseForward(itG, endG);
     for (; itG != endG; ++itG)
     {
-        UndoGroup * g = *itG;
-        if_A(g)
+        Undoable * u = *itG;
+        
+        if(UndoGroup * g = dynamic_cast<UndoGroup*>(u))
         {
-            // UndoGroups are not ordered in a Command so traversing forward or backward should have no implication
-            UndoGroup::Commands::const_iterator it, end;
-            (*itG)->traverseForward(it, end);
-            for (; it != end; ++it)
+            std::vector<Undoable*> v2;
+            g->traverseForwardRecurse(v2);
+            for (auto u2 : v2)
             {
-                Command * c = *it;
-                if_A(c)
+                if( Command * c2 = dynamic_cast<Command*>(u2) )
                 {
-                    if (c->ReadyFor(t, commandType, dataBefore, dataAfter, pRef))
+                    if (c2->ReadyFor(t, commandType, dataBefore, dataAfter, pRef))
                     {
-                        v.emplace_back(g, c, t, pResFunc);
+                        v.emplace_back(g, c2, t, pResFunc);
                     }
                 }
             }
         }
+        else if(Command * c = dynamic_cast<Command*>(u))
+        {
+            if (c->ReadyFor(t, commandType, dataBefore, dataAfter, pRef))
+            {
+                v.emplace_back((UndoGroup*)NULL, c, t, pResFunc);
+            }
+        }
+        else
+            A(0);
     }
 
     return v;
@@ -460,6 +425,29 @@ end:
     return bRet;
 }
 
+auto Command::getState() const -> State
+{
+    return m_state;
+}
+
+void Command::setState(State state)
+{
+    m_state = state;
+}
+
+bool Command::validStateToExecute() const
+{
+    return (m_state == NOT_EXECUTED);
+}
+bool Command::validStateToUndo() const
+{
+    return ((m_state == EXECUTED) || (m_state == REDONE));
+}
+bool Command::validStateToRedo() const
+{
+    return (m_state == UNDONE);
+}
+
 Command::CommandResult::CommandResult(bool bSuccess) :
 m_bInitialized(true)
 , m_success(bSuccess)
@@ -479,3 +467,23 @@ bool Command::CommandResult::Success() const
     A(initialized());
     return m_success;
 }
+
+
+const char * Command::StateToString(State s)
+{
+    switch (s)
+    {
+        case NOT_EXECUTED:
+            return "NOT_EXECUTED";
+        case EXECUTED:
+            return "EXECUTED";
+        case UNDONE:
+            return "UNDONE";
+        case REDONE:
+            return "REDONE";
+        default:
+            return "UNKNOWN";
+    }
+}
+
+

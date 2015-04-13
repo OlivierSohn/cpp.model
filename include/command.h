@@ -28,14 +28,23 @@ namespace imajuscule
 
         virtual ~Command();
 
+        enum State
+        {
+            NOT_EXECUTED,
+            EXECUTED,
+            UNDONE,
+            REDONE
+        };
+        static const char * StateToString(State);
+        
+        State getState() const;
+        bool validStateToExecute() const;
+        bool validStateToUndo() const;
+        bool validStateToRedo() const;
 
         bool Execute() override; // return false if Command has no effect
         bool Undo() override;
         bool Redo() override;
-
-        void Add(Command*) override;
-        void startTransaction();
-        void endTransaction();
 
         void getExtendedDescription(std::string & desc);
         void getDescription(std::string & desc);
@@ -46,18 +55,17 @@ namespace imajuscule
         virtual bool doUndo();
         virtual bool doRedo();
 
+        void setState(State state);
+
     private:
         void onObsolete();
 
+        State m_state;
         Observable<ObsolescenceEvent> * m_obsolescenceObservable;
         std::vector<FunctionInfo<ObsolescenceEvent>> m_reg;
 
-        typedef std::list<UndoGroup*> UndoGroups;
-        UndoGroups m_innerGroups;
-        bool m_bInTransaction;
-        UndoGroup * m_curGroup;
-
-        void traverseInnerGroups(UndoGroups::iterator&begin, UndoGroups::iterator&end);
+        bool Undo(Undoable * limit, bool bStrict, bool & bFoundLimit) override;
+        bool Redo(Undoable * limit, bool bStrict, bool & bFoundLimit) override;
 
     public:
         ////////////////////////////////
@@ -102,7 +110,7 @@ namespace imajuscule
             virtual ~data();
             data();
         };
-    protected:
+
         Command(data * pDataBefore, data * pDataAfter, Referentiable * r = NULL, Observable<ObsolescenceEvent> * o = NULL);
 
         data *m_pBefore;
