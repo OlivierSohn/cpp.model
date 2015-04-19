@@ -68,7 +68,7 @@
 		097662961AD357F70099DA54 /* platform.defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.defines.h; sourceTree = "<group>"; };
 		097662971AD357F70099DA54 /* referentiable.cmd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.cmd.h; sourceTree = "<group>"; };
 		097662981AD357F70099DA54 /* referentiable.cmd.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.cmd.hpp; sourceTree = "<group>"; };
-		097662991AD357F70099DA54 /* referentiable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.h; sourceTree = "<group>"; };
+		097662991AD357F70099DA54 /* referentiable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = referentiable.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		0976629A1AD357F70099DA54 /* referentiable.manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.manager.h; sourceTree = "<group>"; };
 		0976629B1AD357F70099DA54 /* referentiable.manager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.manager.hpp; sourceTree = "<group>"; };
 		0976629C1AD357F70099DA54 /* session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = session.h; sourceTree = "<group>"; };
@@ -437,6 +437,7 @@
 				09429CA81AD38207001513DA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		097662701AD355F20099DA54 /* Build configuration list for PBXProject "model" */ = {
 			isa = XCConfigurationList;
