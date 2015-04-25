@@ -140,23 +140,34 @@ Referentiable * Referentiable::mainRefAttr() const
     return NULL;
 }
 
+
+Referentiable::ReferentiablePersist::ReferentiablePersist(DirectoryPath d, FileName f, Referentiable & r):
+Persistable::PersistablePersist(d, f, r)
+, m_ref(r)
+{
+}
+
+Referentiable::ReferentiablePersist::~ReferentiablePersist()
+{
+}
+
+Referentiable::ReferentiableLoad::ReferentiableLoad(DirectoryPath d, FileName f, Referentiable & r) :
+Persistable::PersistableLoad(d,f)
+, m_ref(r)
+{
+}
+Referentiable::ReferentiableLoad::~ReferentiableLoad()
+{
+}
+
 eResult Referentiable::ReferentiablePersist::Save()
 {
     eResult res = ILE_SUCCESS;
 
-    Referentiable * r = ref();
-    if (r)
-    {
-        WriteKeyData(KEY_NAME, r->m_hintName);
-        WriteKeyData(KEY_DATE_CREA, r->m_dateOfCreation);
-        WriteKeyData(KEY_GUID, r->m_guid);
-    }
-    else
-    {
-        LG(ERR, "Referentiable::ReferentiablePersist::Save: NULL ref");
-        res = ILE_OBJECT_INVALID;
-    }
-
+    WriteKeyData(KEY_NAME, m_ref.m_hintName);
+    WriteKeyData(KEY_DATE_CREA, m_ref.m_dateOfCreation);
+    WriteKeyData(KEY_GUID, m_ref.m_guid);
+    
     return res;
 }
 
@@ -167,15 +178,15 @@ void Referentiable::ReferentiableLoad::LoadStringForKey(char key, std::string & 
     switch (key)
     {
     case KEY_GUID:
-        ref()->m_guid = sVal;
+        m_ref.m_guid = sVal;
         break;
 
     case KEY_NAME:
-        ref()->m_hintName = sVal;
+        m_ref.m_hintName = sVal;
         break;
 
     case KEY_DATE_CREA:
-        ref()->m_dateOfCreation = sVal;
+        m_ref.m_dateOfCreation = sVal;
         break;
 
     default:

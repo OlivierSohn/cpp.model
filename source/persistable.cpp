@@ -36,3 +36,42 @@ void Persistable::removeSpecAndUnforward(Persistable * upd, const FunctionInfo<P
     removeSpec(upd);
     upd->observable().Remove(reg);
 }
+
+eResult Persistable::Save(PersistablePersist&pp)
+{
+    eResult ret = ILE_NOT_IMPLEMENTED;
+    A(0);
+    return ret;
+}
+
+Persistable::PersistablePersist::PersistablePersist(DirectoryPath d, FileName f, Persistable & p):
+KeysPersist(d, f)
+, m_persistable(p)
+{
+}
+
+Persistable::PersistablePersist::~PersistablePersist()
+{
+}
+    
+eResult Persistable::PersistablePersist::Save()
+{
+    eResult ret = ILE_NOT_IMPLEMENTED;
+    A(0);
+    return ret;
+}
+
+Persistable::PersistableLoad::PersistableLoad(DirectoryPath d, FileName f) :
+ KeysLoad(d,f)
+{
+}
+Persistable::PersistableLoad::~PersistableLoad()
+{
+    
+}
+eResult Persistable::PersistableLoad::Load()
+{
+    eResult ret = ILE_NOT_IMPLEMENTED;
+    A(0);
+    return ret;
+};

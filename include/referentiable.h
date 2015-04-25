@@ -48,27 +48,29 @@ namespace imajuscule
         Referentiable(ReferentiableManagerBase * manager, const std::string & guid);
         Referentiable(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName);
 
-        class ReferentiablePersist : public KeysPersist
+        class ReferentiablePersist : public PersistablePersist
         {
         public:
-            ReferentiablePersist(){}
-            virtual ~ReferentiablePersist(){}
+            ReferentiablePersist(DirectoryPath, FileName, Referentiable & r);
+            virtual ~ReferentiablePersist();
 
             virtual eResult Save();
 
         protected:
-            virtual Referentiable * ref() = 0;
+            Referentiable & m_ref;
         };
 
-        class ReferentiableLoad : public KeysLoad
+        class ReferentiableLoad : public PersistableLoad
         {
         public:
-            ReferentiableLoad(){}
-            virtual ~ReferentiableLoad(){}
+            ReferentiableLoad( DirectoryPath, FileName, Referentiable&);
+            virtual ~ReferentiableLoad();
 
         protected:
-            virtual Referentiable * ref() = 0;
             virtual void LoadStringForKey(char key, std::string & str);
+            
+        private:
+            Referentiable & m_ref;
         };
 
     private:
