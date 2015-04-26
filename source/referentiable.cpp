@@ -162,13 +162,11 @@ Referentiable::ReferentiableLoad::~ReferentiableLoad()
 
 eResult Referentiable::ReferentiablePersist::Save()
 {
-    eResult res = ILE_SUCCESS;
-
     WriteKeyData(KEY_NAME, m_ref.m_hintName);
     WriteKeyData(KEY_DATE_CREA, m_ref.m_dateOfCreation);
     WriteKeyData(KEY_GUID, m_ref.m_guid);
     
-    return res;
+    return PersistablePersist::Save();
 }
 
 void Referentiable::ReferentiableLoad::LoadStringForKey(char key, std::string & sVal)

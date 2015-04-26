@@ -56,8 +56,7 @@ Persistable::PersistablePersist::~PersistablePersist()
     
 eResult Persistable::PersistablePersist::Save()
 {
-    eResult ret = ILE_NOT_IMPLEMENTED;
-    A(0);
+    eResult ret = ILE_SUCCESS;
     return ret;
 }
 
@@ -69,9 +68,3 @@ Persistable::PersistableLoad::~PersistableLoad()
 {
     
 }
-eResult Persistable::PersistableLoad::Load()
-{
-    eResult ret = ILE_NOT_IMPLEMENTED;
-    A(0);
-    return ret;
-};

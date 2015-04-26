@@ -44,8 +44,6 @@ namespace imajuscule
         public:
             PersistableLoad(DirectoryPath d, FileName f);
             virtual ~PersistableLoad();
-            
-            eResult Load();
         };
     private:
         Observable<PersistableEvent, Persistable*> * m_observable;
