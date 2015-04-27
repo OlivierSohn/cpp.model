@@ -9,6 +9,7 @@
 #define DECL_PERSIST( type, supertype ) \
 public: \
 void Load(Storage::DirectoryPath d, Storage::FileName f) override; \
+eResult Save() override; \
 protected: \
 class type ## Persist : public supertype ## Persist { \
 public: \
@@ -35,6 +36,12 @@ type::type ## Persist ::~ type ## Persist () {} \
 eResult type::type ## Persist::doSave() { \
 implSave \
 return supertype ## Persist::doSave(); \
+} \
+eResult type::Save() \
+{ \
+type::type ## Persist l( Storage::curDir(), guid(), *this);  \
+eResult res = l.Save();\
+return res;\
 } \
 type::type ## Load :: type ## Load(DirectoryPath d, FileName f, type & r) : supertype ## Load(d, f, r), m_ ## type(r) {} \
 type::type ## Load ::~ type ## Load() {} \
@@ -69,6 +76,7 @@ namespace imajuscule
         Observable<PersistableEvent, Persistable*> & observable();
 
         virtual void Load(Storage::DirectoryPath d, Storage::FileName f){A(0);}
+        virtual eResult Save(){A(0); return ILE_ERROR;}
         
     protected:
         Persistable();
