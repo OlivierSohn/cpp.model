@@ -37,7 +37,9 @@ namespace imajuscule
 
         void Hide();
         bool isHidden();
-
+        
+        static bool ReadIndexForDiskGUID(const std::string & guid, unsigned int &index, std::string & sHintName);
+        
     protected:
         virtual ~Referentiable();
 
@@ -48,29 +50,24 @@ namespace imajuscule
         Referentiable(ReferentiableManagerBase * manager, const std::string & guid);
         Referentiable(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName);
 
-        class ReferentiablePersist : public PersistablePersist
+        DECL_PERSIST(Referentiable, Persistable);
+        
+        class ReferentiableIndexLoad : public KeysLoad
         {
         public:
-            ReferentiablePersist(DirectoryPath, FileName, Referentiable & r);
-            virtual ~ReferentiablePersist();
-
-            virtual eResult Save();
-
-        protected:
-            Referentiable & m_ref;
-        };
-
-        class ReferentiableLoad : public PersistableLoad
-        {
-        public:
-            ReferentiableLoad( DirectoryPath, FileName, Referentiable&);
-            virtual ~ReferentiableLoad();
-
-        protected:
-            virtual void LoadStringForKey(char key, std::string & str);
+            ReferentiableIndexLoad( DirectoryPath, FileName);
+            ~ReferentiableIndexLoad();
             
+            bool found(unsigned int &index, std::string & nameHint);
+        
+        protected:
+            void LoadInt32ForKey(char key, int32_t i) override;
+            void LoadStringForKey(char key, std::string & sVal) override;
+
         private:
-            Referentiable & m_ref;
+            bool m_bFound;
+            std::string m_hintName;
+            unsigned int m_uiIndex;
         };
 
     private:

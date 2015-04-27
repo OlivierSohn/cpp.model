@@ -54,14 +54,15 @@ Persistable::PersistablePersist::~PersistablePersist()
 {
 }
     
-eResult Persistable::PersistablePersist::Save()
+eResult Persistable::PersistablePersist::doSave()
 {
     eResult ret = ILE_SUCCESS;
     return ret;
 }
 
-Persistable::PersistableLoad::PersistableLoad(DirectoryPath d, FileName f) :
+Persistable::PersistableLoad::PersistableLoad(DirectoryPath d, FileName f, Persistable & p) :
  KeysLoad(d,f)
+, m_persistable(p)
 {
 }
 Persistable::PersistableLoad::~PersistableLoad()

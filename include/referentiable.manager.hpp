@@ -18,7 +18,8 @@ using namespace imajuscule;
 ReferentiableManagerBase::ReferentiableManagerBase():
 Visitable()
 , m_observable(Observable<Event, Referentiable*>::instantiate())
-{}
+{
+}
 
 ReferentiableManagerBase::~ReferentiableManagerBase()
 {
@@ -631,4 +632,52 @@ bool ReferentiableDeleteCmdBase::ExecuteFromInnerCommand(Referentiable & r)
 void ReferentiableDeleteCmdBase::Execute(Referentiable & r)
 {
     (new ReferentiableDeleteCmdBase(r))->Command::Execute();
+}
+
+Referentiables * Referentiables::m_instance( NULL );
+Referentiables::Referentiables(){}
+Referentiables::~Referentiables(){}
+Referentiables * Referentiables::getInstance()
+{
+    if(!m_instance)
+        m_instance = new Referentiables();
+    
+    return m_instance;
+}
+Referentiable* Referentiables::fromGUID(const std::string & guid)
+{
+    return getInstance()->findRefFromGUID(guid);
+}
+
+Referentiable* Referentiables::findRefFromGUID(const std::string & guid)
+{
+    for(auto man: m_managers)
+    {
+        if(Referentiable * ref = man->findByGuid(guid))
+            return ref;
+    }
+    
+    Referentiable * r(NULL);
+    unsigned int index;
+    std::string nameHint;
+    if( Referentiable::ReadIndexForDiskGUID(guid, index, nameHint) )
+    {
+        if_A(index < m_managers.size())
+        {
+            std::vector<std::string> guids{guid};
+            r = m_managers[index]->newReferentiable(nameHint, guids);
+            r->Load(Storage::curDir(), guid);
+        }
+    }
+
+    return r;
+}
+void Referentiables::regManager(ReferentiableManagerBase & m)
+{
+    A(m.index() == m_managers.size());
+    m_managers.push_back(&m);
+}
+void Referentiables::registerManager(ReferentiableManagerBase & m)
+{
+    return getInstance()->regManager(m);
 }

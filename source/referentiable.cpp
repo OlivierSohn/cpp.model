@@ -9,6 +9,7 @@
 #define KEY_DATE_CREA           'd' // string
 #define KEY_GUID                'e' // string
 #define KEY_NAME                'i' // string
+#define KEY_MANAGER_INDEX        -110
 
 using namespace imajuscule;
 
@@ -140,57 +141,76 @@ Referentiable * Referentiable::mainRefAttr() const
     return NULL;
 }
 
-
-Referentiable::ReferentiablePersist::ReferentiablePersist(DirectoryPath d, FileName f, Referentiable & r):
-Persistable::PersistablePersist(d, f, r)
-, m_ref(r)
-{
-}
-
-Referentiable::ReferentiablePersist::~ReferentiablePersist()
-{
-}
-
-Referentiable::ReferentiableLoad::ReferentiableLoad(DirectoryPath d, FileName f, Referentiable & r) :
-Persistable::PersistableLoad(d,f)
-, m_ref(r)
-{
-}
-Referentiable::ReferentiableLoad::~ReferentiableLoad()
-{
-}
-
-eResult Referentiable::ReferentiablePersist::Save()
-{
-    WriteKeyData(KEY_NAME, m_ref.m_hintName);
-    WriteKeyData(KEY_DATE_CREA, m_ref.m_dateOfCreation);
-    WriteKeyData(KEY_GUID, m_ref.m_guid);
+IMPL_PERSIST(Referentiable, Persistable,
+             
+             ReferentiableManagerBase * rm = m_Referentiable.getManager();
+             if_A(rm)
+                WriteKeyData(KEY_MANAGER_INDEX, (int32_t)rm->index());
+             WriteKeyData(KEY_NAME, m_Referentiable.m_hintName);
+             WriteKeyData(KEY_DATE_CREA, m_Referentiable.m_dateOfCreation);
+             WriteKeyData(KEY_GUID, m_Referentiable.m_guid);
     
-    return PersistablePersist::Save();
-}
+             ,
+             
+             case KEY_GUID:
+             m_Referentiable.m_guid = str;
+             break;
+             case KEY_NAME:
+             m_Referentiable.m_hintName = str;
+             break;
+             case KEY_DATE_CREA:
+             m_Referentiable.m_dateOfCreation = str;
+             break;
 
-void Referentiable::ReferentiableLoad::LoadStringForKey(char key, std::string & sVal)
+             );
+
+Referentiable::ReferentiableIndexLoad::ReferentiableIndexLoad( DirectoryPath d, FileName f) :
+KeysLoad(d,f)
+, m_bFound(false)
+, m_uiIndex(0)
 {
-    LG(INFO, "ReferentiableLoad::LoadStringForKey(%d, %s) begin", key, (sVal.c_str() ? sVal.c_str() : "NULL"));
-
+    ReadAllKeys();
+}
+Referentiable::ReferentiableIndexLoad::~ReferentiableIndexLoad()
+{}
+void Referentiable::ReferentiableIndexLoad::LoadInt32ForKey(char key, int32_t i)
+{
+    switch(key)
+    {
+        case KEY_MANAGER_INDEX:
+            m_bFound = true;
+            m_uiIndex = i;
+            break;
+            
+        default:
+            break;
+    }
+}
+void Referentiable::ReferentiableIndexLoad::LoadStringForKey(char key, std::string & sVal)
+{
     switch (key)
     {
-    case KEY_GUID:
-        m_ref.m_guid = sVal;
-        break;
-
-    case KEY_NAME:
-        m_ref.m_hintName = sVal;
-        break;
-
-    case KEY_DATE_CREA:
-        m_ref.m_dateOfCreation = sVal;
-        break;
-
-    default:
-        LG(ERR, "ReferentiableLoad::LoadStringForKey(%d) : unknown (or future?) tag for this object : %d", key, key);
-        break;
+        case KEY_NAME:
+            m_hintName = sVal;
+            break;
+            
+        default:
+            break;
     }
-
-    LG(INFO, "ReferentiableLoad::LoadStringForKey(%d, %s) end", key, (sVal.c_str() ? sVal.c_str() : "NULL"));
 }
+
+bool Referentiable::ReferentiableIndexLoad::found(unsigned int &index, std::string & sHintName)
+{
+    index = m_uiIndex;
+    sHintName = m_hintName;
+    return m_bFound;
+}
+
+bool Referentiable::ReadIndexForDiskGUID(const std::string & guid, unsigned int &index, std::string & sHintName)
+{
+    bool bFound = false;
+    Referentiable::ReferentiableIndexLoad l(Storage::curDir(), guid);
+    bFound = l.found(index, sHintName);
+    return bFound;
+}
+

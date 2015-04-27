@@ -46,6 +46,8 @@ namespace imajuscule
         Observable<Event, Referentiable*> & observable();
 
         void RemoveRef(Referentiable*);
+        
+        virtual unsigned int index() = 0;
 
         PERSISTABLE_VISITOR_HEADER_IMPL
 
@@ -71,6 +73,22 @@ namespace imajuscule
         virtual Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible = true) = 0;
         void RemoveRefInternal(Referentiable*);
     };
+    
+    class Referentiables
+    {
+    public:
+        static Referentiable* fromGUID(const std::string &);
+        static void registerManager(ReferentiableManagerBase &);
+    private:
+        Referentiables();
+        virtual ~Referentiables();
+        static Referentiables * getInstance();
+        static Referentiables * m_instance;
+        std::vector<ReferentiableManagerBase*> m_managers;
+
+        Referentiable* findRefFromGUID(const std::string &);
+        void regManager(ReferentiableManagerBase &);
+    };
 
     template <class T>
     class ReferentiableManager : public ReferentiableManagerBase
@@ -80,6 +98,8 @@ namespace imajuscule
         static ReferentiableManager * getInstance();
 
         const char * defaultNameHint();
+        
+        unsigned int index() override;
 
     private:
         static ReferentiableManager * g_pRefManager;
