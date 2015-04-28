@@ -500,6 +500,8 @@ ReferentiableNewCmdBase::ReferentiableNewCmdBase(ReferentiableManagerBase & mana
 ReferentiableCmdBase(&manager, nameHint, ACTION_NEW)
 , m_guids(guids)
 {
+    if(!guids.empty())
+        m_GUID = guids.front();
 }
 
 ReferentiableNewCmdBase::~ReferentiableNewCmdBase()
