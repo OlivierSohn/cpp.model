@@ -637,12 +637,16 @@ void ReferentiableDeleteCmdBase::Execute(Referentiable & r)
 }
 
 Referentiables * Referentiables::m_instance( NULL );
-Referentiables::Referentiables(){}
+Referentiables::Referentiables()
+{}
 Referentiables::~Referentiables(){}
 Referentiables * Referentiables::getInstance()
 {
-    if(!m_instance)
+    if (!m_instance)
+    {
         m_instance = new Referentiables();
+        InitializeRefManagers();
+    }
     
     return m_instance;
 }

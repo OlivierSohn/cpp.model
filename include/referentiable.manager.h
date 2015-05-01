@@ -10,6 +10,8 @@
 
 namespace imajuscule
 {
+    int InitializeRefManagers();
+
     class ReferentiableCmdBase;
     class ReferentiableNewCmdBase;
     class ReferentiableDeleteCmdBase;
