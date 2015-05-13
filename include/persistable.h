@@ -25,12 +25,14 @@ type ## Load( DirectoryPath, FileName, type&); \
 virtual ~type ## Load(); \
 protected: \
 virtual void LoadStringForKey(char key, std::string & str); \
+virtual void LoadStringArrayForKey(char key, std::vector<std::string> const &); \
 private: \
 type & m_ ## type; \
 };\
 private:
 
-#define IMPL_PERSIST( type, supertype, implSave, implLoad ) \
+// persistence of strings, stringarrays
+#define IMPL_PERSIST2( type, supertype, implSave, implLoad, implLoad2 ) \
 type::type ## Persist :: type ## Persist(DirectoryPath d, FileName f, type & r) : supertype ## Persist(d, f, r), m_ ## type(r) {} \
 type::type ## Persist ::~ type ## Persist () {} \
 eResult type::type ## Persist::doSave() { \
@@ -54,11 +56,22 @@ supertype ## Load::LoadStringForKey(key, str); \
 break; \
 } \
 } \
+void type::type ## Load ::LoadStringArrayForKey(char key, std::vector<std::string> const & vs) { \
+switch(key) \
+{ \
+implLoad2 \
+default: \
+supertype ## Load::LoadStringArrayForKey(key, vs); \
+break; \
+} \
+} \
 void type::Load(Storage::DirectoryPath d, Storage::FileName f) \
 { \
 type::type ## Load l( d, f, *this);  \
 l.ReadAllKeys();\
 }
+
+#define IMPL_PERSIST( type, supertype, implSave, implLoad ) IMPL_PERSIST2( type, supertype, implSave, implLoad, )
 
 
 namespace imajuscule
