@@ -21,7 +21,7 @@ namespace imajuscule
     struct FunctionInfo
     {
         Event m_event;
-        unsigned int m_key;
+        size_t m_key;
     };
 
     template <typename Event, typename... Args>
@@ -37,12 +37,12 @@ namespace imajuscule
         // map doesn't work when the callback modifies the map 
         // so we use a list instead : its iterators are not invalidated by insertion / removal
         typedef std::list< std::tuple<
-            unsigned int /*key*/, 
+            size_t /*key*/,
             bool /*active (false means scheduled for removal)*/, 
             int /*recursive level (>0 means being sent)*/,
             std::function<void(Args...) /*function*/ > > > callbacksList;
 
-        typedef std::stack<unsigned int> availableKeys;
+        typedef std::stack<size_t> availableKeys;
         enum EvtNtfTupleIndex
         {
             AVAILABLE_KEYS = 0,
@@ -122,7 +122,7 @@ namespace imajuscule
             }
 
             // take key from stack of available keys, or if it's empty, that means the next available key is the size of the map
-            unsigned int key;
+            size_t key;
             availableKeys & avKeys = std::get<AVAILABLE_KEYS>(*v);
             callbacksList & cbslist = std::get<CBS_LIST>(*v);
             if (avKeys.empty())
@@ -150,8 +150,7 @@ namespace imajuscule
                 {
                     m_iCurNotifyCalls++;
 
-                    size_t size1 = cbslist.size();
-                    OBS_LG(INFO, "Observable(%x)::Notify(%d) : size0 %d", this, event, size1);
+                    OBS_LG(INFO, "Observable(%x)::Notify(%d) : size0 %d", this, event, cbslist.size());
 
                     typename callbacksList::iterator itM = cbslist.begin();
                     typename callbacksList::iterator endM = cbslist.end();

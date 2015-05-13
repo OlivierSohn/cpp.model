@@ -161,7 +161,7 @@ bool Command::Redo(Undoable * limit, bool bStrict, bool & bFoundLimit)
 
 void Command::getExtendedDescription(std::string & desc)
 {
-    unsigned int nInner = m_undoables.size();
+    size_t nInner = m_undoables.size();
     if (nInner > 0)
     {
         desc.append("(+");

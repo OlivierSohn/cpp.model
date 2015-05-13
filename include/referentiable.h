@@ -49,8 +49,8 @@ namespace imajuscule
         Referentiable();
         Referentiable(ReferentiableManagerBase * manager, const std::string & guid);
         Referentiable(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName);
-
-        DECL_PERSIST(Referentiable, Persistable);
+        
+        DECL_PERSIST(Referentiable, Persistable)
         
         class ReferentiableIndexLoad : public KeysLoad
         {

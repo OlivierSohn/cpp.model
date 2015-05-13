@@ -8,6 +8,8 @@
 #include "observable.h"
 #include "command.h"
 
+#define NEWREF(x) ReferentiableManager<x>::New()
+
 namespace imajuscule
 {
     int InitializeRefManagers();
@@ -102,6 +104,8 @@ namespace imajuscule
         const char * defaultNameHint();
         
         unsigned int index() override;
+        
+        static T* New();
 
     private:
         static ReferentiableManager * g_pRefManager;
@@ -156,7 +160,7 @@ namespace imajuscule
 
         class CommandResult : public Command::CommandResult
         {
-            SUBCR;
+            SUBCR
         public:
             CommandResult(bool bSuccess, Referentiable*);
 

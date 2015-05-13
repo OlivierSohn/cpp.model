@@ -26,7 +26,7 @@ namespace imajuscule
 
         class CommandResult : public Command::CommandResult
         {
-            SUBCR;
+            SUBCR
         public:
             CommandResult(bool bSuccess, bool bAttrChanged);
 

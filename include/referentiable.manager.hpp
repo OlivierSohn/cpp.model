@@ -338,7 +338,7 @@ Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::stri
 
     std::string guid;
 
-    int sizeGuids = guids.size();
+    size_t sizeGuids = guids.size();
 
     if (sizeGuids > 0)
     {
@@ -366,8 +366,16 @@ end:
     return ref;
 }
 
+template <class T>
+T* ReferentiableManager<T>::New()
+{
+    ReferentiableManager<T>* rm = ReferentiableManager<T>::getInstance();
+    if_A(rm)
+        return static_cast<T*>(rm->newReferentiable());
+    return NULL;
+}
 
-bool ReferentiableCmdBase::data::operator!=(const Command::data& other) const 
+bool ReferentiableCmdBase::data::operator!=(const Command::data& other) const
 {
     auto pOther = dynamic_cast<const ReferentiableCmdBase::data * >(&other);
     if_A(pOther)
