@@ -26,13 +26,14 @@ virtual ~type ## Load(); \
 protected: \
 virtual void LoadStringForKey(char key, std::string & str); \
 virtual void LoadStringArrayForKey(char key, std::vector<std::string> const &); \
+virtual void LoadInt32ForKey(char key, int32_t); \
 private: \
 type & m_ ## type; \
 };\
 private:
 
 // persistence of strings, stringarrays
-#define IMPL_PERSIST2( type, supertype, implSave, implLoad, implLoad2 ) \
+#define IMPL_PERSIST3( type, supertype, implSave, ilString, ilStringArray, ilInt32 ) \
 type::type ## Persist :: type ## Persist(DirectoryPath d, FileName f, type & r) : supertype ## Persist(d, f, r), m_ ## type(r) {} \
 type::type ## Persist ::~ type ## Persist () {} \
 eResult type::type ## Persist::doSave() { \
@@ -50,7 +51,7 @@ type::type ## Load ::~ type ## Load() {} \
 void type::type ## Load ::LoadStringForKey(char key, std::string & str) { \
 switch(key) \
 { \
-implLoad \
+ilString \
 default: \
 supertype ## Load::LoadStringForKey(key, str); \
 break; \
@@ -59,9 +60,18 @@ break; \
 void type::type ## Load ::LoadStringArrayForKey(char key, std::vector<std::string> const & vs) { \
 switch(key) \
 { \
-implLoad2 \
+ilStringArray \
 default: \
 supertype ## Load::LoadStringArrayForKey(key, vs); \
+break; \
+} \
+} \
+void type::type ## Load ::LoadInt32ForKey(char key, int32_t intVal) { \
+switch(key) \
+{ \
+ilInt32 \
+default: \
+supertype ## Load::LoadInt32ForKey(key, intVal); \
 break; \
 } \
 } \
@@ -71,8 +81,64 @@ type::type ## Load l( d, f, *this);  \
 l.ReadAllKeys();\
 }
 
+#define IMPL_PERSIST2( type, supertype, implSave, implLoad, implLoad2 ) IMPL_PERSIST3( type, supertype, implSave, implLoad, implLoad2, )
+
 #define IMPL_PERSIST( type, supertype, implSave, implLoad ) IMPL_PERSIST2( type, supertype, implSave, implLoad, )
 
+#define UGLY_SAVE_REF(ref) \
+eResult res = ref->Save(); \
+A(ILE_SUCCESS == res);
+
+#define W_LNK( refExpr, key ) \
+if(Referentiable * ref = refExpr) \
+{       \
+    WriteKeyData(key, ref->guid()); \
+    UGLY_SAVE_REF(ref);\
+}
+
+#define W_LNK_ELT( ref, vs ) \
+if_A(ref) \
+{\
+    vs.push_back(ref->guid());\
+    UGLY_SAVE_REF(ref);\
+}
+
+#define W_LNKS( vec, key ) \
+std::vector<std::string> vs; \
+for(auto elt : vec) \
+    W_LNK_ELT( elt, vs); \
+WriteKeyData(key, vs);
+
+#define W_LNKS_P1( container, key ) \
+std::vector<std::string> vs; \
+for(auto & it : container) \
+{\
+    Referentiable * ref = it.first; \
+    W_LNK_ELT( ref, vs); \
+}\
+WriteKeyData(key, vs);
+
+#define R_LNKS( vecTo, key ) \
+case key: \
+    for(auto const & guid : vs)\
+        vecTo.push_back( static_cast<decltype(vecTo)::value_type>(Referentiables::fromGUID(guid)) );\
+    break;
+
+#define R_LNKS_OP( Op, type, key ) \
+case key: \
+    for(auto const & guid : vs)\
+        Op( static_cast<type*>(Referentiables::fromGUID(guid)) );\
+break;
+
+#define R_LNK_OP( Op, type, key ) \
+case key: \
+Op( static_cast<type*>(Referentiables::fromGUID(str)) );\
+break;
+
+#define R_LNK( To, key ) \
+case key: \
+To = static_cast<decltype(To)>(Referentiables::fromGUID(str));\
+break;
 
 namespace imajuscule
 {

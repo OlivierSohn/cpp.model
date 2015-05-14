@@ -141,7 +141,7 @@ Referentiable * Referentiable::mainRefAttr() const
     return NULL;
 }
 
-IMPL_PERSIST(Referentiable, Persistable,
+IMPL_PERSIST3(Referentiable, Persistable,
              
              ReferentiableManagerBase * rm = m_Referentiable.getManager();
              if_A(rm)
@@ -162,6 +162,11 @@ IMPL_PERSIST(Referentiable, Persistable,
              m_Referentiable.m_dateOfCreation = str;
              break;
 
+              ,
+              ,
+              
+              case KEY_MANAGER_INDEX:
+              break;
              );
 
 Referentiable::ReferentiableIndexLoad::ReferentiableIndexLoad( DirectoryPath d, FileName f) :
@@ -211,6 +216,7 @@ bool Referentiable::ReadIndexForDiskGUID(const std::string & guid, unsigned int 
     bool bFound = false;
     Referentiable::ReferentiableIndexLoad l(Storage::curDir(), guid);
     bFound = l.found(index, sHintName);
+    A(bFound);
     return bFound;
 }
 

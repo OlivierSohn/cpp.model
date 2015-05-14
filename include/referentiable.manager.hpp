@@ -674,7 +674,7 @@ Referentiable* Referentiables::findRefFromGUID(const std::string & guid)
     Referentiable * r(NULL);
     unsigned int index;
     std::string nameHint;
-    if( Referentiable::ReadIndexForDiskGUID(guid, index, nameHint) )
+    if_A( Referentiable::ReadIndexForDiskGUID(guid, index, nameHint) )
     {
         if_A(index < m_managers.size())
         {
