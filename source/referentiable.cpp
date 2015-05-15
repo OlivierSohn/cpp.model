@@ -191,14 +191,16 @@ void Referentiable::ReferentiableIndexLoad::LoadInt32ForKey(char key, int32_t i)
             break;
     }
 }
-void Referentiable::ReferentiableIndexLoad::LoadStringForKey(char key, std::string & sVal)
+void Referentiable::ReferentiableIndexLoad::LoadStringForKey(char key, std::string & str)
 {
     switch (key)
     {
         case KEY_NAME:
-            m_hintName = sVal;
+            m_hintName = str;
             break;
-            
+        case KEY_DATE_CREA:
+            m_dateOfCreation = str;
+            break;
         default:
             break;
     }
@@ -209,6 +211,11 @@ bool Referentiable::ReferentiableIndexLoad::found(unsigned int &index, std::stri
     index = m_uiIndex;
     sHintName = m_hintName;
     return m_bFound;
+}
+
+const std::string & Referentiable::ReferentiableIndexLoad::dateCrea()
+{
+    return m_dateOfCreation;
 }
 
 bool Referentiable::ReadIndexForDiskGUID(const std::string & guid, unsigned int &index, std::string & sHintName)

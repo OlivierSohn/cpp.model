@@ -59,6 +59,7 @@ namespace imajuscule
             ~ReferentiableIndexLoad();
             
             bool found(unsigned int &index, std::string & nameHint);
+            const std::string & dateCrea();
         
         protected:
             void LoadInt32ForKey(char key, int32_t i) override;
@@ -66,7 +67,7 @@ namespace imajuscule
 
         private:
             bool m_bFound;
-            std::string m_hintName;
+            std::string m_hintName, m_dateOfCreation;
             unsigned int m_uiIndex;
         };
 
