@@ -135,7 +135,7 @@ case key: \
 Op( static_cast<type*>(Referentiables::fromGUID(str)) );\
 break;
 
-#define R_LNK( To, key ) \
+#define UGLY_R_LNK( To, key ) \
 case key: \
 To = static_cast<decltype(To)>(Referentiables::fromGUID(str));\
 break;
