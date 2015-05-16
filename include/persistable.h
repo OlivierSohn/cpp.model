@@ -34,6 +34,8 @@ private:
 
 // persistence of strings, stringarrays
 #define IMPL_PERSIST3( type, supertype, implSave, ilString, ilStringArray, ilInt32 ) \
+namespace imajuscule { \
+template class RefLink<imajuscule::type> ; \
 type::type ## Persist :: type ## Persist(DirectoryPath d, FileName f, type & r) : supertype ## Persist(d, f, r), m_ ## type(r) {} \
 type::type ## Persist ::~ type ## Persist () {} \
 eResult type::type ## Persist::doSave() { \
@@ -79,6 +81,7 @@ void type::Load(Storage::DirectoryPath d, Storage::FileName f) \
 { \
 type::type ## Load l( d, f, *this);  \
 l.ReadAllKeys();\
+} \
 }
 
 #define IMPL_PERSIST2( type, supertype, implSave, implLoad, implLoad2 ) IMPL_PERSIST3( type, supertype, implSave, implLoad, implLoad2, )
@@ -105,7 +108,7 @@ if_A(ref) \
 
 #define W_LNKS( vec, key ) \
 std::vector<std::string> vs; \
-for(auto elt : vec) \
+for(auto & elt : vec) \
     W_LNK_ELT( elt, vs); \
 WriteKeyData(key, vs);
 
@@ -144,7 +147,7 @@ namespace imajuscule
         Observable<PersistableEvent, Persistable*> & observable();
 
         virtual void Load(Storage::DirectoryPath d, Storage::FileName f){A(0);}
-        virtual eResult Save(){A(0); return ILE_ERROR;}
+        virtual eResult Save() {A(0); return ILE_ERROR;}
         
     protected:
         Persistable();
@@ -177,4 +180,5 @@ namespace imajuscule
     private:
         Observable<PersistableEvent, Persistable*> * m_observable;
     };
+    
 }

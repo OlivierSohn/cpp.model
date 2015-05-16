@@ -227,3 +227,33 @@ bool Referentiable::ReadIndexForDiskGUID(const std::string & guid, unsigned int 
     return bFound;
 }
 
+void Referentiable::registerSource( Referentiable& source )
+{
+    m_sources.push_back(&source);
+}
+void Referentiable::registerTarget( Referentiable& target )
+{
+    m_targets.push_back(&target);
+}
+
+void Referentiable::unRegisterTarget( Referentiable& target )
+{
+    m_targets.erase(std::remove(m_targets.begin(), m_targets.end(), &target), m_targets.end());
+}
+void Referentiable::unRegisterSource( Referentiable& source )
+{
+    m_sources.erase(std::remove(m_sources.begin(), m_sources.end(), &source), m_sources.end());
+}
+
+void Referentiable::traverseTargets(refs::iterator & begin, refs::iterator & end)
+{
+    begin = m_targets.begin();
+    end = m_targets.end();
+}
+void Referentiable::traverseSources(refs::iterator & begin, refs::iterator & end)
+{
+    begin = m_sources.begin();
+    end = m_sources.end();
+}
+
+

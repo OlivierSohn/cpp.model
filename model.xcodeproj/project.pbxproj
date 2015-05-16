@@ -42,6 +42,7 @@
 		097662C61AD357F70099DA54 /* undoable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A81AD357F70099DA54 /* undoable.cpp */; };
 		097662C71AD357F70099DA54 /* updatable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A91AD357F70099DA54 /* updatable.cpp */; };
 		097662C81AD357F70099DA54 /* visitable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662AA1AD357F70099DA54 /* visitable.cpp */; };
+		09DBDCA91B07C00200870E0A /* referentiable.link.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 09DBDCA81B07C00200870E0A /* referentiable.link.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -85,6 +86,7 @@
 		097662A81AD357F70099DA54 /* undoable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = undoable.cpp; sourceTree = "<group>"; };
 		097662A91AD357F70099DA54 /* updatable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = updatable.cpp; sourceTree = "<group>"; };
 		097662AA1AD357F70099DA54 /* visitable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = visitable.cpp; sourceTree = "<group>"; };
+		09DBDCA81B07C00200870E0A /* referentiable.link.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.link.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +145,7 @@
 				0976629E1AD357F70099DA54 /* updatable.h */,
 				0976629F1AD357F70099DA54 /* visitable.h */,
 				097662A01AD357F70099DA54 /* visitor.h */,
+				09DBDCA81B07C00200870E0A /* referentiable.link.hpp */,
 			);
 			path = include;
 			sourceTree = "<group>";
@@ -174,6 +177,7 @@
 				097662B21AD357F70099DA54 /* model.allincludes.h in Headers */,
 				097662B11AD357F70099DA54 /* history.manager.h in Headers */,
 				097662B61AD357F70099DA54 /* referentiable.cmd.h in Headers */,
+				09DBDCA91B07C00200870E0A /* referentiable.link.hpp in Headers */,
 				097662BE1AD357F70099DA54 /* visitable.h in Headers */,
 				097662B91AD357F70099DA54 /* referentiable.manager.h in Headers */,
 				097662BD1AD357F70099DA54 /* updatable.h in Headers */,
