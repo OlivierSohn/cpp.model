@@ -118,12 +118,6 @@ for(auto & it : container) \
 }\
 WriteKeyData(key, vs);
 
-#define R_LNKS( vecTo, key ) \
-case key: \
-    for(auto const & guid : vs)\
-        vecTo.push_back( static_cast<decltype(vecTo)::value_type>(Referentiables::fromGUID(guid)) );\
-    break;
-
 #define R_LNKS_OP( Op, type, key ) \
 case key: \
     for(auto const & guid : vs)\
@@ -133,11 +127,6 @@ break;
 #define R_LNK_OP( Op, type, key ) \
 case key: \
 Op( static_cast<type*>(Referentiables::fromGUID(str)) );\
-break;
-
-#define UGLY_R_LNK( To, key ) \
-case key: \
-To = static_cast<decltype(To)>(Referentiables::fromGUID(str));\
 break;
 
 namespace imajuscule
@@ -187,7 +176,5 @@ namespace imajuscule
         };
     private:
         Observable<PersistableEvent, Persistable*> * m_observable;
-        
-        
     };
 }
