@@ -139,7 +139,7 @@ namespace imajuscule
 {
     enum PersistableEvent
     {
-        OBJECT_DEFINITION_CHANGED = 0
+        OBJECT_DEFINITION_CHANGED = 0 // TODO this event should be in Referentiable
     };
 
     class Persistable : public Updatable
