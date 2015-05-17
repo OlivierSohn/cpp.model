@@ -82,11 +82,6 @@ bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const 
     return bRet;
 }
 
-const char * ReferentiableManagerBase::defaultNameHint()
-{
-    return "Referentiable";
-}
-
 void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
 {
     if_A (r)

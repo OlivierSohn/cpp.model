@@ -55,8 +55,10 @@ namespace imajuscule
 
         PERSISTABLE_VISITOR_HEADER_IMPL
 
+        virtual const char * UIName() = 0;
+
     protected:
-        virtual const char * defaultNameHint();
+        virtual const char * defaultNameHint() = 0;
         // pure virtual because the session names are unique "per object type"
         bool ComputeSessionName(Referentiable*);
 
@@ -102,6 +104,7 @@ namespace imajuscule
         static ReferentiableManager * getInstance();
 
         const char * defaultNameHint();
+        const char * UIName();
         
         unsigned int index() override;
         
