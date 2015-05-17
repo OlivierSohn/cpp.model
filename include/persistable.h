@@ -108,8 +108,11 @@ if_A(ref) \
 
 #define W_LNKS( vec, key ) \
 std::vector<std::string> vs; \
-for(auto & elt : vec) \
-    W_LNK_ELT( elt, vs); \
+for(auto & it : vec) \
+{ \
+    Referentiable * ref = it; \
+    W_LNK_ELT( ref, vs); \
+} \
 WriteKeyData(key, vs);
 
 #define W_LNKS_P1( container, key ) \
@@ -124,12 +127,12 @@ WriteKeyData(key, vs);
 #define R_LNKS_OP( Op, type, key ) \
 case key: \
     for(auto const & guid : vs)\
-        Op( static_cast<type*>(Referentiables::fromGUID(guid)) );\
+        Op( static_cast<type*>(Referentiables::fromGUID(Storage::curDir(), guid)) );\
 break;
 
 #define R_LNK_OP( Op, type, key ) \
 case key: \
-Op( static_cast<type*>(Referentiables::fromGUID(str)) );\
+Op( static_cast<type*>(Referentiables::fromGUID(Storage::curDir(), str)) );\
 break;
 
 namespace imajuscule

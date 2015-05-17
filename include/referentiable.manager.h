@@ -81,7 +81,7 @@ namespace imajuscule
     class Referentiables
     {
     public:
-        static Referentiable* fromGUID(const std::string &);
+        static Referentiable* fromGUID(const Storage::DirectoryPath & path, const std::string &);
         static void registerManager(ReferentiableManagerBase &);
     private:
         Referentiables();
@@ -90,7 +90,7 @@ namespace imajuscule
         static Referentiables * m_instance;
         std::vector<ReferentiableManagerBase*> m_managers;
 
-        Referentiable* findRefFromGUID(const std::string &);
+        Referentiable* findRefFromGUID(const Storage::DirectoryPath & path, const std::string &);
         void regManager(ReferentiableManagerBase &);
     };
 

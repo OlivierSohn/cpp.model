@@ -44,7 +44,7 @@ namespace imajuscule
         void Hide();
         bool isHidden();
         
-        static bool ReadIndexForDiskGUID(const std::string & guid, unsigned int &index, std::string & sHintName);
+        static bool ReadIndexForDiskGUID(const Storage::DirectoryPath & path, const std::string & guid, unsigned int &index, std::string & sHintName);
         
         void registerSource( Referentiable& source );
         void registerTarget( Referentiable& target );

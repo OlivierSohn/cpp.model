@@ -218,10 +218,10 @@ const std::string & Referentiable::ReferentiableIndexLoad::dateCrea()
     return m_dateOfCreation;
 }
 
-bool Referentiable::ReadIndexForDiskGUID(const std::string & guid, unsigned int &index, std::string & sHintName)
+bool Referentiable::ReadIndexForDiskGUID(const Storage::DirectoryPath & path, const std::string & guid, unsigned int &index, std::string & sHintName)
 {
     bool bFound = false;
-    Referentiable::ReferentiableIndexLoad l(Storage::curDir(), guid);
+    Referentiable::ReferentiableIndexLoad l(path, guid);
     bFound = l.found(index, sHintName);
     A(bFound);
     return bFound;

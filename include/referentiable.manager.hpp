@@ -658,12 +658,12 @@ Referentiables * Referentiables::getInstance()
     
     return m_instance;
 }
-Referentiable* Referentiables::fromGUID(const std::string & guid)
+Referentiable* Referentiables::fromGUID(const Storage::DirectoryPath & path, const std::string & guid)
 {
-    return getInstance()->findRefFromGUID(guid);
+    return getInstance()->findRefFromGUID(path, guid);
 }
 
-Referentiable* Referentiables::findRefFromGUID(const std::string & guid)
+Referentiable* Referentiables::findRefFromGUID(const Storage::DirectoryPath & path, const std::string & guid)
 {
     for(auto man: m_managers)
     {
@@ -674,13 +674,13 @@ Referentiable* Referentiables::findRefFromGUID(const std::string & guid)
     Referentiable * r(NULL);
     unsigned int index;
     std::string nameHint;
-    if_A( Referentiable::ReadIndexForDiskGUID(guid, index, nameHint) )
+    if_A( Referentiable::ReadIndexForDiskGUID(path, guid, index, nameHint) )
     {
         if_A(index < m_managers.size())
         {
             std::vector<std::string> guids{guid};
             r = m_managers[index]->newReferentiable(nameHint, guids);
-            r->Load(Storage::curDir(), guid);
+            r->Load(path, guid);
         }
     }
 
