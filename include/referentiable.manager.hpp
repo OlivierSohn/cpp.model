@@ -690,3 +690,10 @@ void Referentiables::registerManager(ReferentiableManagerBase & m)
 {
     return getInstance()->regManager(m);
 }
+
+void Referentiables::traverseManagers(managers::iterator & begin, managers::iterator & end)
+{
+    Referentiables * i = Referentiables::getInstance();
+    begin = i->m_managers.begin();
+    end = i->m_managers.end();
+}

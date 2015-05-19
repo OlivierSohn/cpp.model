@@ -80,17 +80,20 @@ namespace imajuscule
         void RemoveRefInternal(Referentiable*);
     };
     
+    typedef std::vector<ReferentiableManagerBase*> managers;
     class Referentiables
     {
     public:
         static Referentiable* fromGUID(const Storage::DirectoryPath & path, const std::string &);
         static void registerManager(ReferentiableManagerBase &);
+        static void traverseManagers(managers::iterator & begin, managers::iterator & end);
+
     private:
         Referentiables();
         virtual ~Referentiables();
         static Referentiables * getInstance();
         static Referentiables * m_instance;
-        std::vector<ReferentiableManagerBase*> m_managers;
+        managers m_managers;
 
         Referentiable* findRefFromGUID(const Storage::DirectoryPath & path, const std::string &);
         void regManager(ReferentiableManagerBase &);
