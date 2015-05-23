@@ -17,6 +17,7 @@ m_source(r.m_source),
 m_target(r.m_target)
 ,m_bActive(true)
 {
+    //LG(INFO,"RefLink move constructor for source %x", &m_source);
     r.deactivate();
 }
 
