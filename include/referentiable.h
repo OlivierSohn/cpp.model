@@ -48,6 +48,8 @@ namespace imajuscule
         
         void registerSource( Referentiable& source );
         void registerTarget( Referentiable& target );
+        size_t countTargets();
+        size_t countSources();
         void unRegisterTarget( Referentiable& target );
         void unRegisterSource( Referentiable& source );
         

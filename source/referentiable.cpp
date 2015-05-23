@@ -256,4 +256,14 @@ void Referentiable::traverseSources(refs::iterator & begin, refs::iterator & end
     end = m_sources.end();
 }
 
+size_t Referentiable::countTargets()
+{
+    return m_targets.size();
+}
+size_t Referentiable::countSources()
+{
+    return m_sources.size();
+}
+
+
 
