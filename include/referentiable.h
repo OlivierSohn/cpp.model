@@ -126,9 +126,11 @@ namespace imajuscule
     private:
         T* m_target;
         Referentiable & m_source;
+        bool m_bActive;
         
         void set(T * target);
         RefLink();
+        void deactivate();
     };
 
 }

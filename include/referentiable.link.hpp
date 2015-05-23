@@ -4,8 +4,9 @@ using namespace imajuscule;
 
 template<class T>
 RefLink<T>::RefLink(Referentiable& source, T *target) :
-m_source(source),
-m_target(NULL)
+m_source(source)
+,m_target(NULL)
+,m_bActive(true)
 {
     set(target);
 }
@@ -14,12 +15,23 @@ template<class T>
 RefLink<T>::RefLink(RefLink<T> && r) :
 m_source(r.m_source),
 m_target(r.m_target)
-{}
+,m_bActive(true)
+{
+    r.deactivate();
+}
 
 template<class T>
 RefLink<T>::~RefLink()
 {
-    set(NULL);
+    if(m_bActive)
+        set(NULL);
+}
+
+template<class T>
+void RefLink<T>::deactivate()
+{
+    A(m_bActive);
+    m_bActive = false;
 }
 
 template<class T>
