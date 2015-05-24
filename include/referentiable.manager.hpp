@@ -72,10 +72,6 @@ bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const 
             {
                 A(!"an element was not found in guid map but found in session names map!");
             }
-
-            r->Init();
-
-            observable().Notify(Event::RFTBL_ADD, r);
         }
     }
 
@@ -199,6 +195,13 @@ bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r)
         bRet = RegisterWithSessionName(r, sessionName);
     }
 
+    if(bRet)
+    {
+        r->Init();
+        
+        observable().Notify(Event::RFTBL_ADD, r);
+    }
+    
     return bRet;
 }
 
