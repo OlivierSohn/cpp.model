@@ -162,6 +162,7 @@ void ReferentiableManagerBase::ListReferentiablesByCreationDate(referentiables& 
 
 Referentiable * ReferentiableManagerBase::findByGuid(const std::string & guid)
 {
+    //LG(INFO, "ReferentiableManagerBase::findByGuid(%s)", guid.c_str());
     Referentiable * pRet = NULL;
     guidsToRftbls::iterator it = m_guidsToRftbls.find(guidsToRftbls::key_type(guid));
     if (it != m_guidsToRftbls.end())

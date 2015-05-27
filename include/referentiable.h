@@ -56,7 +56,6 @@ namespace imajuscule
         typedef std::vector<Referentiable*> refs;
         void traverseTargets(refs::iterator & begin, refs::iterator & end);
         void traverseSources(refs::iterator & begin, refs::iterator & end);
-        
     protected:
         virtual ~Referentiable();
 

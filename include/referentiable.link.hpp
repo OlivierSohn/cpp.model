@@ -1,5 +1,3 @@
-#include "referentiable.h"
-
 using namespace imajuscule;
 
 template<class T>
@@ -89,6 +87,8 @@ void RefLink<T>::set(T * target)
     {
         m_target->unRegisterSource(m_source);
         m_source.unRegisterTarget(*m_target);
+        if(m_target->countSources() == 0)
+            m_target->deinstantiate();
     }
     m_target = target;
     if(m_target)
