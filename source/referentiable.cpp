@@ -229,20 +229,28 @@ bool Referentiable::ReadIndexForDiskGUID(const Storage::DirectoryPath & path, co
 
 void Referentiable::registerSource( Referentiable& source )
 {
+    //LG(INFO,"reg s s:%x t:%x", &source, this);
     m_sources.push_back(&source);
+    observableReferentiable().Notify(SOURCES_CHANGED, this);
 }
 void Referentiable::registerTarget( Referentiable& target )
 {
+    //LG(INFO,"reg t s:%x t:%x", this, &target);
     m_targets.push_back(&target);
+    observableReferentiable().Notify(TARGETS_CHANGED, this);
 }
 
 void Referentiable::unRegisterTarget( Referentiable& target )
 {
+    //LG(INFO,"unr t s:%x t:%x", this, &target);
     m_targets.erase(std::remove(m_targets.begin(), m_targets.end(), &target), m_targets.end());
+    observableReferentiable().Notify(TARGETS_CHANGED, this);
 }
 void Referentiable::unRegisterSource( Referentiable& source )
 {
+    //LG(INFO,"unr s s:%x t:%x", &source, this);
     m_sources.erase(std::remove(m_sources.begin(), m_sources.end(), &source), m_sources.end());
+    observableReferentiable().Notify(SOURCES_CHANGED, this);
 }
 
 void Referentiable::traverseTargets(refs::iterator & begin, refs::iterator & end)

@@ -29,7 +29,9 @@ namespace imajuscule
         void deinstantiate();
         enum Event
         {
-            WILL_BE_DELETED
+            WILL_BE_DELETED,
+            SOURCES_CHANGED,
+            TARGETS_CHANGED
         };
         Observable<Event, Referentiable*> & observableReferentiable();
 

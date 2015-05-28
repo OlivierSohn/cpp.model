@@ -162,14 +162,14 @@ namespace imajuscule
                             // increment recursive level, to prevent this notification from being removed immediately
                             std::get<RECURSIVE_LEVEL>(*itM)++;
 
-                            OBS_LG(INFO, "Observable(%x)::Notify(%d) : size1 %d", this, event, it->second->second.size());
+                            OBS_LG(INFO, "Observable(%x)::Notify(%d) : size1 %d", this, event, std::get<CBS_LIST>(*(it->second)).size());
                             
                             std::get<FUNCTION>(*itM)(Params...);
                             
                             if (m_deinstantiate)
                                 break;
 
-                            OBS_LG(INFO, "Observable(%x)::Notify(%d) : size2 %d", this, event, it->second->second.size());
+                            OBS_LG(INFO, "Observable(%x)::Notify(%d) : size2 %d", this, event, std::get<CBS_LIST>(*(it->second)).size());
 
                             std::get<RECURSIVE_LEVEL>(*itM)--;
 
@@ -181,7 +181,7 @@ namespace imajuscule
                             std::get<AVAILABLE_KEYS>(*(it->second)).push(std::get<KEY>(*itM));
                             // erase and increment
                             itM = cbslist.erase(itM);
-                            OBS_LG(INFO, "Observable(%x)::Notify(%d) : size1 %d (removed a notification)", this, event, it->second->second.size());
+                            OBS_LG(INFO, "Observable(%x)::Notify(%d) : size1 %d (removed a notification)", this, event, std::get<CBS_LIST>(*(it->second)).size());
                         }
                     }
 
@@ -209,7 +209,7 @@ namespace imajuscule
                 typename callbacksList::iterator it = cbslist.begin();
                 typename callbacksList::iterator end = cbslist.end();
 
-                OBS_LG(INFO, "Observable(%x)::Remove(%d) : size before %d", this, functionInfo.m_event, it1->second->second.size());
+                OBS_LG(INFO, "Observable(%x)::Remove(%d) : size before %d", this, functionInfo.m_event, std::get<CBS_LIST>(*(it1->second)).size());
 
                 bool bFound = false;
                 for (; it != end; ++it)
@@ -230,13 +230,13 @@ namespace imajuscule
                             std::get<AVAILABLE_KEYS>(*(it1->second)).push(std::get<KEY>(*it));
                             // erase
                             cbslist.erase(it);
-                            OBS_LG(INFO, "Observable(%x)::Remove(%d) : size1 %d (removed a notification)", this, event, it->second->second.size());
+                            OBS_LG(INFO, "Observable(%x)::Remove(%d) : size1 %d (removed a notification)", this, functionInfo.m_event, std::get<CBS_LIST>(*(it1->second)).size());
                         }
                         break;
                     }
                 }
 
-                OBS_LG(INFO, "Observable(%x)::Remove(%d) : size after %d", this, functionInfo.m_event, it1->second->second.size());
+                OBS_LG(INFO, "Observable(%x)::Remove(%d) : size after %d", this, functionInfo.m_event, std::get<CBS_LIST>(*(it1->second)).size());
 
                 if (!bFound)
                 {
