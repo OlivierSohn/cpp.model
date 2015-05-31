@@ -126,16 +126,20 @@ namespace imajuscule
 
         bool operator < (RefLink & other);
         
-        void TargetDeleted();
     private:
         T* m_target;
         Referentiable & m_source;
         bool m_bActive;
-        bool m_bTargetDeleted;
+        bool m_bTargetIsUp;
+
+        std::vector<FunctionInfo<Referentiable::Event>> m_targetRegs;
         
         void set(T * target);
         RefLink();
         void deactivate();
+        
+        void RegisterTargetCb();
+        void UnregisterTargetCb();
     };
 
 }

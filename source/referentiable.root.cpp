@@ -1,4 +1,5 @@
 #include "referentiable.root.h"
+#include "referentiable.manager.h"
 #include "os.log.h"
 
 #define KEY_TARGETS           -110
@@ -38,6 +39,11 @@ Referentiable(manager, guid, hintName)
                                       if(r!= this)
                                           this->addRef(r);
                                   });
+        rm->observable().Register(ReferentiableManagerBase::Event::RFTBL_REMOVE,
+                                  [this](Referentiable*r){
+                                      if(r!= this)
+                                          this->removeRef(r);
+                                  });
     }
 }
 ReferentiableRoot::~ReferentiableRoot()
@@ -48,17 +54,13 @@ void ReferentiableRoot::addRef(Referentiable* ref)
 {
     A(ref);
     m_refs.insert(refs::value_type(ref,CLINK(Referentiable,ref)));
-    
-    ref->observableReferentiable().Register(Referentiable::WILL_BE_DELETED, [this](Referentiable*r){
-        if(r!= this)
-            this->removeRef(r, true);
-    });
 }
-void ReferentiableRoot::removeRef(Referentiable* ref, bool bIsBeingDeleted)
+void ReferentiableRoot::removeRef(Referentiable* ref)
 {
     A(ref);
     auto it = m_refs.find(refs::key_type( ref ));
-    if(bIsBeingDeleted)
-        it->second.TargetDeleted();
-    m_refs.erase(it);
+    if_A(it != m_refs.end())
+    {
+        m_refs.erase(it);
+    }
 }

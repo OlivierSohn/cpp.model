@@ -208,7 +208,6 @@ m_group(g)
 , m_pResFunc(f)
 {
     A(m_command);
-    A(m_group);
     A(t != ExecType::NONE);
 }
 

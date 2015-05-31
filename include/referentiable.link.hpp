@@ -5,20 +5,21 @@ RefLink<T>::RefLink(Referentiable& source, T *target) :
 m_source(source)
 ,m_target(NULL)
 ,m_bActive(true)
-,m_bTargetDeleted(false)
+,m_bTargetIsUp(true)
 {
     set(target);
 }
 
 template<class T>
 RefLink<T>::RefLink(RefLink<T> && r) :
-m_source(r.m_source),
-m_target(r.m_target)
+m_source(r.m_source)
+,m_target(r.m_target)
 ,m_bActive(true)
-,m_bTargetDeleted(false)
+,m_bTargetIsUp(true)
 {
     //LG(INFO,"RefLink move constructor for source %x", &m_source);
     r.deactivate();
+    RegisterTargetCb();
 }
 
 template<class T>
@@ -33,6 +34,39 @@ void RefLink<T>::deactivate()
 {
     A(m_bActive);
     m_bActive = false;
+    UnregisterTargetCb();
+}
+
+template<class T>
+void RefLink<T>::RegisterTargetCb()
+{
+    if(m_target)
+    {
+        m_targetRegs.push_back(m_target->observableReferentiable().Register(Referentiable::Event::WILL_BE_DELETED, [this](Referentiable*r){
+            
+            A(r==m_target);
+            
+            m_target->unRegisterSource(m_source);
+            m_source.unRegisterTarget(*m_target);
+
+            UnregisterTargetCb();
+            
+            m_bTargetIsUp = false;            
+        }));
+        
+        m_bTargetIsUp = true;
+    }
+}
+
+template<class T>
+void RefLink<T>::UnregisterTargetCb()
+{
+    if(m_target && m_bTargetIsUp)
+    {
+        for(auto &i:m_targetRegs)
+            m_target->observableReferentiable().Remove(i);        
+    }
+    m_targetRegs.clear();
 }
 
 template<class T>
@@ -92,29 +126,31 @@ void RefLink<T>::set(T * target)
     if(target == m_target)
         return;
     
-    if(m_target)
+    UnregisterTargetCb();
+    
+    if(m_target&&m_bTargetIsUp)
     {
         m_target->unRegisterSource(m_source);
         m_source.unRegisterTarget(*m_target);
-        if(!m_bTargetDeleted)
+        
+        size_t cs = m_target->countSources();
+        if(cs == 0)
         {
-            size_t cs = m_target->countSources();
-            if(cs == 0)
-            {
-                LG(INFO, "(%s)RefLink<T>::set(%s) desinstantiate former target %s", m_source.sessionName().c_str(), target?target->sessionName().c_str():"NULL", m_target->sessionName().c_str());
-                m_target->deinstantiate();
-            }
-            else
-                LG(INFO, "(%s)RefLink<T>::set(%s) former target %s has %d sources", m_source.sessionName().c_str(), target?target->sessionName().c_str():"NULL", m_target->sessionName().c_str(), cs);
-            
+            LG(INFO, "(%s)RefLink<T>::set(%s) desinstantiate former target %s", m_source.sessionName().c_str(), target?target->sessionName().c_str():"NULL", m_target->sessionName().c_str());
+            m_target->deinstantiate();
         }
+        else
+            LG(INFO, "(%s)RefLink<T>::set(%s) former target %s has %d sources", m_source.sessionName().c_str(), target?target->sessionName().c_str():"NULL", m_target->sessionName().c_str(), cs);
     }
     m_target = target;
+
     if(m_target)
     {
         m_source.registerTarget(*m_target);
         m_target->registerSource(m_source);
     }
+    
+    RegisterTargetCb();
 }
 
 template<class T>
@@ -134,9 +170,4 @@ T * RefLink<T>::get()
     return m_target;
 }
 
-template<class T>
-void RefLink<T>::TargetDeleted()
-{
-    m_bTargetDeleted = true;
-}
 

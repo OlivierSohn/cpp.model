@@ -14,7 +14,7 @@ namespace imajuscule
     public:
         static ReferentiableRoot * getInstance();
         void addRef(Referentiable*);
-        void removeRef(Referentiable*, bool bIsBeingDeleted = false);
+        void removeRef(Referentiable*);
     protected:
         ReferentiableRoot(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName);
 
