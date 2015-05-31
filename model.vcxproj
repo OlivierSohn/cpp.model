@@ -90,8 +90,10 @@
     <ClInclude Include="include\referentiable.cmd.h" />
     <ClInclude Include="include\referentiable.cmd.hpp" />
     <ClInclude Include="include\referentiable.h" />
+    <ClInclude Include="include\referentiable.link.hpp" />
     <ClInclude Include="include\referentiable.manager.h" />
     <ClInclude Include="include\referentiable.manager.hpp" />
+    <ClInclude Include="include\referentiable.root.h" />
     <ClInclude Include="include\session.h" />
     <ClInclude Include="include\undoable.h" />
     <ClInclude Include="include\updatable.h" />
@@ -106,6 +108,7 @@
     <ClCompile Include="source\history.manager.cpp" />
     <ClCompile Include="source\persistable.cpp" />
     <ClCompile Include="source\referentiable.cpp" />
+    <ClCompile Include="source\referentiable.root.cpp" />
     <ClCompile Include="source\session.cpp" />
     <ClCompile Include="source\undoable.cpp" />
     <ClCompile Include="source\updatable.cpp" />
