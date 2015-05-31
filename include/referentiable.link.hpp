@@ -5,6 +5,7 @@ RefLink<T>::RefLink(Referentiable& source, T *target) :
 m_source(source)
 ,m_target(NULL)
 ,m_bActive(true)
+,m_bTargetDeleted(false)
 {
     set(target);
 }
@@ -14,6 +15,7 @@ RefLink<T>::RefLink(RefLink<T> && r) :
 m_source(r.m_source),
 m_target(r.m_target)
 ,m_bActive(true)
+,m_bTargetDeleted(false)
 {
     //LG(INFO,"RefLink move constructor for source %x", &m_source);
     r.deactivate();
@@ -76,6 +78,13 @@ auto RefLink<T>::operator= (T * pointer) -> RefLink &
     set(pointer);
     return *this;
 }
+template<class T>
+bool RefLink<T>::operator < (RefLink & other)
+{
+    T * t1 = *this;
+    T * t2 = other;
+    return (t1 < t2);
+}
 
 template<class T>
 void RefLink<T>::set(T * target)
@@ -87,14 +96,18 @@ void RefLink<T>::set(T * target)
     {
         m_target->unRegisterSource(m_source);
         m_source.unRegisterTarget(*m_target);
-        size_t cs = m_target->countSources();
-        if(cs == 0)
+        if(!m_bTargetDeleted)
         {
-            LG(INFO, "(%s)RefLink<T>::set(%s) desinstantiate former target %s", m_source.sessionName().c_str(), target?target->sessionName().c_str():"NULL", m_target->sessionName().c_str());
-            m_target->deinstantiate();
+            size_t cs = m_target->countSources();
+            if(cs == 0)
+            {
+                LG(INFO, "(%s)RefLink<T>::set(%s) desinstantiate former target %s", m_source.sessionName().c_str(), target?target->sessionName().c_str():"NULL", m_target->sessionName().c_str());
+                m_target->deinstantiate();
+            }
+            else
+                LG(INFO, "(%s)RefLink<T>::set(%s) former target %s has %d sources", m_source.sessionName().c_str(), target?target->sessionName().c_str():"NULL", m_target->sessionName().c_str(), cs);
+            
         }
-        else
-            LG(INFO, "(%s)RefLink<T>::set(%s) former target %s has %d sources", m_source.sessionName().c_str(), target?target->sessionName().c_str():"NULL", m_target->sessionName().c_str(), cs);
     }
     m_target = target;
     if(m_target)
@@ -120,3 +133,10 @@ T * RefLink<T>::get()
 {
     return m_target;
 }
+
+template<class T>
+void RefLink<T>::TargetDeleted()
+{
+    m_bTargetDeleted = true;
+}
+

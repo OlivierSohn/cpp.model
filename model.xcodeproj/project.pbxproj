@@ -16,6 +16,9 @@
 		09429CB31AD38243001513DA /* undoable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A81AD357F70099DA54 /* undoable.cpp */; };
 		09429CB41AD38243001513DA /* updatable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A91AD357F70099DA54 /* updatable.cpp */; };
 		09429CB51AD38243001513DA /* visitable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662AA1AD357F70099DA54 /* visitable.cpp */; };
+		09681A0C1B1AAACE00678885 /* referentiable.root.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09681A0B1B1AAACE00678885 /* referentiable.root.cpp */; };
+		09681A0D1B1AAACE00678885 /* referentiable.root.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09681A0B1B1AAACE00678885 /* referentiable.root.cpp */; };
+		09681A0F1B1AAAED00678885 /* referentiable.root.h in Headers */ = {isa = PBXBuildFile; fileRef = 09681A0E1B1AAAED00678885 /* referentiable.root.h */; };
 		097662AF1AD357F70099DA54 /* asyncnotifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662901AD357F70099DA54 /* asyncnotifier.h */; };
 		097662B01AD357F70099DA54 /* command.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662911AD357F70099DA54 /* command.h */; };
 		097662B11AD357F70099DA54 /* history.manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662921AD357F70099DA54 /* history.manager.h */; };
@@ -59,6 +62,8 @@
 
 /* Begin PBXFileReference section */
 		09429C961AD38207001513DA /* libmodel.ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmodel.ios.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		09681A0B1B1AAACE00678885 /* referentiable.root.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = referentiable.root.cpp; sourceTree = "<group>"; };
+		09681A0E1B1AAAED00678885 /* referentiable.root.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.root.h; sourceTree = "<group>"; };
 		097662751AD355F20099DA54 /* libmodel.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmodel.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		097662901AD357F70099DA54 /* asyncnotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asyncnotifier.h; sourceTree = "<group>"; };
 		097662911AD357F70099DA54 /* command.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = command.h; sourceTree = "<group>"; };
@@ -128,6 +133,7 @@
 		0976628F1AD357F70099DA54 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				09681A0E1B1AAAED00678885 /* referentiable.root.h */,
 				097662901AD357F70099DA54 /* asyncnotifier.h */,
 				097662911AD357F70099DA54 /* command.h */,
 				097662921AD357F70099DA54 /* history.manager.h */,
@@ -153,6 +159,7 @@
 		097662A11AD357F70099DA54 /* source */ = {
 			isa = PBXGroup;
 			children = (
+				09681A0B1B1AAACE00678885 /* referentiable.root.cpp */,
 				097662A21AD357F70099DA54 /* asyncnotifier.cpp */,
 				097662A31AD357F70099DA54 /* command.cpp */,
 				097662A41AD357F70099DA54 /* history.manager.cpp */,
@@ -189,6 +196,7 @@
 				097662BA1AD357F70099DA54 /* referentiable.manager.hpp in Headers */,
 				097662AF1AD357F70099DA54 /* asyncnotifier.h in Headers */,
 				097662B71AD357F70099DA54 /* referentiable.cmd.hpp in Headers */,
+				09681A0F1B1AAAED00678885 /* referentiable.root.h in Headers */,
 				097662BC1AD357F70099DA54 /* undoable.h in Headers */,
 				097662B81AD357F70099DA54 /* referentiable.h in Headers */,
 			);
@@ -272,6 +280,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				09429CAD1AD38243001513DA /* asyncnotifier.cpp in Sources */,
+				09681A0D1B1AAACE00678885 /* referentiable.root.cpp in Sources */,
 				09429CAE1AD38243001513DA /* command.cpp in Sources */,
 				09429CAF1AD38243001513DA /* history.manager.cpp in Sources */,
 				09429CB01AD38243001513DA /* persistable.cpp in Sources */,
@@ -288,6 +297,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				097662C71AD357F70099DA54 /* updatable.cpp in Sources */,
+				09681A0C1B1AAACE00678885 /* referentiable.root.cpp in Sources */,
 				097662C01AD357F70099DA54 /* asyncnotifier.cpp in Sources */,
 				097662C11AD357F70099DA54 /* command.cpp in Sources */,
 				097662C51AD357F70099DA54 /* session.cpp in Sources */,

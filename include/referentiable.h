@@ -124,10 +124,14 @@ namespace imajuscule
         T * getConst() const;
         const T * get() const;
 
+        bool operator < (RefLink & other);
+        
+        void TargetDeleted();
     private:
         T* m_target;
         Referentiable & m_source;
         bool m_bActive;
+        bool m_bTargetDeleted;
         
         void set(T * target);
         RefLink();
