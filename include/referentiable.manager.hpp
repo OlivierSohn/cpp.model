@@ -249,7 +249,9 @@ void ReferentiableManagerBase::generateGuid(std::string & sGuid)
     uuid_generate(uu);
     char uuid[37];
     uuid_unparse(uu, uuid);
-    sGuid.assign(uuid);
+    sGuid.push_back('{');
+    sGuid.insert(sGuid.end(),uuid, uuid+sizeof(uuid)-1/*before end of string*/);
+    sGuid.push_back('}');
 #endif
 
     //LG(INFO, "ReferentiableManagerBase::generateGuid returns %s", sGuid.c_str());
