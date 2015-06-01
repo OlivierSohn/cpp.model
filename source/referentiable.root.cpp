@@ -36,7 +36,7 @@ Referentiable(manager, guid, hintName)
         
         rm->observable().Register(ReferentiableManagerBase::Event::RFTBL_ADD,
                                   [this](Referentiable*r){
-                                      if(r!= this)
+                                      if(!dynamic_cast<ReferentiableRoot*>(r))
                                           this->addRef(r);
                                   });
         rm->observable().Register(ReferentiableManagerBase::Event::RFTBL_REMOVE,
