@@ -5,13 +5,13 @@
 
 namespace imajuscule
 {
-#define R_CMD_TPL_DEF template \
+#define REF_CMD_SET template \
         < class T /* Type of modified object (is a referentiable)*/ \
         , class U /*Type of object attribute (is a Referentiable)*/ \
         , bool (T::*fSet)(U*, bool&) \
         , U* (T::*fGet)() > 
 
-    R_CMD_TPL_DEF
+    REF_CMD_SET
     class RefChangeAttrCmd : public Command
     {
         friend T;

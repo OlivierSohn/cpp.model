@@ -1,24 +1,24 @@
-#include "referentiable.cmd.h"
+#include "referentiable.cmd.set.h"
 #include "history.manager.h"
 #include "os.log.h"
 
 using namespace imajuscule;
 
 
-R_CMD_TPL_DEF
+REF_CMD_SET
 RefChangeAttrCmd<T,U,fSet,fGet>::CommandResult::CommandResult(bool bSuccess, bool bAttrChanged) :
 Command::CommandResult(bSuccess)
 , m_bAttrChanged(bAttrChanged)
 {}
 
-R_CMD_TPL_DEF
+REF_CMD_SET
 bool RefChangeAttrCmd<T,U,fSet,fGet>::CommandResult::getAttrChanged() const
 {
     A(initialized());
     return m_bAttrChanged;
 }
 
-R_CMD_TPL_DEF
+REF_CMD_SET
 RefChangeAttrCmd<T,U,fSet,fGet>::data::data(const U * attr) :
 Command::data()
 , m_hasAttr(false)
@@ -32,7 +32,7 @@ Command::data()
     }
 }
 
-R_CMD_TPL_DEF
+REF_CMD_SET
 RefChangeAttrCmd<T,U,fSet,fGet>::data::data(T&obj) :
 Command::data()
 , m_hasAttr(false)
@@ -46,7 +46,7 @@ Command::data()
     }
 }
 
-R_CMD_TPL_DEF
+REF_CMD_SET
 bool RefChangeAttrCmd<T,U,fSet,fGet>::data::operator!=(const Command::data&other) const
 {
     auto pOther = dynamic_cast<const RefChangeAttrCmd<T,U,fSet,fGet>::data * >(&other);
@@ -64,7 +64,7 @@ bool RefChangeAttrCmd<T,U,fSet,fGet>::data::operator!=(const Command::data&other
     return true;
 }
 
-R_CMD_TPL_DEF
+REF_CMD_SET
 U * RefChangeAttrCmd<T,U,fSet,fGet>::data::Attr() const
 {
     U * j = NULL;
@@ -76,15 +76,15 @@ U * RefChangeAttrCmd<T,U,fSet,fGet>::data::Attr() const
     return j;
 
 }
-R_CMD_TPL_DEF
+REF_CMD_SET
 Command::data * RefChangeAttrCmd<T,U,fSet,fGet>::data::instantiate(const U * attr){
     return new data(attr);
 }
-R_CMD_TPL_DEF
+REF_CMD_SET
 Command::data * RefChangeAttrCmd<T,U,fSet,fGet>::data::instantiate(T& obj){
     return new data(obj);
 }
-R_CMD_TPL_DEF
+REF_CMD_SET
 std::string RefChangeAttrCmd<T,U,fSet,fGet>::data::getDesc() const
 {
     std::string desc;
@@ -101,14 +101,14 @@ std::string RefChangeAttrCmd<T,U,fSet,fGet>::data::getDesc() const
     return desc;
 }
 
-R_CMD_TPL_DEF
+REF_CMD_SET
 RefChangeAttrCmd<T,U,fSet,fGet>::RefChangeAttrCmd(T & obj, const U * iAttr) :
 Command(RefChangeAttrCmd<T,U,fSet,fGet>::data::instantiate(obj), RefChangeAttrCmd<T,U,fSet,fGet>::data::instantiate(iAttr), dynamic_cast<Referentiable*>(&obj))
 , m_preconditionning(NULL)
 {
 }
 
-R_CMD_TPL_DEF
+REF_CMD_SET
 RefChangeAttrCmd<T,U,fSet,fGet>::~RefChangeAttrCmd()
 {
     // commented out because preconditionnning command is an inner command so it will be deleted in Commmand::~Commmand()
@@ -116,7 +116,7 @@ RefChangeAttrCmd<T,U,fSet,fGet>::~RefChangeAttrCmd()
     m_preconditionning = NULL;
 }
 
-R_CMD_TPL_DEF
+REF_CMD_SET
 void RefChangeAttrCmd<T,U,fSet,fGet>::getSentenceDescription(std::string & desc)
 {
     if (m_preconditionning)
@@ -124,7 +124,7 @@ void RefChangeAttrCmd<T,U,fSet,fGet>::getSentenceDescription(std::string & desc)
     desc.append(std::string(" attr : "));
 }
 
-R_CMD_TPL_DEF
+REF_CMD_SET
 bool RefChangeAttrCmd<T, U, fSet, fGet>::ChangeAttr(T & obj, U * newAttr, bool & bAttrChanged)
 {
     bool bSuccess = true;
@@ -146,7 +146,7 @@ bool RefChangeAttrCmd<T, U, fSet, fGet>::ChangeAttr(T & obj, U * newAttr, bool &
 }
 
 
-R_CMD_TPL_DEF
+REF_CMD_SET
 bool RefChangeAttrCmd<T,U,fSet,fGet>::ExecuteFromInnerCommand(T & obj, U * newAttr, bool & bSuccess, bool & bAttrChanged)
 {
     bSuccess = false;
@@ -178,7 +178,7 @@ bool RefChangeAttrCmd<T,U,fSet,fGet>::ExecuteFromInnerCommand(T & obj, U * newAt
 
     return bDone;
 }
-R_CMD_TPL_DEF
+REF_CMD_SET
 bool RefChangeAttrCmd<T,U,fSet,fGet>::doExecute(const Command::data & Data)
 {
     bool bSuccess = false;
@@ -200,7 +200,7 @@ bool RefChangeAttrCmd<T,U,fSet,fGet>::doExecute(const Command::data & Data)
     return bChanged; // because we don't want to log in history a command that would not do anything
 }
 
-R_CMD_TPL_DEF
+REF_CMD_SET
 bool RefChangeAttrCmd<T,U,fSet,fGet>::doExecute()
 {
     bool bChanged = false;
@@ -243,7 +243,7 @@ bool RefChangeAttrCmd<T,U,fSet,fGet>::doExecute()
     return bChanged;
 }
 
-R_CMD_TPL_DEF
+REF_CMD_SET
 bool RefChangeAttrCmd<T,U,fSet,fGet>::doUndo()
 {
     bool bRelevant = Command::doUndo();
@@ -255,7 +255,7 @@ bool RefChangeAttrCmd<T,U,fSet,fGet>::doUndo()
     return bRelevant;
 }
 
-R_CMD_TPL_DEF
+REF_CMD_SET
 bool RefChangeAttrCmd<T,U,fSet,fGet>::doRedo()
 {
     bool bRelevant = false;
@@ -269,7 +269,7 @@ bool RefChangeAttrCmd<T,U,fSet,fGet>::doRedo()
     return bRelevant;
 }
 
-R_CMD_TPL_DEF
+REF_CMD_SET
 bool RefChangeAttrCmd<T,U,fSet,fGet>::Execute(T & obj, const U * iAttr, bool & bAttrChanged)
 {
     auto * c = new RefChangeAttrCmd(obj, iAttr);

@@ -6,7 +6,7 @@
 #include "observable.h"
 #include "persistable.h"
 #include "platform.defines.h" 
-#include "referentiable.cmd.h"
+#include "referentiable.cmd.set.h"
 #include "referentiable.h"
 #include "referentiable.manager.h"
 #include "referentiable.root.h"
