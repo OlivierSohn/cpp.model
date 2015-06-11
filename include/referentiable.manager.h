@@ -9,6 +9,7 @@
 #include "command.h"
 
 #define NEWREF(x) ReferentiableManager<x>::New()
+#define REF_BY_SN( x, sn )  static_cast<x *>(ReferentiableManager<x>::getInstance()->findBySessionName(sn))
 
 namespace imajuscule
 {
