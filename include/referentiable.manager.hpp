@@ -187,7 +187,7 @@ bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r)
     {
         std::string sessionName = r->hintName();
 
-        for (auto& c : sessionName) c = tolower(c);
+        std::transform(sessionName.begin(), sessionName.end(), sessionName.begin(), ::toupper);
 
         while (Referentiable * r2 = findBySessionName(sessionName))
         {
@@ -668,6 +668,10 @@ Referentiable* Referentiables::fromGUIDLoaded(const std::string & guid)
 {
     return getInstance()->findRefFromGUIDLoaded( guid);
 }
+Referentiable* Referentiables::fromSessionNameLoaded(const std::string & sn)
+{
+    return getInstance()->findRefFromSessionNameLoaded(sn);
+}
 
 Referentiable* Referentiables::findRefFromGUID(const Storage::DirectoryPath & path, const std::string & guid)
 {
@@ -688,6 +692,15 @@ Referentiable* Referentiables::findRefFromGUID(const Storage::DirectoryPath & pa
     }
     
     return r;
+}
+Referentiable* Referentiables::findRefFromSessionNameLoaded(const std::string & sn)
+{
+    for(auto man: m_managers)
+    {
+        if(Referentiable * ref = man->findBySessionName(sn))
+            return ref;
+    }
+    return NULL;
 }
 Referentiable* Referentiables::findRefFromGUIDLoaded(const std::string & guid)
 {
