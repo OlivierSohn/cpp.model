@@ -664,15 +664,17 @@ Referentiable* Referentiables::fromGUID(const Storage::DirectoryPath & path, con
     return getInstance()->findRefFromGUID(path, guid);
 }
 
+Referentiable* Referentiables::fromGUIDLoaded(const std::string & guid)
+{
+    return getInstance()->findRefFromGUIDLoaded( guid);
+}
+
 Referentiable* Referentiables::findRefFromGUID(const Storage::DirectoryPath & path, const std::string & guid)
 {
-    for(auto man: m_managers)
-    {
-        if(Referentiable * ref = man->findByGuid(guid))
-            return ref;
-    }
+    Referentiable * r = NULL;
+    if(r = findRefFromGUIDLoaded(guid))
+        return r;
     
-    Referentiable * r(NULL);
     unsigned int index;
     std::string nameHint;
     if_A( Referentiable::ReadIndexForDiskGUID(path, guid, index, nameHint) )
@@ -684,8 +686,17 @@ Referentiable* Referentiables::findRefFromGUID(const Storage::DirectoryPath & pa
             r->Load(path, guid);
         }
     }
-
+    
     return r;
+}
+Referentiable* Referentiables::findRefFromGUIDLoaded(const std::string & guid)
+{
+    for(auto man: m_managers)
+    {
+        if(Referentiable * ref = man->findByGuid(guid))
+            return ref;
+    }
+    return NULL;
 }
 void Referentiables::regManager(ReferentiableManagerBase & m)
 {

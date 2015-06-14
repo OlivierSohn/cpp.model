@@ -86,6 +86,7 @@ namespace imajuscule
     {
     public:
         static Referentiable* fromGUID(const Storage::DirectoryPath & path, const std::string &);
+        static Referentiable* fromGUIDLoaded(const std::string &);
         static void registerManager(ReferentiableManagerBase &);
         static void traverseManagers(managers::iterator & begin, managers::iterator & end);
 
@@ -97,6 +98,7 @@ namespace imajuscule
         managers m_managers;
 
         Referentiable* findRefFromGUID(const Storage::DirectoryPath & path, const std::string &);
+        Referentiable* findRefFromGUIDLoaded(const std::string &);
         void regManager(ReferentiableManagerBase &);
     };
 
