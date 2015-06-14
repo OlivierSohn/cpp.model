@@ -75,16 +75,22 @@
     <ClInclude Include="include\undoable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\referentiable.cmd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\referentiable.cmd.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\referentiable.link.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\referentiable.root.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\referentiable.cmd.list.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\referentiable.cmd.list.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\referentiable.cmd.set.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\referentiable.cmd.set.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

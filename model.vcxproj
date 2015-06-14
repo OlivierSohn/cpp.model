@@ -87,8 +87,10 @@
     <ClInclude Include="include\operation.render.h" />
     <ClInclude Include="include\persistable.h" />
     <ClInclude Include="include\platform.defines.h" />
-    <ClInclude Include="include\referentiable.cmd.h" />
-    <ClInclude Include="include\referentiable.cmd.hpp" />
+    <ClInclude Include="include\referentiable.cmd.list.h" />
+    <ClInclude Include="include\referentiable.cmd.list.hpp" />
+    <ClInclude Include="include\referentiable.cmd.set.h" />
+    <ClInclude Include="include\referentiable.cmd.set.hpp" />
     <ClInclude Include="include\referentiable.h" />
     <ClInclude Include="include\referentiable.link.hpp" />
     <ClInclude Include="include\referentiable.manager.h" />
