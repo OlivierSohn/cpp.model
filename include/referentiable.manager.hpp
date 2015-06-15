@@ -727,3 +727,5 @@ void Referentiables::traverseManagers(managers::iterator & begin, managers::iter
     begin = i->m_managers.begin();
     end = i->m_managers.end();
 }
+
+
