@@ -54,6 +54,7 @@ void ReferentiableRoot::addRef(Referentiable* ref)
 {
     A(ref);
     m_refs.insert(refs::value_type(ref,CLINK(Referentiable,ref)));
+    addSpec(ref);
 }
 void ReferentiableRoot::removeRef(Referentiable* ref)
 {
@@ -62,5 +63,6 @@ void ReferentiableRoot::removeRef(Referentiable* ref)
     if_A(it != m_refs.end())
     {
         m_refs.erase(it);
+        removeSpec(ref);
     }
 }
