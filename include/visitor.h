@@ -29,7 +29,9 @@ namespace imajuscule
     class CameraBase;
     class MotionLayer;
     class CurveTraversal;
-
+    class WireModel;
+    class WireTextModel;
+    
     class Visitor
     {
     public:
@@ -61,6 +63,8 @@ namespace imajuscule
         virtual void Visit(MotionLayer*) = 0;
         virtual void Visit(CurveTraversal*) = 0;
         virtual void Visit(CameraBase*) = 0;
+        virtual void Visit(WireModel*) = 0;
+        virtual void Visit(WireTextModel*) = 0;
 
     protected:
         Visitor() {}

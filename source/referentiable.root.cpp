@@ -39,11 +39,6 @@ Referentiable(manager, guid, hintName)
                                       if(!dynamic_cast<ReferentiableRoot*>(r))
                                           this->addRef(r);
                                   });
-        rm->observable().Register(ReferentiableManagerBase::Event::RFTBL_REMOVE,
-                                  [this](Referentiable*r){
-                                      if(r!= this)
-                                          this->removeRef(r);
-                                  });
     }
 }
 ReferentiableRoot::~ReferentiableRoot()
@@ -52,12 +47,23 @@ ReferentiableRoot::~ReferentiableRoot()
 
 void ReferentiableRoot::addRef(Referentiable* ref)
 {
+    //LG(INFO,"+ %x, %s", ref, ref->sessionName().c_str());
     A(ref);
-    m_refs.insert(refs::value_type(ref,CLINK(Referentiable,ref)));
-    addSpec(ref);
+    auto it = m_refs.find(refs::key_type( ref ));
+    if_A(it == m_refs.end())
+    {
+        m_refs.insert(refs::value_type(ref,CLINK(Referentiable,ref)));
+        addSpec(ref);
+        ref->observableReferentiable().Register(Referentiable::Event::WILL_BE_DELETED,
+                                  [this](Referentiable*r){
+                                      if(r!= this)
+                                          this->removeRef(r);
+                                  });
+    }
 }
 void ReferentiableRoot::removeRef(Referentiable* ref)
 {
+    //LG(INFO,"- %x", ref);
     A(ref);
     auto it = m_refs.find(refs::key_type( ref ));
     if_A(it != m_refs.end())
