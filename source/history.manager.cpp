@@ -87,15 +87,10 @@ bool UndoGroup::Undo(Undoable *limit, bool bStrict, bool & bFoundLimit)
 
             bNotEmpty = true;
 
-            //if (u->validStateToUndo()) // command can have been undone by a call to UndoUntil
-            {
-                /*bool bRelevant = */
-                u->Undo(limit, false, bFoundLimit);
-                // Assert commented out : a relevant (executed) command can become irrelevant for undo/redo e.g. SetFormula("", "0.")
-                // -> should I introduce the notion of undoability?
-                //    and have 2 different commands: ParamInitializeFormula(not undoable) and ParamChangeForula(undoable) ?
-                //A(bRelevant);
-            }
+            u->Undo(limit, false, bFoundLimit);
+            
+            // no need to check return value : a relevant (executed) command can become irrelevant for undo/redo e.g. SetFormula("", "0.")
+            // TODO -> should I introduce the notion of undoability and have 2 different commands: ParamInitializeFormula(not undoable) and ParamChangeForula(undoable) ?
             
             if(bFoundLimit)
                 break;

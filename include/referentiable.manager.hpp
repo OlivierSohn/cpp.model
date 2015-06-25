@@ -85,6 +85,7 @@ void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
         std::string guid = r->guid();
         std::string sessionName = r->sessionName();
 
+        LG(INFO, "delete %s %s", guid.c_str(), sessionName.c_str());
         // during destruction, the object must be accessible via its manager 
         // because for example when destructing a joint, we need to launch a command to change the parent to NULL and this command uses the manager to find the object
         // that's why delete is done before removing guid and session name from maps

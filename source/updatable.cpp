@@ -20,8 +20,8 @@ Updatable::~Updatable()
 {
     while(!m_specs.empty())
     {
-        removeSpec(m_specs.front());
         A(!"some specs needs to be cleaned up");
+        removeSpec(m_specs.front());
     }
     
     m_all.erase(updatables::value_type(this));

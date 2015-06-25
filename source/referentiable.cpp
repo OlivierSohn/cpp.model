@@ -62,6 +62,7 @@ Persistable()
 
 Referentiable::~Referentiable()
 {
+    LG(INFO,"delete %s %s destr", m_guid.c_str(), m_sessionName.c_str());
     m_observableReferentiable->deinstantiate();
 }
 
