@@ -49,8 +49,9 @@ namespace imajuscule
         HistoryManager();
         virtual ~HistoryManager();
         static HistoryManager * getInstance();
-
-        void Activate(bool);
+        
+        void PushPause();
+        void PopPause();
         bool isActive() const;
         void EmptyStacks();
 
@@ -82,10 +83,23 @@ namespace imajuscule
 
         Command::ExecType m_curExecType;
         std::stack<Command*> m_curCommandStack;
-        bool m_bActivated;
+        int m_iActivated;
 
         void NewGroup();
         void SizeUndos();
+    };
+    
+    class HistoryManagerTransaction
+    {
+    public:
+        HistoryManagerTransaction();
+        ~HistoryManagerTransaction();
+    };
+    class HistoryManagerPause
+    {
+    public:
+        HistoryManagerPause();
+        ~HistoryManagerPause();
     };
 }
 

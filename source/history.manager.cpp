@@ -165,7 +165,7 @@ m_stacksCapacity(-1)// unsigned -> maximum capacity
 , m_observable(Observable<Event>::instantiate())
 , m_bAppStateHasNewContent(false)
 , m_curExecType(Command::ExecType::NONE)
-, m_bActivated(true)
+, m_iActivated(1)
 {
     m_appState = m_groups.rbegin();
 }
@@ -182,13 +182,20 @@ auto HistoryManager::observable()->Observable<Event> &
     return *m_observable;
 }
 
-void HistoryManager::Activate(bool bVal)
+void HistoryManager::PushPause()
 {
-    m_bActivated = bVal;
+    A(m_iActivated <= 1);
+    m_iActivated --;
+}
+void HistoryManager::PopPause()
+{
+    m_iActivated ++;
+    A(m_iActivated <= 1);
 }
 bool HistoryManager::isActive() const
 {
-    return m_bActivated;
+    A(m_iActivated <= 1);
+    return m_iActivated == 1;
 }
 void HistoryManager::MakeGroup()
 {
@@ -438,4 +445,22 @@ void HistoryManager::traverseRedos(UndoGroups::const_iterator& begin, UndoGroups
 {
     begin = m_appState.base();
     end = m_groups.end();
+}
+
+HistoryManagerTransaction::HistoryManagerTransaction()
+{
+    HistoryManager::getInstance()->StartTransaction();
+}
+HistoryManagerTransaction::~HistoryManagerTransaction()
+{
+    HistoryManager::getInstance()->EndTransaction();
+}
+
+HistoryManagerPause::HistoryManagerPause()
+{
+    HistoryManager::getInstance()->PushPause();
+}
+HistoryManagerPause::~HistoryManagerPause()
+{
+    HistoryManager::getInstance()->PopPause();
 }
