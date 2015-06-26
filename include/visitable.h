@@ -16,13 +16,19 @@ namespace imajuscule
     class Visitable
     {
     public:
+        enum HierarchyEvent
+        {
+            ADD_CHILD,
+            REMOVE_CHILD
+        };
         enum Event
         {
-            VISITABLE_DELETE
+            VISITABLE_DELETE,
         };
         virtual ~Visitable();
 
         Observable<Event, Visitable&> &  observableVisitable();
+        Observable<HierarchyEvent, Visitable&, Visitable&> &  observableVisitableH();
 
         PERSISTABLE_VISITOR_PURE_VIRTUAL
     protected:
@@ -30,5 +36,6 @@ namespace imajuscule
 
     private:
         Observable<Event, Visitable&> * m_observableVisitable;
+        Observable<HierarchyEvent, Visitable&, Visitable&> * m_observableVisitableH;
     };
 }
