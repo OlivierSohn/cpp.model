@@ -161,8 +161,7 @@ bool RefAttrListCmd<T,U,fAdd,fRemove>::ExecuteFromInnerCommand(T & obj, U * newA
     CommandResult r;
     resFunc f(RESULT_BY_REF(r));
 
-    bool bDone = Command::ExecuteFromInnerCommand(
-        typeid(RefAttrListCmd),
+    bool bDone = Command::ExecuteFromInnerCommand<RefAttrListCmd>(
         *before,
         *after,
         dynamic_cast<Referentiable*>(&obj),

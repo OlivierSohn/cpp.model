@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0927A8191B3F2DCF00872BC9 /* command.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0927A8181B3F2DCF00872BC9 /* command.hpp */; };
 		09429CAD1AD38243001513DA /* asyncnotifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A21AD357F70099DA54 /* asyncnotifier.cpp */; };
 		09429CAE1AD38243001513DA /* command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A31AD357F70099DA54 /* command.cpp */; };
 		09429CAF1AD38243001513DA /* history.manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A41AD357F70099DA54 /* history.manager.cpp */; };
@@ -63,6 +64,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0927A8181B3F2DCF00872BC9 /* command.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = command.hpp; sourceTree = "<group>"; };
 		09429C961AD38207001513DA /* libmodel.ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmodel.ios.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		09681A0B1B1AAACE00678885 /* referentiable.root.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = referentiable.root.cpp; sourceTree = "<group>"; };
 		09681A0E1B1AAAED00678885 /* referentiable.root.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.root.h; sourceTree = "<group>"; };
@@ -137,27 +139,28 @@
 		0976628F1AD357F70099DA54 /* include */ = {
 			isa = PBXGroup;
 			children = (
-				0973B4CD1B256100007EFBDD /* referentiable.cmd.list.hpp */,
-				0973B4CE1B256101007EFBDD /* referentiable.cmd.list.h */,
-				09681A0E1B1AAAED00678885 /* referentiable.root.h */,
 				097662901AD357F70099DA54 /* asyncnotifier.h */,
 				097662911AD357F70099DA54 /* command.h */,
+				0927A8181B3F2DCF00872BC9 /* command.hpp */,
 				097662921AD357F70099DA54 /* history.manager.h */,
 				097662931AD357F70099DA54 /* model.allincludes.h */,
 				097662941AD357F70099DA54 /* observable.h */,
 				097662951AD357F70099DA54 /* persistable.h */,
 				097662961AD357F70099DA54 /* platform.defines.h */,
+				0973B4CE1B256101007EFBDD /* referentiable.cmd.list.h */,
+				0973B4CD1B256100007EFBDD /* referentiable.cmd.list.hpp */,
 				097662971AD357F70099DA54 /* referentiable.cmd.set.h */,
 				097662981AD357F70099DA54 /* referentiable.cmd.set.hpp */,
 				097662991AD357F70099DA54 /* referentiable.h */,
+				09DBDCA81B07C00200870E0A /* referentiable.link.hpp */,
 				0976629A1AD357F70099DA54 /* referentiable.manager.h */,
 				0976629B1AD357F70099DA54 /* referentiable.manager.hpp */,
+				09681A0E1B1AAAED00678885 /* referentiable.root.h */,
 				0976629C1AD357F70099DA54 /* session.h */,
 				0976629D1AD357F70099DA54 /* undoable.h */,
 				0976629E1AD357F70099DA54 /* updatable.h */,
 				0976629F1AD357F70099DA54 /* visitable.h */,
 				097662A01AD357F70099DA54 /* visitor.h */,
-				09DBDCA81B07C00200870E0A /* referentiable.link.hpp */,
 			);
 			path = include;
 			sourceTree = "<group>";
@@ -198,6 +201,7 @@
 				097662BF1AD357F70099DA54 /* visitor.h in Headers */,
 				0973B4D01B256101007EFBDD /* referentiable.cmd.list.h in Headers */,
 				097662B01AD357F70099DA54 /* command.h in Headers */,
+				0927A8191B3F2DCF00872BC9 /* command.hpp in Headers */,
 				097662B51AD357F70099DA54 /* platform.defines.h in Headers */,
 				0973B4CF1B256101007EFBDD /* referentiable.cmd.list.hpp in Headers */,
 				097662BB1AD357F70099DA54 /* session.h in Headers */,

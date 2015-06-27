@@ -17,7 +17,7 @@ void HistoryManager::logCommand(Command*c, const char * pre)
     std::string pad;
     pad.insert(pad.end(), m_curCommandStack.size(), ' ');
     std::string desc;
-    c->getExtendedDescription(desc);
+    c->getExtendedDescription(desc, 0);
     LG(INFO, "%s%s%s", pad.c_str(), pre ? pre : "", desc.c_str());
 }
 
@@ -29,6 +29,10 @@ UndoGroup::~UndoGroup()
 {
 }
 
+void UndoGroup::getDescription(std::string &desc)
+{
+    desc.append("group");
+}
 bool UndoGroup::isObsolete() const
 {
     bool bEmpty = true;

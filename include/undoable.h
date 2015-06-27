@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <stack>
+#include <string>
 
 namespace imajuscule
 {
@@ -11,6 +12,14 @@ namespace imajuscule
     class Undoable
     {
     public:
+        
+        enum ExecType
+        {
+            UNDO,
+            REDO,
+            NONE
+        };
+
         virtual ~Undoable();
         // return false if Command has no effect
         virtual bool Execute() = 0;
@@ -34,6 +43,9 @@ namespace imajuscule
             
         bool isObsolete() const;
 
+        void getExtendedDescription(std::string & desc, size_t offset);
+        virtual void getDescription(std::string & desc) = 0;
+
     protected:
         Undoable();
 
@@ -46,3 +58,43 @@ namespace imajuscule
         bool m_obsolete;
     };
 }
+
+#include "os.log.h"
+// depending on where this MACRO is used, CommandResult will be XXX::CommandResult or YYY::CommandResult
+
+#define RESULT_BY_REF(r) \
+[&](const Command::CommandResult * res){                                \
+if_A(res)                                                                 \
+{                                                                           \
+if_A(res->initialized());                                                 \
+{                                                                          \
+const CommandResult* myRes = dynamic_cast<const CommandResult*>(res);   \
+if_A(myRes)                                                             \
+{                                                                       \
+r = *myRes;                                                        \
+A(r.initialized());                                                \
+}                                                                     \
+}                                                                       \
+}                                                                          \
+}
+
+#define SUBCR_LISTEN_TO_RESULT \
+static FunctionInfo<Event> ListenToResult(Command & c, CommandResult & r)       \
+{                                                                               \
+return c.observable().Register(Event::RESULT, RESULT_BY_REF(r));            \
+}
+
+#define SUBCR_DFLT_CONTRUCTOR \
+CommandResult() : Command::CommandResult() {}
+
+#define SUBCR_DESTRUCTOR  \
+~CommandResult() {}
+
+#define SUBCR \
+public:                           \
+SUBCR_DFLT_CONTRUCTOR;        \
+SUBCR_DESTRUCTOR;             \
+SUBCR_LISTEN_TO_RESULT;       \
+private:
+
+

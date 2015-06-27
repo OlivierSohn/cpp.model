@@ -4,7 +4,6 @@
 #include <stack>
 #include "observable.h"
 #include "undoable.h"
-#include "command.h"
 
 namespace imajuscule
 {
@@ -26,6 +25,7 @@ namespace imajuscule
     
         virtual bool isObsolete() const;
 
+        void getDescription(std::string & desc) override;
     private:
 
         bool Undo(Undoable * limit, bool bStrict, bool & bFoundLimit) override;
@@ -66,7 +66,7 @@ namespace imajuscule
         void PushCurrentCommand(Command*);
         void PopCurrentCommand(Command*);
         Command * CurrentCommand();
-        bool IsUndoingOrRedoing(Command::ExecType & t);
+        bool IsUndoingOrRedoing(Undoable::ExecType & t);
 
         // traverse in chronological order
         void traverseUndos(UndoGroups::const_iterator& begin, UndoGroups::const_iterator& end) const;
@@ -81,7 +81,7 @@ namespace imajuscule
         unsigned int m_stacksCapacity;
         bool m_bAppStateHasNewContent;
 
-        Command::ExecType m_curExecType;
+        Undoable::ExecType m_curExecType;
         std::stack<Command*> m_curCommandStack;
         int m_iActivated;
 

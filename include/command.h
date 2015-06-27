@@ -46,8 +46,7 @@ namespace imajuscule
         bool Undo() override;
         bool Redo() override;
 
-        void getExtendedDescription(std::string & desc);
-        void getDescription(std::string & desc);
+        virtual void getDescription(std::string & desc);
         virtual void getSentenceDescription(std::string & desc) = 0;
 
     protected:
@@ -71,13 +70,6 @@ namespace imajuscule
         ////////////////////////////////
         /// generic referentiable Command definition
         ////////////////////////////////
-
-        enum ExecType
-        {
-            UNDO,
-            REDO,
-            NONE
-        };
 
         class CommandResult
         {
@@ -128,7 +120,7 @@ namespace imajuscule
         class CommandExec
         {
         public:
-            CommandExec(UndoGroup *, Command*, ExecType, const resFunc *);
+            CommandExec(UndoGroup *, Command*, const resFunc *);
             virtual ~CommandExec();
 
             bool Run();
@@ -136,56 +128,23 @@ namespace imajuscule
             UndoGroup * m_group; // the group to which the command belongs
             Command* m_command; // the actual command
             const resFunc * m_pResFunc; // the result function for the actual command
-            ExecType m_type; // the type of execution
         };
     public:
-        bool ExecFromInnerCommand(ExecType t, const std::type_info & commandType, const data & dataBefore, const data & dataAfter, Referentiable* ref = NULL, const resFunc * pResFunc = NULL);
+        template <class InnerCmdType>
+        bool ExecFromInnerCommand(const data & dataBefore, const data & dataAfter, Referentiable* ref = NULL, const resFunc * pResFunc = NULL);
+
     protected:
-        static bool ExecuteFromInnerCommand(const std::type_info & commandType, const data & dataBefore, const data & dataAfter, Referentiable* ref = NULL, const resFunc * pResFunc = NULL);
-        std::vector<CommandExec> ListInnerCommandsReadyFor(ExecType t, const std::type_info & commandType, const data & dataBefore, const data & dataAfter, Referentiable * ref = NULL, const resFunc * pResFunc = NULL);
-        virtual bool ReadyFor(ExecType t, const std::type_info & commandType, const data & dataBefore, const data & dataAfter, Referentiable * ref /*optional*/);
+        template <class InnerCmdType>
+        static bool ExecuteFromInnerCommand(const data & dataBefore, const data & dataAfter, Referentiable* ref = NULL, const resFunc * pResFunc = NULL);
+    
+        template <class InnerCmdType>
+        std::vector<CommandExec> ListInnerCommandsReadyFor(const data & dataBefore, const data & dataAfter, Referentiable * ref = NULL, const resFunc * pResFunc = NULL);
+        
+        template <class InnerCmdType>
+        bool ReadyFor(const data & dataBefore, const data & dataAfter, Referentiable * ref /*optional*/);
 
         virtual bool doExecute(const data & Data) = 0;
     };
 }
 
-// headers for macros
-
-#include "os.log.h"
-// depending on where this MACRO is used, CommandResult will be XXX::CommandResult or YYY::CommandResult
-
-#define RESULT_BY_REF(r) \
-       [&](const Command::CommandResult * res){                                \
-            if_A(res)                                                                 \
-            {                                                                           \
-                if_A(res->initialized());                                                 \
-                {                                                                          \
-                    const CommandResult* myRes = dynamic_cast<const CommandResult*>(res);   \
-                    if_A(myRes)                                                             \
-                    {                                                                       \
-                        r = *myRes;                                                        \
-                        A(r.initialized());                                                \
-                    }                                                                     \
-                }                                                                       \
-            }                                                                          \
-        }
-
-#define SUBCR_LISTEN_TO_RESULT \
-    static FunctionInfo<Event> ListenToResult(Command & c, CommandResult & r)       \
-    {                                                                               \
-        return c.observable().Register(Event::RESULT, RESULT_BY_REF(r));            \
-    }
-
-#define SUBCR_DFLT_CONTRUCTOR \
-    CommandResult() : Command::CommandResult() {}
-
-#define SUBCR_DESTRUCTOR  \
-    ~CommandResult() {}
-
-#define SUBCR \
-    public:                           \
-        SUBCR_DFLT_CONTRUCTOR;        \
-        SUBCR_DESTRUCTOR;             \
-        SUBCR_LISTEN_TO_RESULT;       \
-    private:
-
+#include "command.hpp"

@@ -59,6 +59,8 @@ namespace imajuscule
         void traverseTargets(refs::iterator & begin, refs::iterator & end);
         void traverseSources(refs::iterator & begin, refs::iterator & end);
     protected:
+        std::vector<Referentiable*> m_others;
+        
         virtual ~Referentiable();
 
         virtual void Init() {};
@@ -88,7 +90,7 @@ namespace imajuscule
             std::string m_hintName, m_dateOfCreation;
             unsigned int m_uiIndex;
         };
-
+        
     private:
         ReferentiableManagerBase * m_manager;
         std::string m_guid; // persisted

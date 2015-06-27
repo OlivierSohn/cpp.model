@@ -158,8 +158,7 @@ bool RefChangeAttrCmd<T,U,fSet,fGet>::ExecuteFromInnerCommand(T & obj, U * newAt
     CommandResult r;
     resFunc f(RESULT_BY_REF(r));
 
-    bool bDone = Command::ExecuteFromInnerCommand(
-        typeid(RefChangeAttrCmd),
+    bool bDone = Command::ExecuteFromInnerCommand<RefChangeAttrCmd>(
         *before,
         *after,
         dynamic_cast<Referentiable*>(&obj),

@@ -546,8 +546,7 @@ bool ReferentiableNewCmdBase::ExecuteFromInnerCommand(ReferentiableManagerBase &
     CommandResult r;
     resFunc f(RESULT_BY_REF(r));
 
-    bool bDone = Command::ExecuteFromInnerCommand(
-        typeid(ReferentiableNewCmdBase),
+    bool bDone = Command::ExecuteFromInnerCommand<ReferentiableCmdBase>(
         *before,
         *after,
         NULL,
@@ -629,8 +628,7 @@ bool ReferentiableDeleteCmdBase::ExecuteFromInnerCommand(Referentiable & r)
     Command::data * before = data::instantiate(ACTION_NEW, nameHint, rm);
     Command::data * after = data::instantiate(ACTION_DELETE, nameHint, rm);
 
-    bool bDone = Command::ExecuteFromInnerCommand(
-        typeid(ReferentiableNewCmdBase),
+    bool bDone = Command::ExecuteFromInnerCommand<ReferentiableCmdBase>(
         *before,
         *after);
 

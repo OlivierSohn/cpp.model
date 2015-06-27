@@ -91,3 +91,26 @@ bool Undoable::contains(Undoable * u)
 }
 
 
+void Undoable::getExtendedDescription(std::string & desc, size_t offset)
+{
+    size_t nInner = m_undoables.size();
+    if (nInner > 0)
+    {
+        desc.append("(+");
+        desc.append(std::to_string(nInner));
+        desc.append(")");
+    }
+    std::string descCmd;
+    getDescription(descCmd);
+    desc.append(descCmd);
+    
+    for(auto u:m_undoables)
+    {
+        desc.append("\n");
+        desc.append(offset + 4, ' ');
+        std::string desc2;
+        u->getExtendedDescription(desc2, offset+4);
+        desc.append(desc2);
+    }
+}
+
