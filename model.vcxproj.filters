@@ -93,6 +93,15 @@
     <ClInclude Include="include\referentiable.cmd.set.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\command.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\referentiable.cmd.simpleset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\referentiable.cmd.simpleset.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\persistable.cpp">

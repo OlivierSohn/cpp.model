@@ -79,6 +79,7 @@
   <ItemGroup>
     <ClInclude Include="include\asyncnotifier.h" />
     <ClInclude Include="include\command.h" />
+    <ClInclude Include="include\command.hpp" />
     <ClInclude Include="include\history.manager.h" />
     <ClInclude Include="include\model.allincludes.h" />
     <ClInclude Include="include\observable.h" />
@@ -91,6 +92,8 @@
     <ClInclude Include="include\referentiable.cmd.list.hpp" />
     <ClInclude Include="include\referentiable.cmd.set.h" />
     <ClInclude Include="include\referentiable.cmd.set.hpp" />
+    <ClInclude Include="include\referentiable.cmd.simpleset.h" />
+    <ClInclude Include="include\referentiable.cmd.simpleset.hpp" />
     <ClInclude Include="include\referentiable.h" />
     <ClInclude Include="include\referentiable.link.hpp" />
     <ClInclude Include="include\referentiable.manager.h" />
