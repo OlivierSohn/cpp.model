@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0927A8191B3F2DCF00872BC9 /* command.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0927A8181B3F2DCF00872BC9 /* command.hpp */; };
+		0927A81C1B3F987B00872BC9 /* referentiable.cmd.simpleset.h in Headers */ = {isa = PBXBuildFile; fileRef = 0927A81A1B3F987B00872BC9 /* referentiable.cmd.simpleset.h */; };
+		0927A81D1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0927A81B1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp */; };
 		09429CAD1AD38243001513DA /* asyncnotifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A21AD357F70099DA54 /* asyncnotifier.cpp */; };
 		09429CAE1AD38243001513DA /* command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A31AD357F70099DA54 /* command.cpp */; };
 		09429CAF1AD38243001513DA /* history.manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A41AD357F70099DA54 /* history.manager.cpp */; };
@@ -65,6 +67,8 @@
 
 /* Begin PBXFileReference section */
 		0927A8181B3F2DCF00872BC9 /* command.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = command.hpp; sourceTree = "<group>"; };
+		0927A81A1B3F987B00872BC9 /* referentiable.cmd.simpleset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.cmd.simpleset.h; sourceTree = "<group>"; };
+		0927A81B1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.cmd.simpleset.hpp; sourceTree = "<group>"; };
 		09429C961AD38207001513DA /* libmodel.ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmodel.ios.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		09681A0B1B1AAACE00678885 /* referentiable.root.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = referentiable.root.cpp; sourceTree = "<group>"; };
 		09681A0E1B1AAAED00678885 /* referentiable.root.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.root.h; sourceTree = "<group>"; };
@@ -139,6 +143,8 @@
 		0976628F1AD357F70099DA54 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				0927A81A1B3F987B00872BC9 /* referentiable.cmd.simpleset.h */,
+				0927A81B1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp */,
 				097662901AD357F70099DA54 /* asyncnotifier.h */,
 				097662911AD357F70099DA54 /* command.h */,
 				0927A8181B3F2DCF00872BC9 /* command.hpp */,
@@ -193,12 +199,14 @@
 				097662B21AD357F70099DA54 /* model.allincludes.h in Headers */,
 				097662B11AD357F70099DA54 /* history.manager.h in Headers */,
 				097662B61AD357F70099DA54 /* referentiable.cmd.set.h in Headers */,
+				0927A81C1B3F987B00872BC9 /* referentiable.cmd.simpleset.h in Headers */,
 				09DBDCA91B07C00200870E0A /* referentiable.link.hpp in Headers */,
 				097662BE1AD357F70099DA54 /* visitable.h in Headers */,
 				097662B91AD357F70099DA54 /* referentiable.manager.h in Headers */,
 				097662BD1AD357F70099DA54 /* updatable.h in Headers */,
 				097662B41AD357F70099DA54 /* persistable.h in Headers */,
 				097662BF1AD357F70099DA54 /* visitor.h in Headers */,
+				0927A81D1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp in Headers */,
 				0973B4D01B256101007EFBDD /* referentiable.cmd.list.h in Headers */,
 				097662B01AD357F70099DA54 /* command.h in Headers */,
 				0927A8191B3F2DCF00872BC9 /* command.hpp in Headers */,
