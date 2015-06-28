@@ -25,7 +25,7 @@ namespace imajuscule
     
         virtual bool isObsolete() const;
 
-        void getDescription(std::string & desc) override;
+        void getDescription(std::string & desc) const override;
     private:
 
         bool Undo(Undoable * limit, bool bStrict, bool & bFoundLimit) override;

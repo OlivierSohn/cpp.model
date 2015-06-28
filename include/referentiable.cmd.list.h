@@ -16,7 +16,7 @@ namespace imajuscule
     {
         friend T;
     public:
-        void getSentenceDescription(std::string & desc) override;
+        void getSentenceDescription(std::string & desc) const override;
 
         enum class Type
         {

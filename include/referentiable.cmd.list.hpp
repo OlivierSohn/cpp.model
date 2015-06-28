@@ -94,7 +94,7 @@ RefAttrListCmd<T,U,fAdd,fRemove>::~RefAttrListCmd()
 }
 
 REF_CMD_LIST
-void RefAttrListCmd<T,U,fAdd,fRemove>::getSentenceDescription(std::string & desc)
+void RefAttrListCmd<T,U,fAdd,fRemove>::getSentenceDescription(std::string & desc) const
 {
     desc.append(std::string("manage list : "));
 }

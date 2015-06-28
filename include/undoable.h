@@ -43,8 +43,9 @@ namespace imajuscule
             
         bool isObsolete() const;
 
-        void getExtendedDescription(std::string & desc, size_t offset);
-        virtual void getDescription(std::string & desc) = 0;
+        void getNRExtendedDescription(std::string & desc) const;
+        void getExtendedDescription(std::string & desc, size_t offset) const;
+        virtual void getDescription(std::string & desc) const = 0;
 
     protected:
         Undoable();

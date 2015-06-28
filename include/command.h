@@ -46,8 +46,8 @@ namespace imajuscule
         bool Undo() override;
         bool Redo() override;
 
-        virtual void getDescription(std::string & desc);
-        virtual void getSentenceDescription(std::string & desc) = 0;
+        void getDescription(std::string & desc) const override;
+        virtual void getSentenceDescription(std::string & desc) const = 0;
 
     protected:
         virtual bool doExecute();

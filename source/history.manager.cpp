@@ -29,7 +29,7 @@ UndoGroup::~UndoGroup()
 {
 }
 
-void UndoGroup::getDescription(std::string &desc)
+void UndoGroup::getDescription(std::string &desc) const
 {
     desc.append("group");
 }

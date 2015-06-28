@@ -529,7 +529,7 @@ void ReferentiableNewCmdBase::Deinstantiate()
     Undo();
 }
 
-void ReferentiableNewCmdBase::getSentenceDescription(std::string & desc)
+void ReferentiableNewCmdBase::getSentenceDescription(std::string & desc) const
 {
     desc.append("new Ref. \"");
     desc.append(m_hintName);
@@ -602,7 +602,7 @@ ReferentiableCmdBase(r.getManager(), r.hintName(), ACTION_DELETE)
 ReferentiableDeleteCmdBase::~ReferentiableDeleteCmdBase()
 {}
 
-void ReferentiableDeleteCmdBase::getSentenceDescription(std::string & desc)
+void ReferentiableDeleteCmdBase::getSentenceDescription(std::string & desc) const
 {
     desc.append("delete Ref. \"");
     desc.append(m_hintName);

@@ -207,7 +207,7 @@ namespace imajuscule
     {
         friend class ReferentiableManagerBase;
     public:
-        void getSentenceDescription(std::string & desc) override;
+        void getSentenceDescription(std::string & desc) const override;
 
         void Instantiate() override;
         void Deinstantiate() override;
@@ -226,7 +226,7 @@ namespace imajuscule
     {
         friend class ReferentiableManagerBase;
     public:
-        void getSentenceDescription(std::string & desc) override;
+        void getSentenceDescription(std::string & desc) const override;
 
         void Instantiate() override;
         void Deinstantiate() override;

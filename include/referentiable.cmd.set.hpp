@@ -117,7 +117,7 @@ RefChangeAttrCmd<T,U,fSet,fGet>::~RefChangeAttrCmd()
 }
 
 REF_CMD_SET
-void RefChangeAttrCmd<T,U,fSet,fGet>::getSentenceDescription(std::string & desc)
+void RefChangeAttrCmd<T,U,fSet,fGet>::getSentenceDescription(std::string & desc) const
 {
     if (m_preconditionning)
         desc.append(" (prec.)");

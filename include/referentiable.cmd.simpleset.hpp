@@ -105,7 +105,7 @@ RefSimpleChangeAttrCmd<T,U,fSet,fGet>::~RefSimpleChangeAttrCmd()
 }
 
 REF_CMD_SIMPLESET
-void RefSimpleChangeAttrCmd<T,U,fSet,fGet>::getSentenceDescription(std::string & desc)
+void RefSimpleChangeAttrCmd<T,U,fSet,fGet>::getSentenceDescription(std::string & desc) const
 {
     desc.append(std::string(" attr : "));
 }

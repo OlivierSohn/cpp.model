@@ -159,7 +159,7 @@ bool Command::Redo(Undoable * limit, bool bStrict, bool & bFoundLimit)
     return Redo();
 }
 
-void Command::getDescription(std::string & desc)
+void Command::getDescription(std::string & desc) const
 {
     if (Referentiable * p = getObject())
         desc.append(p->sessionName());
