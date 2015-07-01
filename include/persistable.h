@@ -15,7 +15,7 @@ class type ## Persist : public supertype ## Persist { \
 public: \
 type ## Persist(DirectoryPath, FileName, type & r); \
 virtual ~type ## Persist(); \
-virtual eResult doSave() override; \
+eResult doSave() override; \
 private: \
 type & m_ ## type; \
 }; \
@@ -24,9 +24,9 @@ public: \
 type ## Load( DirectoryPath, FileName, type&); \
 virtual ~type ## Load(); \
 protected: \
-virtual void LoadStringForKey(char key, std::string & str); \
-virtual void LoadStringArrayForKey(char key, std::vector<std::string> const &); \
-virtual void LoadInt32ForKey(char key, int32_t); \
+void LoadStringForKey(char key, std::string & str) override; \
+void LoadStringArrayForKey(char key, std::vector<std::string> const &) override; \
+void LoadInt32ForKey(char key, int32_t) override; \
 private: \
 type & m_ ## type; \
 };\
