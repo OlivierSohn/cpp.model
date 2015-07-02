@@ -20,6 +20,9 @@ namespace imajuscule
     class ReferentiableManagerBase;
     class ReferentiableCmdBase;
     class Command;
+    class Referentiable;
+    typedef std::vector<Referentiable*> refs;
+
     class Referentiable : public Persistable
     {
         friend class ReferentiableManagerBase;
@@ -55,7 +58,6 @@ namespace imajuscule
         void unRegisterTarget( Referentiable& target );
         void unRegisterSource( Referentiable& source );
         
-        typedef std::vector<Referentiable*> refs;
         void traverseTargets(refs::iterator & begin, refs::iterator & end);
         void traverseSources(refs::iterator & begin, refs::iterator & end);
     protected:
