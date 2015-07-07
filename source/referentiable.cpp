@@ -9,7 +9,7 @@
 #define KEY_DATE_CREA           'd' // string
 #define KEY_GUID                'e' // string
 #define KEY_NAME                'i' // string
-#define KEY_MANAGER_INDEX        -110
+#define KEY_MANAGER_INDEX        -10
 
 using namespace imajuscule;
 
@@ -80,7 +80,7 @@ Referentiable* Referentiable::instantiate(ReferentiableManagerBase * rm)
 }
 Referentiable* Referentiable::instantiate(ReferentiableManagerBase * rm, const std::string & hintName)
 {
-    return rm->newReferentiable(hintName);
+    return rm->newReferentiable(hintName, true);
 }
 void Referentiable::deinstantiate()
 {
@@ -175,7 +175,7 @@ IMPL_PERSIST3(Referentiable, Persistable,
              );
 
 Referentiable::ReferentiableIndexLoad::ReferentiableIndexLoad( DirectoryPath d, FileName f) :
-KeysLoad(d,f)
+KeysLoad(d,f,false)
 , m_bFound(false)
 , m_uiIndex(0)
 {

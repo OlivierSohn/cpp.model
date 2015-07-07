@@ -6,47 +6,44 @@
 #include "os.storage.keys.h"
 #include "os.storage.h"
 
+#define DECL_PERSIST_CLASSES( type, supertype ) \
+class type ## Persist : public supertype ## Persist { \
+public: \
+    type ## Persist(DirectoryPath, FileName, type & r); \
+    virtual ~type ## Persist(); \
+    eResult doSave() override; \
+private: \
+    type & m_ ## type; \
+}; \
+class type ## Load : public supertype ## Load { \
+public: \
+    type ## Load( DirectoryPath, FileName, type&); \
+    virtual ~type ## Load(); \
+protected: \
+    void LoadStringForKey(char key, std::string & str) override; \
+    void LoadStringArrayForKey(char key, std::vector<std::string> const &) override; \
+    void LoadInt32ForKey(char key, int32_t) override; \
+    void onLoadFinished() override; \
+private: \
+    type & m_ ## type; \
+};
+
 #define DECL_PERSIST( type, supertype ) \
 public: \
 void Load(Storage::DirectoryPath d, Storage::FileName f) override; \
 eResult Save() override; \
 protected: \
-class type ## Persist : public supertype ## Persist { \
-public: \
-type ## Persist(DirectoryPath, FileName, type & r); \
-virtual ~type ## Persist(); \
-eResult doSave() override; \
-private: \
-type & m_ ## type; \
-}; \
-class type ## Load : public supertype ## Load { \
-public: \
-type ## Load( DirectoryPath, FileName, type&); \
-virtual ~type ## Load(); \
-protected: \
-void LoadStringForKey(char key, std::string & str) override; \
-void LoadStringArrayForKey(char key, std::vector<std::string> const &) override; \
-void LoadInt32ForKey(char key, int32_t) override; \
-private: \
-type & m_ ## type; \
-};\
+DECL_PERSIST_CLASSES( type, supertype ) \
 private:
 
 // persistence of strings, stringarrays
-#define IMPL_PERSIST3( type, supertype, implSave, ilString, ilStringArray, ilInt32 ) \
+#define IMPL_PERSIST_CLASSES( type, supertype, implSave, ilString, ilStringArray, ilInt32 ) \
 namespace imajuscule { \
-template class RefLink<imajuscule::type> ; \
 type::type ## Persist :: type ## Persist(DirectoryPath d, FileName f, type & r) : supertype ## Persist(d, f, r), m_ ## type(r) {} \
 type::type ## Persist ::~ type ## Persist () {} \
 eResult type::type ## Persist::doSave() { \
 implSave \
 return supertype ## Persist::doSave(); \
-} \
-eResult type::Save() \
-{ \
-type::type ## Persist l( Storage::curDir(), guid(), *this);  \
-eResult res = l.Save();\
-return res;\
 } \
 type::type ## Load :: type ## Load(DirectoryPath d, FileName f, type & r) : supertype ## Load(d, f, r), m_ ## type(r) {} \
 type::type ## Load ::~ type ## Load() {} \
@@ -77,6 +74,20 @@ supertype ## Load::LoadInt32ForKey(key, intVal); \
 break; \
 } \
 } \
+void type::type ## Load ::onLoadFinished() { \
+m_ ## type.onLoaded(); \
+} \
+}
+
+#define IMPL_PERSIST3( type, supertype, implSave, ilString, ilStringArray, ilInt32 ) IMPL_PERSIST_CLASSES( type, supertype, implSave, ilString, ilStringArray, ilInt32) \
+namespace imajuscule { \
+template class RefLink<imajuscule::type> ; \
+eResult type::Save() \
+{ \
+type::type ## Persist l( Storage::curDir(), guid(), *this);  \
+eResult res = l.Save();\
+return res;\
+} \
 void type::Load(Storage::DirectoryPath d, Storage::FileName f) \
 { \
 type::type ## Load l( d, f, *this);  \
@@ -90,14 +101,26 @@ l.ReadAllKeys();\
 
 #define UGLY_SAVE_REF(ref) \
 eResult res = ref->Save(); \
-A(ILE_SUCCESS == res);
+A(ILE_SUCCESS == res || ILE_RECURSIVITY == res);
+
+#define W_LNK_SOFT( refExpr, key ) \
+{\
+Referentiable * ref = refExpr;\
+if(ref) \
+{       \
+WriteKeyData(key, ref->guid()); \
+UGLY_SAVE_REF(ref);\
+}\
+}
 
 #define W_LNK( refExpr, key ) \
-if(Referentiable * ref = refExpr) \
+{\
+if_A(refExpr) \
 {       \
-    WriteKeyData(key, ref->guid()); \
-    UGLY_SAVE_REF(ref);\
+W_LNK_SOFT(refExpr, key); \
+}\
 }
+
 
 #define W_LNK_ELT( ref, vs ) \
 if_A(ref) \
@@ -152,6 +175,9 @@ namespace imajuscule
         virtual void Load(Storage::DirectoryPath d, Storage::FileName f){A(0);}
         virtual eResult Save() {A(0); return ILE_ERROR;}
         
+        // overload by calling supertype implementation first
+        virtual void onLoaded() {};
+        
     protected:
         Persistable();
 
@@ -159,6 +185,7 @@ namespace imajuscule
         void removeSpecAndUnforward(Persistable * upd, const FunctionInfo<PersistableEvent> & reg);
         void removeSpecAndDelete(Persistable * upd);
 
+        // these are not defined through macros
         class PersistablePersist : public KeysPersist
         {
         public:

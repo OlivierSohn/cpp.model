@@ -180,7 +180,7 @@ Referentiable * ReferentiableManagerBase::findBySessionName(const std::string & 
     return pRet;
 }
 
-bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r)
+bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r, bool bFinalize)
 {
     bool bRet = false;
 
@@ -197,11 +197,12 @@ bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r)
         bRet = RegisterWithSessionName(r, sessionName);
     }
 
-    if(bRet)
+    if(bRet && bFinalize)
     {
         r->Init();
+        r->onLoaded();
         
-        observable().Notify(Event::RFTBL_ADD, r);
+        observable().Notify(ReferentiableManagerBase::Event::RFTBL_ADD, r);
     }
     
     return bRet;
@@ -277,16 +278,16 @@ void ReferentiableManagerBase::RemoveRef(Referentiable*r)
     }
 }
 
-Referentiable* ReferentiableManagerBase::newReferentiable()
+Referentiable* ReferentiableManagerBase::newReferentiable(bool bFinalize)
 {
-    return newReferentiable(defaultNameHint());
+    return newReferentiable(defaultNameHint(), bFinalize);
 }
 
-Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & nameHint)
+Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & nameHint, bool bFinalize)
 {
-    return newReferentiable(nameHint, std::vector < std::string>());
+    return newReferentiable(nameHint, std::vector < std::string>(), bFinalize);
 }
-Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids)
+Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize)
 {
     Referentiable * r = NULL;
 
@@ -294,12 +295,13 @@ Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & na
 
     if (h->isActive())
     {
+        A(bFinalize);
         if (!ReferentiableNewCmdBase::ExecuteFromInnerCommand(*this, nameHint, guids, r))
             r = ReferentiableNewCmdBase::Execute(*this, nameHint, guids);
     }
     else
     {
-        r = newReferentiableInternal(nameHint, guids, false);
+        r = newReferentiableInternal(nameHint, guids, false, bFinalize);
     }
 
     return r;
@@ -330,7 +332,7 @@ ReferentiableManager<T>::~ReferentiableManager()
 }
 
 template <class T>
-Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible)
+Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible, bool bFinalize)
 {
     /*LG(INFO, "ReferentiableManager<T>::newReferentiable(%s, %d guids) begin",
         (nameHint.c_str() ? nameHint.c_str() : "NULL"),
@@ -354,7 +356,7 @@ Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::stri
     ref = new T(this, guid, nameHint);
     if (!bVisible)
         ref->Hide();
-    if (!ComputeSessionName(ref))
+    if (!ComputeSessionName(ref, bFinalize))
     {
         LG(ERR, "ReferentiableManager<T>::newReferentiable : ComputeSessionName failed (uuid: %s)", guid.c_str());
         delete ref;
@@ -373,7 +375,7 @@ T* ReferentiableManager<T>::New()
 {
     ReferentiableManager<T>* rm = ReferentiableManager<T>::getInstance();
     if_A(rm)
-        return static_cast<T*>(rm->newReferentiable());
+        return static_cast<T*>(rm->newReferentiable(true));
     return NULL;
 }
 
@@ -684,9 +686,13 @@ Referentiable* Referentiables::findRefFromGUID(const Storage::DirectoryPath & pa
     {
         if_A(index < m_managers.size())
         {
+            HistoryManagerPause p;
+
             std::vector<std::string> guids{guid};
-            r = m_managers[index]->newReferentiable(nameHint, guids);
+            ReferentiableManagerBase * rm = m_managers[index];
+            r = rm->newReferentiable(nameHint, guids, false);
             r->Load(path, guid);
+            rm->observable().Notify(ReferentiableManagerBase::Event::RFTBL_ADD, r);
         }
     }
     

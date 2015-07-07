@@ -37,9 +37,9 @@ namespace imajuscule
         ReferentiableManagerBase();
         virtual ~ReferentiableManagerBase();
 
-        Referentiable* newReferentiable();
-        Referentiable* newReferentiable(const std::string & nameHint);
-        Referentiable* newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids);
+        Referentiable* newReferentiable(bool bFinalize);
+        Referentiable* newReferentiable(const std::string & nameHint, bool bFinalize);
+        Referentiable* newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize);
 
         // guid is unique
         Referentiable * findByGuid(const std::string & guid);
@@ -61,7 +61,7 @@ namespace imajuscule
     protected:
         virtual const char * defaultNameHint() = 0;
         // pure virtual because the session names are unique "per object type"
-        bool ComputeSessionName(Referentiable*);
+        bool ComputeSessionName(Referentiable*, bool bFinalize);
 
         bool RegisterWithSessionName(Referentiable*, const std::string& sessionName);
         static void generateGuid(std::string & guid);
@@ -77,7 +77,7 @@ namespace imajuscule
 
         Observable<Event, Referentiable*> * m_observable;
 
-        virtual Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible = true) = 0;
+        virtual Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible = true, bool bFinalize = true) = 0;
         void RemoveRefInternal(Referentiable*);
     };
     
@@ -144,7 +144,7 @@ namespace imajuscule
         ReferentiableManager();
         virtual ~ReferentiableManager();
 
-        Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible) override;
+        Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible, bool bFinalize) override;
     };
 
     class ReferentiableCmdBase : public Command
