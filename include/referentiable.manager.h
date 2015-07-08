@@ -9,8 +9,6 @@
 #include "command.h"
 
 #define NEWREF(x) ReferentiableManager<x>::New()
-#define REF_BY_SN( x, sn )  static_cast<x *>(ReferentiableManager<x>::getInstance()->findBySessionName(sn))
-
 namespace imajuscule
 {
     int InitializeRefManagers();
@@ -239,7 +237,13 @@ namespace imajuscule
         static bool ExecuteFromInnerCommand(Referentiable&);
         static void Execute(Referentiable &);
     };
-
+    
+    template <class T> T* REF_BY_SN( const std::string & sn ){
+        return static_cast<T *>(ReferentiableManager<T>::getInstance()->findBySessionName(sn));
+    }
+    template <class T> T* REF_BY_GUID( const std::string & guid ){
+        return static_cast<T *>(ReferentiableManager<T>::getInstance()->findByGuid(guid));
+    }
 }
 
 #include "referentiable.h"
