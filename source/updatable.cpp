@@ -47,12 +47,9 @@ void Updatable::Update()
         (*it)->Update();
     }
 
-    bool bOldVal = hasNewContentForUpdate();
-
     bool bNewVal = doUpdate();
 
-    if ( bOldVal != bNewVal )
-        hasNewContentForUpdate(bNewVal);
+    hasNewContentForUpdate(bNewVal);
 
     hasBeenUpdated(true);
 }
