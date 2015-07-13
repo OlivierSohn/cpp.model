@@ -302,7 +302,7 @@ Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & na
     }
     else
     {
-        r = newReferentiableInternal(nameHint, guids, false, bFinalize);
+        r = newReferentiableInternal(nameHint, guids, true, bFinalize);
     }
 
     return r;
