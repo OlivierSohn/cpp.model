@@ -302,7 +302,7 @@ Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & na
     }
     else
     {
-        r = newReferentiableInternal(nameHint, guids, true, bFinalize);
+        r = newReferentiableInternal(nameHint, guids, false /*hide items that are not in undoable command*/ , bFinalize);
     }
 
     return r;
