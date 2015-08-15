@@ -216,14 +216,26 @@ void ReferentiableManagerBase::generateGuid(std::string & sGuid)
     sGuid.clear();
 #ifdef _WIN32
     GUID guid;
-    CoCreateGuid(&guid);
+	HRESULT hr = CoCreateGuid(&guid);
+	if (FAILED(hr))
+	{
+		LG(ERR, "ReferentiableManagerBase::generateGuid : CoCreateGuid failed %x", hr);
+		A(0);
+		return;
+	}
 
     OLECHAR* bstrGuid;
-    StringFromCLSID(guid, &bstrGuid);
+    hr = StringFromCLSID(guid, &bstrGuid);
+	if (FAILED(hr))
+	{
+		LG(ERR, "ReferentiableManagerBase::generateGuid : StringFromCLSID failed %x", hr);
+		A(0);
+		return;
+	}
 
     // First figure out our required buffer size.
     DWORD cbData = WideCharToMultiByte(CP_ACP, 0, bstrGuid/*pszDataIn*/, -1, NULL, 0, NULL, NULL);
-    HRESULT hr = (cbData == 0) ? HRESULT_FROM_WIN32(GetLastError()) : S_OK;
+    hr = (cbData == 0) ? HRESULT_FROM_WIN32(GetLastError()) : S_OK;
     if (SUCCEEDED(hr))
     {
         // Now allocate a buffer of the required size, and call WideCharToMultiByte again to do the actual conversion.
