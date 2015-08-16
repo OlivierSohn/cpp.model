@@ -191,9 +191,22 @@ bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r, bool bFinal
 
         std::transform(sessionName.begin(), sessionName.end(), sessionName.begin(), ::toupper);
 
-        while (Referentiable * r2 = findBySessionName(sessionName))
+        if(findBySessionName(sessionName))
         {
-            sessionName.append("1");
+            sessionName += "_";
+            
+            unsigned int suffix(0);
+         
+            auto f = [this](const std::string & pre, int i) -> bool {
+                return findBySessionName(pre + std::to_string(i));
+            };
+            
+            while (f(sessionName,suffix))
+            {
+                suffix++;
+            }
+            
+            sessionName += std::to_string(suffix);
         }
         bRet = RegisterWithSessionName(r, sessionName);
     }
