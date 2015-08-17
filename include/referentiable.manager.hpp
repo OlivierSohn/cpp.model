@@ -311,9 +311,9 @@ Referentiable* ReferentiableManagerBase::newReferentiable(bool bFinalize)
 
 Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & nameHint, bool bFinalize)
 {
-    return newReferentiable(nameHint, std::vector < std::string>(), bFinalize);
+    return newReferentiable(nameHint, std::vector < std::string>(), bFinalize, false);
 }
-Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize)
+Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize, bool bVisibleIfAhistoric)
 {
     Referentiable * r = NULL;
 
@@ -327,7 +327,7 @@ Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & na
     }
     else
     {
-        r = newReferentiableInternal(nameHint, guids, false /*hide items that are not in undoable command*/ , bFinalize);
+        r = newReferentiableInternal(nameHint, guids, bVisibleIfAhistoric, bFinalize);
     }
 
     return r;
@@ -712,11 +712,12 @@ Referentiable* Referentiables::findRefFromGUID(const Storage::DirectoryPath & pa
     {
         if_A(index < m_managers.size())
         {
+            // To record this in history we should have a command specializing newRefCmd for Load, with path as input)
             HistoryManagerPause p;
 
             std::vector<std::string> guids{guid};
             ReferentiableManagerBase * rm = m_managers[index];
-            r = rm->newReferentiable(nameHint, guids, false);
+            r = rm->newReferentiable(nameHint, guids, false, true);
             r->Load(path, guid);
             rm->observable().Notify(ReferentiableManagerBase::Event::RFTBL_ADD, r);
         }

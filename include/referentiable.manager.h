@@ -37,7 +37,7 @@ namespace imajuscule
 
         Referentiable* newReferentiable(bool bFinalize);
         Referentiable* newReferentiable(const std::string & nameHint, bool bFinalize);
-        Referentiable* newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize);
+        Referentiable* newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize, bool bVisibleIfAhistoric);
 
         // guid is unique
         Referentiable * findByGuid(const std::string & guid);
