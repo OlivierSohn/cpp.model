@@ -11,8 +11,9 @@ namespace imajuscule
     class Joint;
     class KinChain;
     class SimSTAIBody;
-    class RasterSTAIBody;
-    class SpecWM;
+	class RasterSTAIBody;
+	class EffectSTAIBody;
+	class SpecWM;
     class RoundedWM;
     class WMGeoOp;
     class RasterizeOp;
@@ -44,8 +45,9 @@ namespace imajuscule
         virtual void Visit(Joint*) = 0;
         virtual void Visit(KinChain*) = 0;
         virtual void Visit(RasterSTAIBody*) = 0;
-        virtual void Visit(SimSTAIBody*) = 0;
-        virtual void Visit(SpecWM*) = 0;
+		virtual void Visit(SimSTAIBody*) = 0;
+		virtual void Visit(EffectSTAIBody*) = 0;
+		virtual void Visit(SpecWM*) = 0;
         virtual void Visit(RoundedWM*) = 0;
         virtual void Visit(WMGeoOp*) = 0;
         virtual void Visit(RasterizeOp*) = 0;
@@ -53,8 +55,8 @@ namespace imajuscule
         virtual void Visit(ShrinkOp*) = 0;
         virtual void Visit(ScaleOp*) = 0;
         virtual void Visit(STAIRasterOp*) = 0;
-        virtual void Visit(STAISimOp*) = 0;
-        virtual void Visit(Positionable*) = 0;
+		virtual void Visit(STAISimOp*) = 0;
+		virtual void Visit(Positionable*) = 0;
         virtual void Visit(FormulaBase*) = 0;
         virtual void Visit(EvtB*) = 0;
         virtual void Visit(Player*) = 0;
