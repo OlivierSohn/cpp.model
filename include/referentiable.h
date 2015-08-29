@@ -14,7 +14,7 @@
 #define ILINKVAL(name,val) name ( ELINK(val) )
 #define ILINK(name) ILINKVAL(name,NULL)
 #define CLINK(type,value) ILINKVAL(LINK(type), value)
-
+#define LV_LINK(type,value) LINK(type) ( ELINK(value) )
 namespace imajuscule
 {
     class ReferentiableManagerBase;
@@ -32,6 +32,7 @@ namespace imajuscule
         void deinstantiate();
         enum Event
         {
+            DEACTIVATE_LINKS,
             WILL_BE_DELETED,
             SOURCES_CHANGED,
             TARGETS_CHANGED

@@ -42,7 +42,7 @@ void RefLink<T>::RegisterTargetCb()
 {
     if(m_target)
     {
-        m_targetRegs.push_back(m_target->observableReferentiable().Register(Referentiable::Event::WILL_BE_DELETED, [this](Referentiable*r){
+        m_targetRegs.push_back(m_target->observableReferentiable().Register(Referentiable::Event::DEACTIVATE_LINKS, [this](Referentiable*r){
             
             A(r==m_target);
             
