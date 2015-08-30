@@ -143,8 +143,6 @@
 		0976628F1AD357F70099DA54 /* include */ = {
 			isa = PBXGroup;
 			children = (
-				0927A81A1B3F987B00872BC9 /* referentiable.cmd.simpleset.h */,
-				0927A81B1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp */,
 				097662901AD357F70099DA54 /* asyncnotifier.h */,
 				097662911AD357F70099DA54 /* command.h */,
 				0927A8181B3F2DCF00872BC9 /* command.hpp */,
@@ -157,6 +155,8 @@
 				0973B4CD1B256100007EFBDD /* referentiable.cmd.list.hpp */,
 				097662971AD357F70099DA54 /* referentiable.cmd.set.h */,
 				097662981AD357F70099DA54 /* referentiable.cmd.set.hpp */,
+				0927A81A1B3F987B00872BC9 /* referentiable.cmd.simpleset.h */,
+				0927A81B1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp */,
 				097662991AD357F70099DA54 /* referentiable.h */,
 				09DBDCA81B07C00200870E0A /* referentiable.link.hpp */,
 				0976629A1AD357F70099DA54 /* referentiable.manager.h */,
