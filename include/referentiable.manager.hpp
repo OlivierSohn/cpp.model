@@ -199,7 +199,7 @@ bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r, bool bFinal
             unsigned int suffix(0);
          
             auto f = [this](const std::string & pre, int i) -> bool {
-                return (bool)findBySessionName(pre + std::to_string(i));
+                return findBySessionName(pre + std::to_string(i)) ? true: false;
             };
             
             while (f(sessionName,suffix))
