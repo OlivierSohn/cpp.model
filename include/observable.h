@@ -181,6 +181,7 @@ namespace imajuscule
                             std::get<AVAILABLE_KEYS>(*(it->second)).push(std::get<KEY>(*itM));
                             // erase and increment
                             itM = cbslist.erase(itM);
+                            endM = cbslist.end();
                             OBS_LG(INFO, "Observable(%x)::Notify(%d) : size1 %d (removed a notification)", this, event, std::get<CBS_LIST>(*(it->second)).size());
                         }
                     }

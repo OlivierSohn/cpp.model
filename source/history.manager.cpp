@@ -47,6 +47,7 @@ bool UndoGroup::isObsolete() const
             //HistoryManager::getInstance()->logObsoleteCommand(c);
             delete u;
             it = m_undoables.erase(it);
+            end = m_undoables.end(); // because vector changed
         }
         else
         {
@@ -128,6 +129,7 @@ bool UndoGroup::Redo(Undoable * limit, bool bStrict, bool & bFoundLimit)
                 //HistoryManager::getInstance()->logObsoleteCommand(c);
                 delete u;
                 it = m_undoables.erase(it);
+                end = m_undoables.end();
                 continue;
             }
 
@@ -325,6 +327,7 @@ void HistoryManager::SizeUndos()
             {
                 count++;
                 it = m_groups.erase(it);
+                end = m_groups.end();
             }
             else
                 ++it;
