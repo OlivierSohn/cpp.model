@@ -32,7 +32,8 @@ namespace imajuscule
     class CurveTraversal;
     class WireModel;
     class WireTextModel;
-    
+    class Playable;
+
     class Visitor
     {
     public:
@@ -67,6 +68,7 @@ namespace imajuscule
         virtual void Visit(CameraBase*) = 0;
         virtual void Visit(WireModel*) = 0;
         virtual void Visit(WireTextModel*) = 0;
+        virtual void Visit(Playable*) {};
 
     protected:
         Visitor() {}
