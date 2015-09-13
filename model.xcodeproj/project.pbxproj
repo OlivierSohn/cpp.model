@@ -30,7 +30,6 @@
 		097662B21AD357F70099DA54 /* model.allincludes.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662931AD357F70099DA54 /* model.allincludes.h */; };
 		097662B31AD357F70099DA54 /* observable.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662941AD357F70099DA54 /* observable.h */; };
 		097662B41AD357F70099DA54 /* persistable.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662951AD357F70099DA54 /* persistable.h */; };
-		097662B51AD357F70099DA54 /* platform.defines.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662961AD357F70099DA54 /* platform.defines.h */; };
 		097662B61AD357F70099DA54 /* referentiable.cmd.set.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662971AD357F70099DA54 /* referentiable.cmd.set.h */; };
 		097662B71AD357F70099DA54 /* referentiable.cmd.set.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 097662981AD357F70099DA54 /* referentiable.cmd.set.hpp */; };
 		097662B81AD357F70099DA54 /* referentiable.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662991AD357F70099DA54 /* referentiable.h */; };
@@ -81,7 +80,6 @@
 		097662931AD357F70099DA54 /* model.allincludes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model.allincludes.h; sourceTree = "<group>"; };
 		097662941AD357F70099DA54 /* observable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = observable.h; sourceTree = "<group>"; };
 		097662951AD357F70099DA54 /* persistable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = persistable.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		097662961AD357F70099DA54 /* platform.defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.defines.h; sourceTree = "<group>"; };
 		097662971AD357F70099DA54 /* referentiable.cmd.set.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.cmd.set.h; sourceTree = "<group>"; };
 		097662981AD357F70099DA54 /* referentiable.cmd.set.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.cmd.set.hpp; sourceTree = "<group>"; };
 		097662991AD357F70099DA54 /* referentiable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = referentiable.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -150,7 +148,6 @@
 				097662931AD357F70099DA54 /* model.allincludes.h */,
 				097662941AD357F70099DA54 /* observable.h */,
 				097662951AD357F70099DA54 /* persistable.h */,
-				097662961AD357F70099DA54 /* platform.defines.h */,
 				0973B4CE1B256101007EFBDD /* referentiable.cmd.list.h */,
 				0973B4CD1B256100007EFBDD /* referentiable.cmd.list.hpp */,
 				097662971AD357F70099DA54 /* referentiable.cmd.set.h */,
@@ -210,7 +207,6 @@
 				0973B4D01B256101007EFBDD /* referentiable.cmd.list.h in Headers */,
 				097662B01AD357F70099DA54 /* command.h in Headers */,
 				0927A8191B3F2DCF00872BC9 /* command.hpp in Headers */,
-				097662B51AD357F70099DA54 /* platform.defines.h in Headers */,
 				0973B4CF1B256101007EFBDD /* referentiable.cmd.list.hpp in Headers */,
 				097662BB1AD357F70099DA54 /* session.h in Headers */,
 				097662BA1AD357F70099DA54 /* referentiable.manager.hpp in Headers */,
@@ -363,7 +359,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -409,7 +405,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
