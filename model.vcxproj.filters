@@ -102,6 +102,12 @@
     <ClInclude Include="include\referentiable.cmd.simpleset.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\execution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\undoable.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\persistable.cpp">

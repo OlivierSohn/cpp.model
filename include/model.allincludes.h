@@ -2,6 +2,7 @@
 
 #include "asyncnotifier.h"
 #include "command.h"
+#include "execution.h"
 #include "history.manager.h"
 #include "observable.h"
 #include "persistable.h"

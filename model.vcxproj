@@ -150,6 +150,7 @@
     <ClInclude Include="include\asyncnotifier.h" />
     <ClInclude Include="include\command.h" />
     <ClInclude Include="include\command.hpp" />
+    <ClInclude Include="include\execution.h" />
     <ClInclude Include="include\history.manager.h" />
     <ClInclude Include="include\model.allincludes.h" />
     <ClInclude Include="include\observable.h" />
@@ -171,6 +172,7 @@
     <ClInclude Include="include\referentiable.root.h" />
     <ClInclude Include="include\session.h" />
     <ClInclude Include="include\undoable.h" />
+    <ClInclude Include="include\undoable.hpp" />
     <ClInclude Include="include\updatable.h" />
     <ClInclude Include="include\visitable.h" />
     <ClInclude Include="include\visitor.h" />
