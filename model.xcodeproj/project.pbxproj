@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		090578081BAE00E800FA8E42 /* undoable.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 090578071BAE00E800FA8E42 /* undoable.hpp */; settings = {ASSET_TAGS = (); }; };
+		0905780A1BAE12BA00FA8E42 /* execution.h in Headers */ = {isa = PBXBuildFile; fileRef = 090578091BAE12BA00FA8E42 /* execution.h */; settings = {ASSET_TAGS = (); }; };
 		0927A8191B3F2DCF00872BC9 /* command.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0927A8181B3F2DCF00872BC9 /* command.hpp */; };
 		0927A81C1B3F987B00872BC9 /* referentiable.cmd.simpleset.h in Headers */ = {isa = PBXBuildFile; fileRef = 0927A81A1B3F987B00872BC9 /* referentiable.cmd.simpleset.h */; };
 		0927A81D1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0927A81B1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp */; };
@@ -65,6 +67,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		090578071BAE00E800FA8E42 /* undoable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = undoable.hpp; sourceTree = "<group>"; };
+		090578091BAE12BA00FA8E42 /* execution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = execution.h; sourceTree = "<group>"; };
 		0927A8181B3F2DCF00872BC9 /* command.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = command.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		0927A81A1B3F987B00872BC9 /* referentiable.cmd.simpleset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.cmd.simpleset.h; sourceTree = "<group>"; };
 		0927A81B1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.cmd.simpleset.hpp; sourceTree = "<group>"; };
@@ -141,6 +145,8 @@
 		0976628F1AD357F70099DA54 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				090578091BAE12BA00FA8E42 /* execution.h */,
+				090578071BAE00E800FA8E42 /* undoable.hpp */,
 				097662901AD357F70099DA54 /* asyncnotifier.h */,
 				097662911AD357F70099DA54 /* command.h */,
 				0927A8181B3F2DCF00872BC9 /* command.hpp */,
@@ -198,12 +204,14 @@
 				097662B61AD357F70099DA54 /* referentiable.cmd.set.h in Headers */,
 				0927A81C1B3F987B00872BC9 /* referentiable.cmd.simpleset.h in Headers */,
 				09DBDCA91B07C00200870E0A /* referentiable.link.hpp in Headers */,
+				0905780A1BAE12BA00FA8E42 /* execution.h in Headers */,
 				097662BE1AD357F70099DA54 /* visitable.h in Headers */,
 				097662B91AD357F70099DA54 /* referentiable.manager.h in Headers */,
 				097662BD1AD357F70099DA54 /* updatable.h in Headers */,
 				097662B41AD357F70099DA54 /* persistable.h in Headers */,
 				097662BF1AD357F70099DA54 /* visitor.h in Headers */,
 				0927A81D1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp in Headers */,
+				090578081BAE00E800FA8E42 /* undoable.hpp in Headers */,
 				0973B4D01B256101007EFBDD /* referentiable.cmd.list.h in Headers */,
 				097662B01AD357F70099DA54 /* command.h in Headers */,
 				0927A8191B3F2DCF00872BC9 /* command.hpp in Headers */,

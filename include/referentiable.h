@@ -125,8 +125,7 @@ namespace imajuscule
         T* operator->();
         const T& operator*() const;
         T& operator*();
-        T * get();
-        T * getConst() const;
+        T * edit() const;
         const T * get() const;
 
         bool operator < (RefLink & other);

@@ -406,7 +406,7 @@ T* ReferentiableManager<T>::New()
     return NULL;
 }
 
-bool ReferentiableCmdBase::data::operator!=(const Command::data& other) const
+bool ReferentiableCmdBase::data::operator!=(const Undoable::data& other) const
 {
     auto pOther = dynamic_cast<const ReferentiableCmdBase::data * >(&other);
     if_A(pOther)
@@ -429,7 +429,7 @@ std::string ReferentiableCmdBase::data::getDesc() const
 }
 
 ReferentiableCmdBase::data::data(Action a, std::string hintName, ReferentiableManagerBase * rm):
-Command::data()
+Undoable::data()
 , m_action(a)
 , m_hintName(hintName)
 , m_manager(rm)
@@ -465,7 +465,7 @@ Command(new data(other(action), nameHint, manager), new data(action, nameHint, m
 ReferentiableCmdBase::~ReferentiableCmdBase()
 {}
 
-bool ReferentiableCmdBase::doExecute(const Command::data & data)
+bool ReferentiableCmdBase::doExecute(const Undoable::data & data)
 {
     bool bDone = false;
 
@@ -527,7 +527,7 @@ void ReferentiableCmdBase::doDeinstantiate()
 }
 
 ReferentiableCmdBase::CommandResult::CommandResult(bool bSuccess, Referentiable*ref):
-Command::CommandResult(bSuccess)
+Undoable::CommandResult(bSuccess)
 , m_addr(ref)
 {}
 Referentiable * ReferentiableCmdBase::CommandResult::addr() const {
@@ -569,13 +569,13 @@ bool ReferentiableNewCmdBase::ExecuteFromInnerCommand(ReferentiableManagerBase &
 {
     oRefAddr = NULL;
 
-    Command::data * before = data::instantiate(ACTION_DELETE, nameHint, &rm);
-    Command::data * after = data::instantiate(ACTION_NEW, nameHint, &rm);
+    Undoable::data * before = data::instantiate(ACTION_DELETE, nameHint, &rm);
+    Undoable::data * after = data::instantiate(ACTION_NEW, nameHint, &rm);
 
     CommandResult r;
     resFunc f(RESULT_BY_REF(r));
 
-    bool bDone = Command::ExecuteFromInnerCommand<ReferentiableCmdBase>(
+    bool bDone = Undoable::ExecuteFromInnerCommand<ReferentiableCmdBase>(
         *before,
         *after,
         NULL,
@@ -654,10 +654,10 @@ bool ReferentiableDeleteCmdBase::ExecuteFromInnerCommand(Referentiable & r)
     std::string nameHint = r.hintName();
     ReferentiableManagerBase * rm = r.getManager();
     
-    Command::data * before = data::instantiate(ACTION_NEW, nameHint, rm);
-    Command::data * after = data::instantiate(ACTION_DELETE, nameHint, rm);
+    Undoable::data * before = data::instantiate(ACTION_NEW, nameHint, rm);
+    Undoable::data * after = data::instantiate(ACTION_DELETE, nameHint, rm);
 
-    bool bDone = Command::ExecuteFromInnerCommand<ReferentiableCmdBase>(
+    bool bDone = Undoable::ExecuteFromInnerCommand<ReferentiableCmdBase>(
         *before,
         *after);
 

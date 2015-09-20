@@ -165,7 +165,7 @@ HistoryManager::HistoryManager() :
 m_stacksCapacity(-1)// unsigned -> maximum capacity
 , m_observable(Observable<Event>::instantiate())
 , m_bAppStateHasNewContent(false)
-, m_curExecType(Command::ExecType::NONE)
+, m_curExecType(ExecutionType::NONE)
 , m_iActivated(1)
 {
     m_appState = m_groups.rbegin();
@@ -200,19 +200,22 @@ bool HistoryManager::isActive() const
 }
 void HistoryManager::MakeGroup()
 {
-    A(NULL == CurrentCommand());
-
-    if (m_bAppStateHasNewContent)
+    if(NULL == CurrentCommand() && transactionCount_ == 0)
     {
-        m_bAppStateHasNewContent = false;
+        if (m_bAppStateHasNewContent)
+        {
+            m_bAppStateHasNewContent = false;
+        }
     }
 }
 void HistoryManager::StartTransaction(){
-    if (Command * cc = CurrentCommand())
+    if (auto * cc = CurrentCommand())
         cc->StartSubElement();
+    transactionCount_++;
 }
 void HistoryManager::EndTransaction(){
-    if (Command * cc = CurrentCommand())
+    transactionCount_--;
+    if (auto * cc = CurrentCommand())
         cc->EndSubElement();
 }
 
@@ -232,7 +235,7 @@ HistoryManager * HistoryManager::getInstance()
     return g_instance;
 }
 
-Command * HistoryManager::CurrentCommand()
+Undoable * HistoryManager::CurrentCommand()
 {
     if (m_curCommandStack.empty())
         return NULL;
@@ -240,31 +243,31 @@ Command * HistoryManager::CurrentCommand()
         return m_curCommandStack.top();
 }
 
-void HistoryManager::PushCurrentCommand(Command*c)
+void HistoryManager::PushCurrentCommand(Undoable*c)
 {
     //logCommand(c);
     m_curCommandStack.push(c);
 }
-void HistoryManager::PopCurrentCommand(Command*c)
+void HistoryManager::PopCurrentCommand(Undoable*c)
 {
     A(!m_curCommandStack.empty());
     A(m_curCommandStack.top() == c);
     m_curCommandStack.pop();
 }
 
-bool HistoryManager::IsUndoingOrRedoing(Command::ExecType & t)
+bool HistoryManager::IsUndoingOrRedoing(ExecutionType & t)
 {
     t = m_curExecType;
-    return (t != Command::ExecType::NONE);
+    return (t != ExecutionType::NONE);
 }
 
-void HistoryManager::Add(Command* c)
+void HistoryManager::Add(Undoable* c)
 {
     bool bRedosChanged = false;
 
-    if (m_curExecType != Command::ExecType::NONE)
+    if (m_curExecType != ExecutionType::NONE)
     {
-        LG(ERR, "HistoryManager::Add : Memory leak : a command was added to history while %s", (m_curExecType==Command::ExecType::UNDO)?"undoing":"redoing");
+        LG(ERR, "HistoryManager::Add : Memory leak : a command was added to history while %s", (m_curExecType==ExecutionType::UNDO)?"undoing":"redoing");
         goto end;
     }
 
@@ -275,7 +278,7 @@ void HistoryManager::Add(Command* c)
         goto end;
     }
 
-    if (Command * cmd = CurrentCommand())
+    if (auto * cmd = CurrentCommand())
     {
         cmd->Add(c);
         goto end;
@@ -349,7 +352,7 @@ void HistoryManager::SizeUndos()
 
 void HistoryManager::Undo()
 {
-    m_curExecType = Command::ExecType::UNDO;
+    m_curExecType = ExecutionType::UNDO;
 
     bool bDone = false;
     bool bUndosChanged = false;
@@ -389,12 +392,12 @@ void HistoryManager::Undo()
         observable().Notify(Event::REDOS_CHANGED);
     }
 
-    m_curExecType = Command::ExecType::NONE;
+    m_curExecType = ExecutionType::NONE;
 }
 
 void HistoryManager::Redo()
 {
-    m_curExecType = Command::ExecType::REDO;
+    m_curExecType = ExecutionType::REDO;
 
     bool bDone = false;
     bool bUndosChanged = false;
@@ -435,7 +438,7 @@ void HistoryManager::Redo()
         observable().Notify(Event::REDOS_CHANGED);
     }
 
-    m_curExecType = Command::ExecType::NONE;
+    m_curExecType = ExecutionType::NONE;
 }
 
 void HistoryManager::traverseUndos(UndoGroups::const_iterator& begin, UndoGroups::const_iterator& end) const

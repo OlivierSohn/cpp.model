@@ -6,6 +6,7 @@ using namespace imajuscule;
 
 Undoable::Undoable():
 m_obsolete(false)
+, m_observable(Observable<Event, const CommandResult *>::instantiate())
 {}
 Undoable::~Undoable()
 {
@@ -15,6 +16,12 @@ Undoable::~Undoable()
     {
         delete *it;
     }
+
+    m_observable->deinstantiate();
+}
+auto Undoable::observable()->Observable < Event, const CommandResult * > &
+{
+    return *m_observable;
 }
 
 void Undoable::setIsObsolete()
@@ -61,12 +68,14 @@ void Undoable::StartSubElement()
     m_curSubElts.push(ug);
 }
 
-void Undoable::EndSubElement()
+bool Undoable::EndSubElement()
 {
-    if_A(!m_curSubElts.empty())
+    if(!m_curSubElts.empty())
     {
         m_curSubElts.pop();
+        return true;
     }
+    return false;
 }
 
 bool Undoable::contains(Undoable * u)
@@ -118,3 +127,20 @@ void Undoable::getExtendedDescription(std::string & desc, size_t offset) const
     }
 }
 
+
+const char * Undoable::StateToString(State s)
+{
+    switch (s)
+    {
+        case NOT_EXECUTED:
+            return "NOT_EXECUTED";
+        case EXECUTED:
+            return "EXECUTED";
+        case UNDONE:
+            return "UNDONE";
+        case REDONE:
+            return "REDONE";
+        default:
+            return "UNKNOWN";
+    }
+}

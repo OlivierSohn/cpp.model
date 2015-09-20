@@ -13,7 +13,6 @@ Undoable()
 , m_obsolescenceObservable(o)
 , m_manager(r?(r->getManager()):NULL)
 , m_guid(r?r->guid():std::string())
-, m_observable(Observable<Event, const CommandResult *>::instantiate())
 {
     if (m_obsolescenceObservable)
         m_reg.push_back(m_obsolescenceObservable->Register(IS_OBSOLETE, std::bind(&Command::onObsolete, this)));
@@ -27,13 +26,6 @@ Command::~Command()
 
     if (m_obsolescenceObservable && !isObsolete())
         m_obsolescenceObservable->Remove(m_reg);
-
-    m_observable->deinstantiate();
-}
-
-auto Command::observable()->Observable < Event, const CommandResult * > &
-{
-    return *m_observable;
 }
 
 auto Command::Before() const -> data *
@@ -187,7 +179,7 @@ void Command::getDescription(std::string & desc) const
         break;
     }
 }
-Command::CommandExec::CommandExec(UndoGroup *g, Command* c, const resFunc *f) :
+Undoable::CommandExec::CommandExec(UndoGroup *g, Command* c, const resFunc *f) :
 m_group(g)
 , m_command(c)
 , m_pResFunc(f)
@@ -195,7 +187,7 @@ m_group(g)
     A(m_command);
 }
 
-Command::CommandExec::~CommandExec()
+Undoable::CommandExec::~CommandExec()
 {}
 
 Command::data::data()
@@ -231,7 +223,7 @@ bool Command::doRedo()
     return doExecute(*After());
 }
 
-bool Command::CommandExec::Run()
+bool Undoable::CommandExec::Run()
 {
     bool bDone = false;
     
@@ -320,22 +312,5 @@ bool Command::CommandResult::Success() const
     return m_success;
 }
 
-
-const char * Command::StateToString(State s)
-{
-    switch (s)
-    {
-        case NOT_EXECUTED:
-            return "NOT_EXECUTED";
-        case EXECUTED:
-            return "EXECUTED";
-        case UNDONE:
-            return "UNDONE";
-        case REDONE:
-            return "REDONE";
-        default:
-            return "UNKNOWN";
-    }
-}
 
 

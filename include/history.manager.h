@@ -3,35 +3,13 @@
 #include <list>
 #include <stack>
 #include "observable.h"
-#include "undoable.h"
+#include "execution.h"
 
 namespace imajuscule
 {
     class Command;
-
-    // an UndoGroup is a way to sequence undoables for Undo/Redo
-    class UndoGroup : public Undoable
-    {
-    public:
-        UndoGroup();
-        ~UndoGroup();
-
-        bool Execute() override;
-        bool Undo() override;
-        bool Redo() override;
-
-        bool UndoUntil(Undoable*u /*including u*/);
-        bool RedoUntil(Undoable*u /*including u*/);
-    
-        virtual bool isObsolete() const;
-
-        void getDescription(std::string & desc) const override;
-    private:
-
-        bool Undo(Undoable * limit, bool bStrict, bool & bFoundLimit) override;
-        bool Redo(Undoable * limit, bool bStrict, bool & bFoundLimit) override;
-    };
-
+    class UndoGroup;
+    class Undoable;
     class HistoryManager
     {
     public:
@@ -55,7 +33,7 @@ namespace imajuscule
         bool isActive() const;
         void EmptyStacks();
 
-        void Add(Command*);
+        void Add(Undoable*);
         void StartTransaction();
         void EndTransaction();
         void MakeGroup();
@@ -63,10 +41,10 @@ namespace imajuscule
         void Undo();
         void Redo();
 
-        void PushCurrentCommand(Command*);
-        void PopCurrentCommand(Command*);
-        Command * CurrentCommand();
-        bool IsUndoingOrRedoing(Undoable::ExecType & t);
+        void PushCurrentCommand(Undoable*);
+        void PopCurrentCommand(Undoable*);
+        Undoable * CurrentCommand();
+        bool IsUndoingOrRedoing(ExecutionType & t);
 
         // traverse in chronological order
         void traverseUndos(UndoGroups::const_iterator& begin, UndoGroups::const_iterator& end) const;
@@ -81,9 +59,10 @@ namespace imajuscule
         unsigned int m_stacksCapacity;
         bool m_bAppStateHasNewContent;
 
-        Undoable::ExecType m_curExecType;
-        std::stack<Command*> m_curCommandStack;
+        ExecutionType m_curExecType;
+        std::stack<Undoable*> m_curCommandStack;
         int m_iActivated;
+        int transactionCount_ = 0;
 
         void NewGroup();
         void SizeUndos();
@@ -101,6 +80,17 @@ namespace imajuscule
         HistoryManagerPause();
         ~HistoryManagerPause();
     };
+    template <bool cond, class CLASS >
+    class if_
+    {
+    public:
+        if_() { if(cond) { class_ = new CLASS();} }
+        ~if_() { if(cond) delete class_; }
+    private:
+        CLASS * class_;
+    };
 }
+
+#include "undoable.h"
 
 #define inCmd (HistoryManager::getInstance()->CurrentCommand())

@@ -6,7 +6,7 @@
 
 #include "visitable.h"
 #include "observable.h"
-#include "command.h"
+#include "undoable.h"
 
 #define NEWREF(x) ReferentiableManager<x>::New()
 namespace imajuscule
@@ -163,13 +163,13 @@ namespace imajuscule
             ACTION_UNKNOWN
         };
         static Action other(Action);
-        struct data : public Command::data
+        struct data : public Undoable::data
         {
             Action m_action;
             std::string m_hintName;
             ReferentiableManagerBase * m_manager;
 
-            bool operator!=(const Command::data& other) const override;
+            bool operator!=(const Undoable::data& other) const override;
             std::string getDesc() const override;
 
             data(Action, std::string hintName, ReferentiableManagerBase * rm);
@@ -185,9 +185,9 @@ namespace imajuscule
         void doInstantiate();
         void doDeinstantiate();
 
-        bool doExecute(const Command::data &) override;
+        bool doExecute(const Undoable::data &) override;
 
-        class CommandResult : public Command::CommandResult
+        class CommandResult : public Undoable::CommandResult
         {
             SUBCR
         public:

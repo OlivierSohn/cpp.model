@@ -132,22 +132,26 @@ if_A(ref) \
 }
 
 #define W_LNKS( vec, key ) \
+{ \
 std::vector<std::string> vs; \
 for(auto & it : vec) \
 { \
     Referentiable * ref = it; \
     W_LNK_ELT( ref, vs); \
 } \
-WriteKeyData(key, vs);
-
+WriteKeyData(key, vs);  \
+}
+    
 #define W_LNKS_P1( container, key ) \
+{ \
 std::vector<std::string> vs; \
 for(auto & it : container) \
 {\
     Referentiable * ref = it.first; \
     W_LNK_ELT( ref, vs); \
 }\
-WriteKeyData(key, vs);
+WriteKeyData(key, vs);  \
+}
 
 #define R_LNKS_OP( Op, type, key ) \
 case key: \

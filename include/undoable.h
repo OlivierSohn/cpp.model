@@ -3,22 +3,27 @@
 #include <vector>
 #include <stack>
 #include <string>
+#include "referentiable.h"
+#include "execution.h"
 
 namespace imajuscule
 {
     class Command;
+    class UndoGroup;
     class Undoable;
     typedef std::vector<Undoable*> Undoables;
     class Undoable
     {
     public:
         
-        enum ExecType
+        enum State
         {
-            UNDO,
-            REDO,
-            NONE
+            NOT_EXECUTED,
+            EXECUTED,
+            UNDONE,
+            REDONE
         };
+        static const char * StateToString(State);
 
         virtual ~Undoable();
         // return false if Command has no effect
@@ -32,7 +37,7 @@ namespace imajuscule
         void Add(Undoable*); // adds an undoable in the list of sub element or to the current subelement if it exists (see StartSubElement)
         
         void StartSubElement();
-        void EndSubElement();
+        bool EndSubElement();
         
         void traverseForward(Undoables::iterator & begin, Undoables::iterator& end) const;
 
@@ -47,6 +52,28 @@ namespace imajuscule
         void getExtendedDescription(std::string & desc, size_t offset) const;
         virtual void getDescription(std::string & desc) const = 0;
 
+        class CommandResult
+        {
+        public:
+            CommandResult();
+            CommandResult(bool bSuccess);
+            virtual ~CommandResult();
+            
+            bool initialized() const;
+            
+            bool Success() const;
+        private:
+            bool m_bInitialized;
+            bool m_success;
+        };
+        typedef std::function<void(const CommandResult *)> resFunc;
+
+        enum Event
+        {
+            RESULT
+        };
+        Observable<Event, const CommandResult *> & observable();
+
     protected:
         Undoable();
 
@@ -54,13 +81,138 @@ namespace imajuscule
 
         mutable Undoables m_undoables; // mutable because isObsolete() can delete commands
 
+        struct data
+        {
+            bool operator==(const data&) const;
+            virtual bool operator!=(const data&) const = 0;
+            virtual std::string getDesc() const = 0;
+            
+            virtual ~data();
+            data();
+        };
+
+        class CommandExec
+        {
+        public:
+            CommandExec(UndoGroup *, Command*, const resFunc *);
+            virtual ~CommandExec();
+            
+            bool Run();
+        private:
+            UndoGroup * m_group; // the group to which the command belongs
+            Command* m_command; // the actual command
+            const resFunc * m_pResFunc; // the result function for the actual command
+        };
+
+        template <class InnerCmdType>
+        static bool ExecuteFromInnerCommand(const data & dataBefore, const data & dataAfter, Referentiable* ref =
+                                            NULL, const resFunc * pResFunc = NULL);
+
+        template <class InnerCmdType>
+        bool ExecFromInnerCommand(const data & dataBefore, const data & dataAfter, Referentiable* ref = NULL, const resFunc * pResFunc = NULL);
+
+        template <class InnerCmdType>
+        std::vector<CommandExec> ListInnerCommandsReadyFor(const data & dataBefore, const data & dataAfter, Referentiable * ref = NULL, const resFunc * pResFunc = NULL);
+        
+
     private:
         std::stack<Undoable*> m_curSubElts;
         bool m_obsolete;
+        Observable<Event, const CommandResult *> * m_observable;
+    };
+    
+    // an UndoGroup is a way to sequence undoables for Undo/Redo
+    class UndoGroup : public Undoable
+    {
+    public:
+        UndoGroup();
+        ~UndoGroup();
+        
+        bool Execute() override;
+        bool Undo() override;
+        bool Redo() override;
+        
+        bool UndoUntil(Undoable*u /*including u*/);
+        bool RedoUntil(Undoable*u /*including u*/);
+        
+        virtual bool isObsolete() const;
+        
+        void getDescription(std::string & desc) const override;
+    private:
+        
+        bool Undo(Undoable * limit, bool bStrict, bool & bFoundLimit) override;
+        bool Redo(Undoable * limit, bool bStrict, bool & bFoundLimit) override;
+    };
+    
+    // A command has "inner" commands organized by groups (groups define a precedence constraints between their elements)
+    // The initial intent was to have a single group containing all inner commands. But when redone / undone, the command wil need to call its sub commands in a non-linear way,
+    // hence the need to have multiple groups.
+    class Command : public Undoable
+    {
+        friend class Undoable;
+        ////////////////////////////////
+        /// original Command definition
+        ////////////////////////////////
+        
+    public:
+        enum ObsolescenceEvent
+        {
+            IS_OBSOLETE // means that the command should not be considered by HistoryManager anymore
+        };
+        
+        virtual ~Command();
+        
+        State getState() const;
+        bool validStateToExecute() const;
+        bool validStateToUndo() const;
+        bool validStateToRedo() const;
+        
+        bool Execute() override; // return false if Command has no effect
+        bool Undo() override;
+        bool Redo() override;
+        
+        void getDescription(std::string & desc) const override;
+        virtual void getSentenceDescription(std::string & desc) const = 0;
+        
+    protected:
+        virtual bool doExecute();
+        virtual bool doUndo();
+        virtual bool doRedo();
+        
+        void setState(State state);
+        
+    private:
+        void onObsolete();
+        
+        State m_state;
+        Observable<ObsolescenceEvent> * m_obsolescenceObservable;
+        std::vector<FunctionInfo<ObsolescenceEvent>> m_reg;
+        
+        bool Undo(Undoable * limit, bool bStrict, bool & bFoundLimit) override;
+        bool Redo(Undoable * limit, bool bStrict, bool & bFoundLimit) override;
+        
+    protected:
+        Command(data * pDataBefore, data * pDataAfter, Referentiable * r = NULL, Observable<ObsolescenceEvent> * o = NULL);
+        
+        data *m_pBefore;
+        data *m_pAfter;
+        
+        data * Before() const;
+        data * After() const;
+        Referentiable * getObject() const;
+        
+    private:
+        std::string m_guid;
+        ReferentiableManagerBase * m_manager;
+        
+    protected:
+        template <class InnerCmdType>
+        bool ReadyFor(const data & dataBefore, const data & dataAfter, Referentiable * ref /*optional*/);
+        
+        virtual bool doExecute(const data & Data) = 0;
     };
 }
 
-#include "os.log.h"
 // depending on where this MACRO is used, CommandResult will be XXX::CommandResult or YYY::CommandResult
 
 #define RESULT_BY_REF(r) \
@@ -98,4 +250,9 @@ SUBCR_DESTRUCTOR;             \
 SUBCR_LISTEN_TO_RESULT;       \
 private:
 
+//#include "command.h"
+
+#include "undoable.hpp"
+
+#include "os.log.h"
 
