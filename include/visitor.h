@@ -33,6 +33,7 @@ namespace imajuscule
     class WireModel;
     class WireTextModel;
     class Playable;
+    class ExactVolume;
 
     class Visitor
     {
@@ -68,6 +69,7 @@ namespace imajuscule
         virtual void Visit(CameraBase*) = 0;
         virtual void Visit(WireModel*) = 0;
         virtual void Visit(WireTextModel*) = 0;
+        virtual void Visit(ExactVolume*) = 0;
         virtual void Visit(Playable*) {};
 
     protected:
