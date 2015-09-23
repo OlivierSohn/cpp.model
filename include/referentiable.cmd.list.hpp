@@ -72,7 +72,7 @@ std::string RefAttrListCmd<T,U,fAdd,fRemove>::data::getDesc() const
             break;
     }
 
-    if (Referentiable * ref = Attr())
+    if (const Referentiable * ref = Attr())
         desc.append(ref->sessionName());
     else
         desc.append("missing");
