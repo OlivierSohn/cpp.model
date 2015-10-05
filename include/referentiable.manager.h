@@ -129,8 +129,8 @@ namespace imajuscule
     public:
         static ReferentiableManager * getInstance();
 
-        const char * defaultNameHint();
-        const char * UIName();
+        const char * defaultNameHint() override;
+        const char * UIName() override;
         
         unsigned int index() override;
         
