@@ -231,7 +231,7 @@ void ReferentiableManagerBase::generateGuid(std::string & sGuid)
 #ifdef _WIN32
     GUID guid;
 	HRESULT hr = CoCreateGuid(&guid);
-	if (FAILED(hr))
+	if (unlikely(FAILED(hr)))
 	{
 		LG(ERR, "ReferentiableManagerBase::generateGuid : CoCreateGuid failed %x", hr);
 		A(0);
@@ -240,7 +240,7 @@ void ReferentiableManagerBase::generateGuid(std::string & sGuid)
 
     OLECHAR* bstrGuid;
     hr = StringFromCLSID(guid, &bstrGuid);
-	if (FAILED(hr))
+	if (unlikely(FAILED(hr)))
 	{
 		LG(ERR, "ReferentiableManagerBase::generateGuid : StringFromCLSID failed %x", hr);
 		A(0);
@@ -250,17 +250,17 @@ void ReferentiableManagerBase::generateGuid(std::string & sGuid)
     // First figure out our required buffer size.
     DWORD cbData = WideCharToMultiByte(CP_ACP, 0, bstrGuid/*pszDataIn*/, -1, NULL, 0, NULL, NULL);
     hr = (cbData == 0) ? HRESULT_FROM_WIN32(GetLastError()) : S_OK;
-    if (SUCCEEDED(hr))
+    if (likely(SUCCEEDED(hr)))
     {
         // Now allocate a buffer of the required size, and call WideCharToMultiByte again to do the actual conversion.
         char *pszData = new (std::nothrow) CHAR[cbData];
         hr = pszData ? S_OK : E_OUTOFMEMORY;
-        if (SUCCEEDED(hr))
+        if (likely(SUCCEEDED(hr)))
         {
             hr = WideCharToMultiByte(CP_ACP, 0, bstrGuid/*pszDataIn*/, -1, pszData, cbData, NULL, NULL)
                 ? S_OK
                 : HRESULT_FROM_WIN32(GetLastError());
-            if (SUCCEEDED(hr))
+            if (likely(SUCCEEDED(hr)))
             {
                 sGuid.clear();
                 sGuid.append(pszData);
@@ -339,7 +339,7 @@ ReferentiableManager<T> * ReferentiableManager<T>::g_pRefManager = NULL;
 template <class T>
 ReferentiableManager<T> * ReferentiableManager<T>::getInstance()
 {
-    if (!g_pRefManager)
+    if (unlikely(!g_pRefManager))
     {
         g_pRefManager = new ReferentiableManager<T>();
     }
@@ -383,7 +383,7 @@ Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::stri
     ref = new T(this, guid, nameHint);
     if (!bVisible)
         ref->Hide();
-    if (!ComputeSessionName(ref, bFinalize))
+    if (unlikely(!ComputeSessionName(ref, bFinalize)))
     {
         LG(ERR, "ReferentiableManager<T>::newReferentiable : ComputeSessionName failed (uuid: %s)", guid.c_str());
         delete ref;
