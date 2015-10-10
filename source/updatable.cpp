@@ -18,7 +18,7 @@ m_observableUpdatable(Observable<Event, Updatable& /*observed*/, Updatable&/*spe
 
 Updatable::~Updatable()
 {
-    while(!m_specs.empty())
+    while(unlikely(!m_specs.empty()))
     {
         A(!"some specs needs to be cleaned up");
         removeSpec(m_specs.front());
@@ -66,7 +66,7 @@ bool Updatable::isConsistent() const
 
         for (; it2 != end2; ++it2)
         {
-            if ((*it) == (*it2))
+            if (unlikely((*it) == (*it2)))
             {
                 LG(ERR, "Updatable::isConsistent : a spec is also an observer");
                 return false;

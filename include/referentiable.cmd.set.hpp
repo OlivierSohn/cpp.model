@@ -228,7 +228,7 @@ bool RefChangeAttrCmd<T,U,fSet,fGet>::doExecute()
     {
         bChanged = m_preconditionning->Execute();
 
-        if (!bChanged)
+        if (unlikely(!bChanged))
         {
             A(!"preconditionning command failed");
             // deleted by previous call

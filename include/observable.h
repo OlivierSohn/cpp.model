@@ -203,7 +203,7 @@ namespace imajuscule
             //OBS_LG(INFO, "Observable::Remove(%d) #%d", functionInfo.m_event, m_curNotifStamp);
 
             auto it1 = m_observers.find(functionInfo.m_event);
-            if (it1 != m_observers.end())
+            if (likely(it1 != m_observers.end()))
             {
                 callbacksList & cbslist = std::get<CBS_LIST>(*(it1->second));
  
@@ -239,7 +239,7 @@ namespace imajuscule
 
                 OBS_LG(INFO, "Observable(%x)::Remove(%d) : size after %d", this, functionInfo.m_event, std::get<CBS_LIST>(*(it1->second)).size());
 
-                if (!bFound)
+                if (unlikely(!bFound))
                 {
                     A(!"attempt to remove a registration that is not here");
                 }

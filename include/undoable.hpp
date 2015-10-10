@@ -17,7 +17,7 @@ bool Undoable::ExecuteFromInnerCommand( const data & dataBefore, const data & da
         {
             if (c)
             {
-                if (!(bDone = c->ExecFromInnerCommand<InnerCmdType>(dataBefore, dataAfter, pRef, pResFunc)))
+                if (unlikely(!(bDone = c->ExecFromInnerCommand<InnerCmdType>(dataBefore, dataAfter, pRef, pResFunc))))
                 {
                     // since we have a current command and are undoing or redoing, the inner command should be there
                     A(!"corresponding inner command not found");

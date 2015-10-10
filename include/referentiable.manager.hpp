@@ -50,7 +50,7 @@ bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const 
         {
             std::string guid = r->guid();
             guidsToRftbls::iterator it = m_guidsToRftbls.find(guid);
-            if (it == m_guidsToRftbls.end())
+            if (likely(it == m_guidsToRftbls.end()))
             {
                 m_guidsToRftbls.insert(it, guidsToRftbls::value_type(guid, r));
                 bRet = true;
@@ -64,7 +64,7 @@ bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const 
         if ( bRet )
         {
             snsToRftbls::iterator it = m_snsToRftbls.find(sessionName);
-            if (it == m_snsToRftbls.end())
+            if (likely(it == m_snsToRftbls.end()))
             {
                 m_snsToRftbls.insert(it, guidsToRftbls::value_type(sessionName, r));
             }

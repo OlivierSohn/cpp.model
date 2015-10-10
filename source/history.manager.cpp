@@ -265,23 +265,23 @@ void HistoryManager::Add(Undoable* c)
 {
     bool bRedosChanged = false;
 
-    if (m_curExecType != ExecutionType::NONE)
+    if ( unlikely(m_curExecType != ExecutionType::NONE))
     {
         LG(ERR, "HistoryManager::Add : Memory leak : a command was added to history while %s", (m_curExecType==ExecutionType::UNDO)?"undoing":"redoing");
-        goto end;
+        return;
     }
 
-    if (!isActive())
+    if (unlikely(!isActive()))
     {
         // memory leak
         LG(ERR, "HistoryManager::Add : Memory leak : a command was added to history while inactive");
-        goto end;
+        return;
     }
 
     if (auto * cmd = CurrentCommand())
     {
         cmd->Add(c);
-        goto end;
+        return;
     }
 
     if (!m_bAppStateHasNewContent)
@@ -312,9 +312,6 @@ void HistoryManager::Add(Undoable* c)
     {
         observable().Notify(Event::REDOS_CHANGED);
     }
-
-end:
-    return;
 }
 
 void HistoryManager::SizeUndos()

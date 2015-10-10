@@ -41,7 +41,7 @@ void Command::onObsolete()
 {
     // on purpose, obsolescence doesn't propagate to inner commands
 
-    if (isObsolete())
+    if (unlikely(isObsolete()))
     {
         A(!"design error : called at least twice");
     }
