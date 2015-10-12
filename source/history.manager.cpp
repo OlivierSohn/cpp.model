@@ -105,7 +105,9 @@ bool UndoGroup::Undo(Undoable *limit, bool bStrict, bool & bFoundLimit)
     }
 
     if (bStrict)
+    {
         A(bFoundLimit);
+    }
     
     return bNotEmpty;
 }
@@ -153,8 +155,10 @@ bool UndoGroup::Redo(Undoable * limit, bool bStrict, bool & bFoundLimit)
     }
 
     if (bStrict)
+    {
         A(bFoundLimit);
-
+    }
+    
     return bNotEmpty;
 }
 
@@ -316,7 +320,7 @@ void HistoryManager::Add(Undoable* c)
 
 void HistoryManager::SizeUndos()
 {
-    unsigned int size = m_groups.size();
+    unsigned int size = (unsigned int) m_groups.size();
     if (size > m_stacksCapacity)
     {
         unsigned int count = 0;
@@ -335,7 +339,7 @@ void HistoryManager::SizeUndos()
 
         LG(INFO, "HistoryManager::SizeUndos %u out of %u groups removed because empty", count, size);
 
-        size = m_groups.size();
+        size = (unsigned int) m_groups.size();
         if (size > m_stacksCapacity)
         {
             unsigned int nElementsRemoved = (size - m_stacksCapacity);
