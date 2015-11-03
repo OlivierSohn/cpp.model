@@ -1,6 +1,6 @@
 #pragma once
 
-#include <list>
+#include <vector>
 #include <functional>
 
 namespace imajuscule
@@ -22,8 +22,9 @@ namespace imajuscule
     protected:
         std::function<void(void)> m_f;
     private:
-        typedef std::list<AsyncNotifier*> notifiers; // we use a list because if we use a vector, in runScheduledNotifications if a notification changes the vector, the iterators are not valid anymore!
-        static notifiers g_scheduled;
+        typedef std::vector<AsyncNotifier*> notifiers;
+        static notifiers g_scheduled, g_scheduledMore;
+        static bool isRunning;
         void doNotify();
     };
 }

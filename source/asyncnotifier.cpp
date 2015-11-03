@@ -4,35 +4,55 @@
 using namespace imajuscule;
 
 AsyncNotifier::notifiers AsyncNotifier::g_scheduled;
+AsyncNotifier::notifiers AsyncNotifier::g_scheduledMore;
+bool AsyncNotifier::isRunning = false;
 
 void AsyncNotifier::schedule()
 {
-    g_scheduled.push_back(this);
+    if(isRunning)
+        g_scheduledMore.push_back(this);
+    else
+        g_scheduled.push_back(this);
 }
 
 void AsyncNotifier::unschedule()
 {
-    g_scheduled.remove(this);
+    for(auto & p : g_scheduled)
+    {
+        if(this == p)
+        {
+            p = NULL;
+            return;
+        }
+    }
+    for(auto & p : g_scheduledMore)
+    {
+        if(this == p)
+        {
+            p = NULL;
+            return;
+        }
+    }
 }
 
 void AsyncNotifier::runScheduledNotifications()
 {
-    notifiers::iterator it, end;
-
-    it = g_scheduled.begin();
-    end = g_scheduled.end();
-
-    for (; it != end; ++it)
+    isRunning = true;
+    
+    do
     {
-        // this call can add elemnts to g_scheduled, it is ok because for a std::list, 
-        // the iterators are not invalidated by insertion (not it nor end)
-        (*it)->doNotify();
+        for (auto * p : g_scheduled)
+        {
+            if( p )
+                p->doNotify();
+        }
+        
+        g_scheduled.clear();
+        g_scheduled.swap(g_scheduledMore);
     }
-
-    // make sure that end iterator didn't change (even if size of list has changed)
-    A(end == g_scheduled.end());
-
-    g_scheduled.clear();
+    while(!g_scheduled.empty());
+    
+    isRunning = false;
 }
 
 
