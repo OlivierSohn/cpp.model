@@ -13,7 +13,7 @@ m_bHasNewContentForUpdate(true),
 m_bHasBeenUpdated(false),
 m_observableUpdatable(Observable<Event, Updatable& /*observed*/, Updatable&/*spec*/>::instantiate())
 {
-    m_all.insert(updatables::value_type(this));
+    m_all.push_back(updatables::value_type(this));
 }
 
 Updatable::~Updatable()
@@ -23,8 +23,7 @@ Updatable::~Updatable()
         A(!"some specs needs to be cleaned up");
         removeSpec(m_specs.front());
     }
-    
-    m_all.erase(updatables::value_type(this));
+    m_all.erase(std::remove(m_all.begin(), m_all.end(), this), m_all.end());
     m_observableUpdatable->deinstantiate();
 }
 
@@ -39,12 +38,9 @@ void Updatable::Update()
     if (hasBeenUpdated())
         return;
 
-    specs::iterator it = m_specs.begin();
-    specs::iterator end = m_specs.end();
-
-    for (; it != end; ++it)
+    for (auto * spec : m_specs)
     {
-        (*it)->Update();
+        spec->Update();
     }
 
     bool bNewVal = doUpdate();
@@ -54,19 +50,30 @@ void Updatable::Update()
     hasBeenUpdated(true);
 }
 
+void Updatable::resetUpdateStatesRecurse()
+{
+    hasBeenUpdated(false);
+    
+    for (auto * spec : m_specs)
+    {
+        spec->resetUpdateStatesRecurse();
+    }
+}
+void Updatable::resetObserversUpdateStatesRecurse()
+{
+    for (auto * observer : m_observers)
+    {
+        observer->hasBeenUpdated(false);
+        observer->resetUpdateStatesRecurse();
+    }
+}
 bool Updatable::isConsistent() const
 {
-    specs::const_iterator it = m_specs.begin();
-    specs::const_iterator end = m_specs.end();
-
-    for (; it != end; ++it)
+    for (auto * spec : m_specs)
     {
-        observers::const_iterator it2 = m_observers.begin();
-        observers::const_iterator end2 = m_observers.end();
-
-        for (; it2 != end2; ++it2)
+        for (auto * observer : m_observers)
         {
-            if (unlikely((*it) == (*it2)))
+            if (unlikely(observer == spec))
             {
                 LG(ERR, "Updatable::isConsistent : a spec is also an observer");
                 return false;
@@ -78,12 +85,9 @@ bool Updatable::isConsistent() const
 }
 bool Updatable::isSpec(spec item) const
 {
-    specs::const_iterator it = m_specs.begin();
-    specs::const_iterator end = m_specs.end();
-
-    for (; it != end; ++it)
+    for (auto * spec : m_specs)
     {
-        if ((*it) == item)
+        if (spec == item)
         {
             return true;
         }
@@ -104,10 +108,8 @@ void Updatable::addSpec(spec item)
 
         observableUpdatable().Notify(ADD_SPEC, *this, *item);
 
-        observers::iterator it, end;
-        traverseObservers(it, end);
-        for (; it != end; ++it)
-            (*it)->onAddRecursiveSpec(item);
+        for (auto * observer : m_observers)
+            observer->onAddRecursiveSpec(item);
     }
 }
 
@@ -115,19 +117,15 @@ void Updatable::onAddRecursiveSpec(spec item)
 {
     observableUpdatable().Notify(ADD_SPEC_RECURSE, *this, *item);
 
-    observers::iterator it, end;
-    traverseObservers(it, end);
-    for (; it != end; ++it)
-        (*it)->onAddRecursiveSpec(item);
+    for (auto * observer : m_observers)
+        observer->onAddRecursiveSpec(item);
 }
 void Updatable::onRemoveRecursiveSpec(spec item)
 {
     observableUpdatable().Notify(REMOVE_SPEC_RECURSE, *this, *item);
 
-    observers::iterator it, end;
-    traverseObservers(it, end);
-    for (; it != end; ++it)
-        (*it)->onRemoveRecursiveSpec(item);
+    for (auto * observer : m_observers)
+        observer->onRemoveRecursiveSpec(item);
 }
 
 void Updatable::removeSpec(spec item)
@@ -135,16 +133,14 @@ void Updatable::removeSpec(spec item)
     if (item)
     {
         item->removeObserver(this);
-        m_specs.remove(item);
+        m_specs.erase(std::remove(m_specs.begin(), m_specs.end(), item), m_specs.end());
 
         A(!isSpec(item));
 
         observableUpdatable().Notify(REMOVE_SPEC, *this, *item);
 
-        observers::iterator it, end;
-        traverseObservers(it, end);
-        for (; it != end; ++it)
-            (*it)->onRemoveRecursiveSpec(item);
+        for (auto * observer : m_observers)
+            observer->onRemoveRecursiveSpec(item);
     }
 }
 
@@ -161,11 +157,9 @@ void Updatable::listSpecs(specs & v)
 void Updatable::listSpecsRecurse(specs & v)
 {
     listSpecs(v);
-    specs::iterator it, end;
-    traverseSpecs(it, end);
-    for (; it != end; ++it)
+    for (auto * spec : m_specs)
     {
-        (*it)->listSpecsRecurse(v);
+        spec->listSpecsRecurse(v);
     }
 }
 
@@ -177,18 +171,12 @@ void Updatable::traverseAll(updatables::iterator & begin, updatables::iterator &
 
 void Updatable::onUpdateEnd()
 {
-    updatables::iterator it, end;
-    traverseAll(it, end);
-    for (; it != end; ++it)
+    for (auto * pIt: m_all)
     {
-        (*it)->resetUpdateStates();
+        auto & it = *pIt;
+        it.hasNewContentForUpdate(false);
+        it.hasBeenUpdated(false);
     }
-}
-
-void Updatable::resetUpdateStates()
-{
-    hasNewContentForUpdate(false);
-    hasBeenUpdated(false);
 }
 
 bool Updatable::hasNewContentForUpdate() const
@@ -213,12 +201,9 @@ void Updatable::hasBeenUpdated(bool bVal)
 
 bool Updatable::isObserver(observer item) const
 {
-    observers::const_iterator it = m_observers.begin();
-    observers::const_iterator end = m_observers.end();
-
-    for (; it != end; ++it)
+    for (auto * observer : m_observers)
     {
-        if ((*it) == item)
+        if (observer == item)
         {
             return true;
         }
@@ -235,7 +220,7 @@ void Updatable::addObserver(observer item)
 
 void Updatable::removeObserver(observer item)
 {
-    m_observers.remove(item);
+    m_observers.erase(std::remove(m_observers.begin(), m_observers.end(), item), m_observers.end());
 }
 
 void Updatable::traverseObservers(observers::iterator & begin, observers::iterator & end)
@@ -251,10 +236,8 @@ void Updatable::listObservers(observers & v)
 void Updatable::listObserversRecurse(observers & v)
 {
     listObservers(v);
-    observers::iterator it, end;
-    traverseObservers(it, end);
-    for (; it != end; ++it)
+    for (auto * observer : m_observers)
     {
-        (*it)->listObserversRecurse(v);
+        observer->listObserversRecurse(v);
     }
 }

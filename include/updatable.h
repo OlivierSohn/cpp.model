@@ -12,9 +12,9 @@ namespace imajuscule
 {
     class Updatable;
     typedef Updatable * spec;
-    typedef std::list< spec > specs;
+    typedef std::vector< spec > specs;
     typedef Updatable * observer;
-    typedef std::list< observer > observers;
+    typedef std::vector< observer > observers;
 
     class Updatable;
     class Updatable : public Visitable
@@ -47,6 +47,8 @@ namespace imajuscule
         void hasNewContentForUpdate(bool);
 
         static void onUpdateEnd();
+        void resetUpdateStatesRecurse();
+        void resetObserversUpdateStatesRecurse();
 
         Observable<Event, Updatable& /*observed*/, Updatable&/*spec*/> & observableUpdatable();
 
@@ -59,7 +61,7 @@ namespace imajuscule
         bool hasBeenUpdated() const;
 
     private:
-        typedef std::set<Updatable*> updatables;
+        typedef std::vector<Updatable*> updatables;
         static updatables m_all;
 
         bool m_bHasBeenUpdated;
@@ -72,7 +74,6 @@ namespace imajuscule
 
         static void traverseAll(updatables::iterator & begin, updatables::iterator & end);
         bool isObserver(observer item) const;
-        void resetUpdateStates();
 
         bool isConsistent() const;
         bool isSpec(spec item) const;
