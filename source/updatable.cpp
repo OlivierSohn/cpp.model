@@ -21,7 +21,7 @@ Updatable::~Updatable()
     while(unlikely(!m_specs.empty()))
     {
         A(!"some specs needs to be cleaned up");
-        removeSpec(m_specs.front());
+        removeSpec(m_specs.back());
     }
     m_all.erase(std::remove(m_all.begin(), m_all.end(), this), m_all.end());
     m_observableUpdatable->deinstantiate();
@@ -30,7 +30,6 @@ Updatable::~Updatable()
 auto Updatable::observableUpdatable() -> Observable<Event, Updatable& /*observed*/, Updatable&/*spec*/> &
 {
     return *m_observableUpdatable;
-
 }
 
 void Updatable::Update()
@@ -38,7 +37,8 @@ void Updatable::Update()
     if (hasBeenUpdated())
         return;
 
-    for (auto * spec : m_specs)
+    // "auto *" here was causing a crash (vector was empty)... i don't know why but "auto" fixed that
+    for (auto spec : m_specs)
     {
         spec->Update();
     }
