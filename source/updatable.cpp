@@ -83,6 +83,23 @@ bool Updatable::isConsistent() const
 
     return true;
 }
+
+bool Updatable::isSpecRecurse(spec item) const
+{
+    for (auto * spec : m_specs)
+    {
+        if (spec == item)
+        {
+            return true;
+        }
+        if( spec->isSpecRecurse(item))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Updatable::isSpec(spec item) const
 {
     for (auto * spec : m_specs)
@@ -197,6 +214,22 @@ bool Updatable::hasBeenUpdated() const
 void Updatable::hasBeenUpdated(bool bVal)
 {
     m_bHasBeenUpdated = bVal;
+}
+
+bool Updatable::isObserverRecurse(observer item) const
+{
+    for (auto * observer : m_observers)
+    {
+        if (observer == item)
+        {
+            return true;
+        }
+        if(observer->isObserverRecurse(item))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool Updatable::isObserver(observer item) const

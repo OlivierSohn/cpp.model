@@ -6,6 +6,7 @@
 #include "history.manager.h"
 #include "observable.h"
 #include "persistable.h"
+#include "raii.hpp"
 #include "referentiable.cmd.list.h"
 #include "referentiable.cmd.set.h"
 #include "referentiable.h"

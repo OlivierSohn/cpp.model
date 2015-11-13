@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		090578081BAE00E800FA8E42 /* undoable.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 090578071BAE00E800FA8E42 /* undoable.hpp */; settings = {ASSET_TAGS = (); }; };
-		0905780A1BAE12BA00FA8E42 /* execution.h in Headers */ = {isa = PBXBuildFile; fileRef = 090578091BAE12BA00FA8E42 /* execution.h */; settings = {ASSET_TAGS = (); }; };
+		090578081BAE00E800FA8E42 /* undoable.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 090578071BAE00E800FA8E42 /* undoable.hpp */; };
+		0905780A1BAE12BA00FA8E42 /* execution.h in Headers */ = {isa = PBXBuildFile; fileRef = 090578091BAE12BA00FA8E42 /* execution.h */; };
 		0927A8191B3F2DCF00872BC9 /* command.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0927A8181B3F2DCF00872BC9 /* command.hpp */; };
 		0927A81C1B3F987B00872BC9 /* referentiable.cmd.simpleset.h in Headers */ = {isa = PBXBuildFile; fileRef = 0927A81A1B3F987B00872BC9 /* referentiable.cmd.simpleset.h */; };
 		0927A81D1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0927A81B1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp */; };
@@ -51,6 +51,7 @@
 		097662C61AD357F70099DA54 /* undoable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A81AD357F70099DA54 /* undoable.cpp */; };
 		097662C71AD357F70099DA54 /* updatable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A91AD357F70099DA54 /* updatable.cpp */; };
 		097662C81AD357F70099DA54 /* visitable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662AA1AD357F70099DA54 /* visitable.cpp */; };
+		09B330B71BF56DCE00DE437C /* raii.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 09B330B61BF56DCE00DE437C /* raii.hpp */; };
 		09DBDCA91B07C00200870E0A /* referentiable.link.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 09DBDCA81B07C00200870E0A /* referentiable.link.hpp */; };
 /* End PBXBuildFile section */
 
@@ -103,6 +104,7 @@
 		097662A81AD357F70099DA54 /* undoable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = undoable.cpp; sourceTree = "<group>"; };
 		097662A91AD357F70099DA54 /* updatable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = updatable.cpp; sourceTree = "<group>"; };
 		097662AA1AD357F70099DA54 /* visitable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = visitable.cpp; sourceTree = "<group>"; };
+		09B330B61BF56DCE00DE437C /* raii.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = raii.hpp; sourceTree = "<group>"; };
 		09DBDCA81B07C00200870E0A /* referentiable.link.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.link.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -145,15 +147,15 @@
 		0976628F1AD357F70099DA54 /* include */ = {
 			isa = PBXGroup;
 			children = (
-				090578091BAE12BA00FA8E42 /* execution.h */,
-				090578071BAE00E800FA8E42 /* undoable.hpp */,
 				097662901AD357F70099DA54 /* asyncnotifier.h */,
 				097662911AD357F70099DA54 /* command.h */,
 				0927A8181B3F2DCF00872BC9 /* command.hpp */,
+				090578091BAE12BA00FA8E42 /* execution.h */,
 				097662921AD357F70099DA54 /* history.manager.h */,
 				097662931AD357F70099DA54 /* model.allincludes.h */,
 				097662941AD357F70099DA54 /* observable.h */,
 				097662951AD357F70099DA54 /* persistable.h */,
+				09B330B61BF56DCE00DE437C /* raii.hpp */,
 				0973B4CE1B256101007EFBDD /* referentiable.cmd.list.h */,
 				0973B4CD1B256100007EFBDD /* referentiable.cmd.list.hpp */,
 				097662971AD357F70099DA54 /* referentiable.cmd.set.h */,
@@ -167,6 +169,7 @@
 				09681A0E1B1AAAED00678885 /* referentiable.root.h */,
 				0976629C1AD357F70099DA54 /* session.h */,
 				0976629D1AD357F70099DA54 /* undoable.h */,
+				090578071BAE00E800FA8E42 /* undoable.hpp */,
 				0976629E1AD357F70099DA54 /* updatable.h */,
 				0976629F1AD357F70099DA54 /* visitable.h */,
 				097662A01AD357F70099DA54 /* visitor.h */,
@@ -177,12 +180,12 @@
 		097662A11AD357F70099DA54 /* source */ = {
 			isa = PBXGroup;
 			children = (
-				09681A0B1B1AAACE00678885 /* referentiable.root.cpp */,
 				097662A21AD357F70099DA54 /* asyncnotifier.cpp */,
 				097662A31AD357F70099DA54 /* command.cpp */,
 				097662A41AD357F70099DA54 /* history.manager.cpp */,
 				097662A51AD357F70099DA54 /* persistable.cpp */,
 				097662A61AD357F70099DA54 /* referentiable.cpp */,
+				09681A0B1B1AAACE00678885 /* referentiable.root.cpp */,
 				097662A71AD357F70099DA54 /* session.cpp */,
 				097662A81AD357F70099DA54 /* undoable.cpp */,
 				097662A91AD357F70099DA54 /* updatable.cpp */,
@@ -205,6 +208,7 @@
 				0927A81C1B3F987B00872BC9 /* referentiable.cmd.simpleset.h in Headers */,
 				09DBDCA91B07C00200870E0A /* referentiable.link.hpp in Headers */,
 				0905780A1BAE12BA00FA8E42 /* execution.h in Headers */,
+				09B330B71BF56DCE00DE437C /* raii.hpp in Headers */,
 				097662BE1AD357F70099DA54 /* visitable.h in Headers */,
 				097662B91AD357F70099DA54 /* referentiable.manager.h in Headers */,
 				097662BD1AD357F70099DA54 /* updatable.h in Headers */,

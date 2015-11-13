@@ -52,6 +52,9 @@ namespace imajuscule
 
         Observable<Event, Updatable& /*observed*/, Updatable&/*spec*/> & observableUpdatable();
 
+        bool isSpecRecurse(spec item) const;
+        bool isObserverRecurse(spec item) const;
+
     protected:
         Updatable();
 
