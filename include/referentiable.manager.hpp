@@ -709,7 +709,8 @@ Referentiable* Referentiables::findRefFromGUID(const Storage::DirectoryPath & pa
     
     unsigned int index;
     std::string nameHint;
-    if_A( Referentiable::ReadIndexForDiskGUID(path, guid, index, nameHint) )
+    auto res = Referentiable::ReadIndexForDiskGUID(path, guid, index, nameHint);
+    if_A(res)
     {
         if_A(index < m_managers.size())
         {

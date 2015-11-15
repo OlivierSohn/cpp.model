@@ -25,4 +25,17 @@ namespace imajuscule {
             fDestructor();
         }
     };
+
+    struct inc_dec_RAII : public RAII
+    {
+        enum { minVal = 0 };
+        inc_dec_RAII(int & i) : RAII([&i]() {
+            A(i >= minVal);
+            i++;
+        }, [&i]() {
+            i--;
+            A(i >= minVal);
+        }) {}
+    };
+
 }

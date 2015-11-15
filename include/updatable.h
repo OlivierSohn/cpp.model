@@ -33,9 +33,10 @@ namespace imajuscule
 
         void addSpec(spec);
         void removeSpec(spec);
-        void traverseSpecs(specs::iterator & begin, specs::iterator & end);
-        void listSpecs(specs &);
-        void listSpecsRecurse(specs &);
+
+        // while you work with this vector, make sure to not remove or add any specs to this object
+        // else you're in BIG trouble...
+        specs const & getSpecs() const;
 
         void addObserver(observer);
         void removeObserver(observer);
@@ -54,6 +55,10 @@ namespace imajuscule
 
         bool isSpecRecurse(spec item) const;
         bool isObserverRecurse(spec item) const;
+
+#ifndef NDEBUG
+        mutable int specIterates = 0;
+#endif
 
     protected:
         Updatable();

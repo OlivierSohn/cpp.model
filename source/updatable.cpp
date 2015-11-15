@@ -1,6 +1,15 @@
-#include "updatable.h"
+// stl includes
 #include <algorithm>
+
+// model includes
+#include "updatable.h"
+#ifndef NDEBUG
+#include "raii.hpp"
+#endif
+
+// os.log includes
 #include "os.log.h"
+
 
 using namespace imajuscule;
 
@@ -37,10 +46,33 @@ void Updatable::Update()
     if (hasBeenUpdated())
         return;
 
-    // "auto *" here was causing a crash (vector was empty)... i don't know why but "auto" fixed that
-    for (auto spec : m_specs)
     {
-        spec->Update();
+#ifndef NDEBUG
+        inc_dec_RAII r(specIterates);
+#endif
+        // vector can change size (grow but not shrink) 
+        // so we access elements by [] instead of iterators
+
+        int size = (int)m_specs.size();
+        for ( int i = 0; ; i++ )
+        {
+            if ( i >= size )
+            {
+                auto s = m_specs.size();
+                if ( s == size )
+                {
+                    break;
+                }
+
+                size = s;
+                if ( i >= size )
+                {
+                    break;
+                }
+            }
+
+            m_specs[i]->Update();
+        }
     }
 
     bool bNewVal = doUpdate();
@@ -53,10 +85,15 @@ void Updatable::Update()
 void Updatable::resetUpdateStatesRecurse()
 {
     hasBeenUpdated(false);
-    
-    for (auto * spec : m_specs)
+
     {
-        spec->resetUpdateStatesRecurse();
+#ifndef NDEBUG
+        inc_dec_RAII r(specIterates);
+#endif
+        for ( auto * spec : m_specs )
+        {
+            spec->resetUpdateStatesRecurse();
+        }
     }
 }
 void Updatable::resetObserversUpdateStatesRecurse()
@@ -69,6 +106,9 @@ void Updatable::resetObserversUpdateStatesRecurse()
 }
 bool Updatable::isConsistent() const
 {
+#ifndef NDEBUG
+    inc_dec_RAII r(specIterates);
+#endif
     for (auto * spec : m_specs)
     {
         for (auto * observer : m_observers)
@@ -86,6 +126,9 @@ bool Updatable::isConsistent() const
 
 bool Updatable::isSpecRecurse(spec item) const
 {
+#ifndef NDEBUG
+    inc_dec_RAII r(specIterates);
+#endif
     for (auto * spec : m_specs)
     {
         if (spec == item)
@@ -102,6 +145,9 @@ bool Updatable::isSpecRecurse(spec item) const
 
 bool Updatable::isSpec(spec item) const
 {
+#ifndef NDEBUG
+    inc_dec_RAII r(specIterates);
+#endif
     for (auto * spec : m_specs)
     {
         if (spec == item)
@@ -116,6 +162,12 @@ void Updatable::addSpec(spec item)
 {
     if (item)
     {
+// commented out because adding a spec while iterating is allowed
+/*
+#ifndef NDEBUG
+        A( 0 == specIterates );
+#endif
+*/
         A(!isSpec(item));
 
         m_specs.push_back(item);
@@ -149,9 +201,13 @@ void Updatable::removeSpec(spec item)
 {
     if (item)
     {
+#ifndef NDEBUG
+        A( 0 == specIterates); // forbid removing a spec while iterating
+#endif
+
         item->removeObserver(this);
         m_specs.erase(std::remove(m_specs.begin(), m_specs.end(), item), m_specs.end());
-
+        
         A(!isSpec(item));
 
         observableUpdatable().Notify(REMOVE_SPEC, *this, *item);
@@ -161,23 +217,9 @@ void Updatable::removeSpec(spec item)
     }
 }
 
-void Updatable::traverseSpecs(specs::iterator & begin, specs::iterator & end)
+auto Updatable::getSpecs() const -> specs const &
 {
-    begin = m_specs.begin();
-    end = m_specs.end();
-}
-
-void Updatable::listSpecs(specs & v)
-{
-    v.insert(v.end(), m_specs.begin(), m_specs.end());
-}
-void Updatable::listSpecsRecurse(specs & v)
-{
-    listSpecs(v);
-    for (auto * spec : m_specs)
-    {
-        spec->listSpecsRecurse(v);
-    }
+    return m_specs;
 }
 
 void Updatable::traverseAll(updatables::iterator & begin, updatables::iterator & end)
