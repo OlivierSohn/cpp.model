@@ -114,6 +114,7 @@ namespace imajuscule
     class RefLink
     {
     public:
+        RefLink(RefLink const &) = delete;
         RefLink(Referentiable& source, T *target);
         RefLink(RefLink && r);
         ~RefLink();
