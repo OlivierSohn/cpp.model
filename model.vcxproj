@@ -159,6 +159,7 @@
     <ClInclude Include="include\operation.render.h" />
     <ClInclude Include="include\persistable.h" />
     <ClInclude Include="include\platform.defines.h" />
+    <ClInclude Include="include\raii.hpp" />
     <ClInclude Include="include\referentiable.cmd.list.h" />
     <ClInclude Include="include\referentiable.cmd.list.hpp" />
     <ClInclude Include="include\referentiable.cmd.set.h" />
