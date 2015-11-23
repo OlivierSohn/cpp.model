@@ -56,10 +56,6 @@ namespace imajuscule
         bool isSpecRecurse(spec item) const;
         bool isObserverRecurse(spec item) const;
 
-#ifndef NDEBUG
-        mutable int specIterates = 0;
-#endif
-
     protected:
         Updatable();
 
