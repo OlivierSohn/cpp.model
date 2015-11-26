@@ -135,11 +135,11 @@ void RefLink<T>::set(T * target)
         size_t cs = m_target->countSources();
         if(cs == 0)
         {
-            LG(INFO, "(%s)RefLink<T>::set(%s) desinstantiate former target %s", m_source.sessionName().c_str(), target?target->sessionName().c_str():"NULL", m_target->sessionName().c_str());
+            //LG(INFO, "(%s)RefLink<T>::set(%s) deinstantiate former target %s", m_source.sessionName().c_str(), target?target->sessionName().c_str():"NULL", m_target->sessionName().c_str());
             m_target->deinstantiate();
+        } else {
+            //LG(INFO, "(%s)RefLink<T>::set(%s) former target %s has %d sources", m_source.sessionName().c_str(), target?target->sessionName().c_str():"NULL", m_target->sessionName().c_str(), cs);
         }
-        else
-            LG(INFO, "(%s)RefLink<T>::set(%s) former target %s has %d sources", m_source.sessionName().c_str(), target?target->sessionName().c_str():"NULL", m_target->sessionName().c_str(), cs);
     }
     m_target = target;
 
