@@ -55,29 +55,29 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\Shared\precompiled.header.props" />
+    <Import Project="..\Shared\props\precompiled.header.props" />
     <Import Project="..\os.log\os.log.props" />
     <Import Project="..\os.storage\os.storage.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\Shared\precompiled.header.props" />
+    <Import Project="..\Shared\props\precompiled.header.props" />
     <Import Project="..\os.log\os.log.props" />
     <Import Project="..\os.storage\os.storage.props" />
-    <Import Project="..\Shared\win64.props" />
+    <Import Project="..\Shared\props\win64.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\Shared\precompiled.header.props" />
+    <Import Project="..\Shared\props\precompiled.header.props" />
     <Import Project="..\os.log\os.log.props" />
     <Import Project="..\os.storage\os.storage.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\Shared\precompiled.header.props" />
+    <Import Project="..\Shared\props\precompiled.header.props" />
     <Import Project="..\os.log\os.log.props" />
     <Import Project="..\os.storage\os.storage.props" />
-    <Import Project="..\Shared\win64.props" />
+    <Import Project="..\Shared\props\win64.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
