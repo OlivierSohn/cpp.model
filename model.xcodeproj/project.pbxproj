@@ -78,7 +78,7 @@
 		09681A0E1B1AAAED00678885 /* referentiable.root.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.root.h; sourceTree = "<group>"; };
 		0973B4CD1B256100007EFBDD /* referentiable.cmd.list.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.cmd.list.hpp; sourceTree = "<group>"; };
 		0973B4CE1B256101007EFBDD /* referentiable.cmd.list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.cmd.list.h; sourceTree = "<group>"; };
-		097662751AD355F20099DA54 /* libmodel.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmodel.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		097662751AD355F20099DA54 /* libmodel.osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmodel.osx.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		097662901AD357F70099DA54 /* asyncnotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asyncnotifier.h; sourceTree = "<group>"; };
 		097662911AD357F70099DA54 /* command.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = command.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		097662921AD357F70099DA54 /* history.manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = history.manager.h; sourceTree = "<group>"; };
@@ -148,7 +148,7 @@
 		097662761AD355F20099DA54 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				097662751AD355F20099DA54 /* libmodel.a */,
+				097662751AD355F20099DA54 /* libmodel.osx.a */,
 				09429C961AD38207001513DA /* libmodel.ios.a */,
 			);
 			name = Products;
@@ -276,9 +276,9 @@
 			productReference = 09429C961AD38207001513DA /* libmodel.ios.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		097662741AD355F20099DA54 /* model */ = {
+		097662741AD355F20099DA54 /* model.osx */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 097662791AD355F20099DA54 /* Build configuration list for PBXNativeTarget "model" */;
+			buildConfigurationList = 097662791AD355F20099DA54 /* Build configuration list for PBXNativeTarget "model.osx" */;
 			buildPhases = (
 				097662711AD355F20099DA54 /* Sources */,
 				097662721AD355F20099DA54 /* Frameworks */,
@@ -288,9 +288,9 @@
 			);
 			dependencies = (
 			);
-			name = model;
+			name = model.osx;
 			productName = model;
-			productReference = 097662751AD355F20099DA54 /* libmodel.a */;
+			productReference = 097662751AD355F20099DA54 /* libmodel.osx.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -322,7 +322,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				097662741AD355F20099DA54 /* model */,
+				097662741AD355F20099DA54 /* model.osx */,
 				09429C951AD38207001513DA /* model.ios */,
 			);
 		};
@@ -429,7 +429,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		097662791AD355F20099DA54 /* Build configuration list for PBXNativeTarget "model" */ = {
+		097662791AD355F20099DA54 /* Build configuration list for PBXNativeTarget "model.osx" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0976627A1AD355F20099DA54 /* Debug */,
