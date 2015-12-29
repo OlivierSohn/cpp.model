@@ -77,7 +77,7 @@ namespace imajuscule
         {
             return new Observable<Event, Args...>();
         }
-        // this is publically provided instead of destructor because it's not safe to delete
+        // this is publicly provided instead of destructor because it's not safe to delete
         // an observer when it is in one or multiple Notify calls
         void deinstantiate()
         {
