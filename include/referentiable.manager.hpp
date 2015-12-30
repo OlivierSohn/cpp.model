@@ -6,11 +6,13 @@
 #include <uuid/uuid.h>
 #endif
 
+#include <algorithm>
+
 #include "referentiable.h"
 #include "referentiable.manager.h"
 #include "history.manager.h"
+
 #include "os.log.h"
-#include <algorithm>
 #include "os.log.format.h"
 
 using namespace imajuscule;
@@ -101,37 +103,6 @@ void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
         A(count == 1);
 
         observable().Notify(Event::RFTBL_REMOVE, r); // must be placed after actual delete (use case : delete of joint makes the parent NULL so the joint ui manager draws a joint at root which must be removed)
-    }
-}
-
-void FormatDateForComparison(std::string & date)
-{
-    const char * numbers = "0123456789";
-
-    if (11 < date.size())
-    {
-        if (2 == date.find_first_not_of(numbers, 0))
-        {
-            if (5 == date.find_first_not_of(numbers, 3))
-            {
-                if (10 == date.find_first_not_of(numbers, 6))
-                {
-                    //date is with format "dd?mm?yyyy?....." 
-                    std::string newDate;
-                    newDate.append(date.substr(6, 4));
-                    newDate.append("/");
-                    newDate.append(date.substr(3, 2));
-                    newDate.append("/");
-                    newDate.append(date.substr(0, 2));
-
-                    newDate.append(date.substr(10));
-
-                    A(newDate.size() == date.size());
-
-                    date.swap(newDate);
-                }
-            }
-        }
     }
 }
 
