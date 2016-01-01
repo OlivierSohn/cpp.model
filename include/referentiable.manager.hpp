@@ -649,7 +649,9 @@ void ReferentiableDeleteCmdBase::Execute(Referentiable & r)
 
 Referentiables * Referentiables::m_instance( NULL );
 Referentiables::Referentiables()
-{}
+{
+    m_managers.reserve( 100 );
+}
 Referentiables::~Referentiables(){}
 Referentiables * Referentiables::getInstance()
 {
