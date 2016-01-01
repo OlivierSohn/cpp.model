@@ -56,13 +56,13 @@ namespace imajuscule
 
         virtual const char * UIName() = 0;
 
+        static std::string generateGuid();
     protected:
         virtual const char * defaultNameHint() = 0;
         // pure virtual because the session names are unique "per object type"
         bool ComputeSessionName(Referentiable*, bool bFinalize);
 
         bool RegisterWithSessionName(Referentiable*, const std::string& sessionName);
-        static void generateGuid(std::string & guid);
 
     private:
         // guid - referentiable

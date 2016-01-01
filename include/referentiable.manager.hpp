@@ -194,11 +194,12 @@ bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r, bool bFinal
     return bRet;
 }
 
-void ReferentiableManagerBase::generateGuid(std::string & sGuid)
+std::string ReferentiableManagerBase::generateGuid()
 {
     //LG(INFO, "ReferentiableManagerBase::generateGuid : begin");
 
-    sGuid.clear();
+    std::string sGuid;
+    
 #ifdef _WIN32
     GUID guid;
 	HRESULT hr = CoCreateGuid(&guid);
@@ -206,7 +207,7 @@ void ReferentiableManagerBase::generateGuid(std::string & sGuid)
 	{
 		LG(ERR, "ReferentiableManagerBase::generateGuid : CoCreateGuid failed %x", hr);
 		A(0);
-		return;
+		return sGuid;
 	}
 
     OLECHAR* bstrGuid;
@@ -215,7 +216,7 @@ void ReferentiableManagerBase::generateGuid(std::string & sGuid)
 	{
 		LG(ERR, "ReferentiableManagerBase::generateGuid : StringFromCLSID failed %x", hr);
 		A(0);
-		return;
+		return sGuid;
 	}
 
     // First figure out our required buffer size.
@@ -255,6 +256,8 @@ void ReferentiableManagerBase::generateGuid(std::string & sGuid)
 #endif
 
     //LG(INFO, "ReferentiableManagerBase::generateGuid returns %s", sGuid.c_str());
+    
+    return sGuid;
 }
 
 
@@ -348,7 +351,7 @@ Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::stri
     }
     else
     {
-        generateGuid(guid);
+        guid = generateGuid();
     }
 
     ref = new T(this, guid, nameHint);
