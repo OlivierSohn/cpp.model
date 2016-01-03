@@ -20,7 +20,7 @@ Observable<PersistableEvent, Persistable*> & Persistable::observable()
 }
 
 
-const FunctionInfo<PersistableEvent> Persistable::addSpecAndForwardNotifications(Persistable * upd)
+FunctionInfo<PersistableEvent> Persistable::addSpecAndForwardNotifications(Persistable * upd)
 {
     addSpec(upd);
     return upd->observable().Register(OBJECT_DEFINITION_CHANGED, [this](Persistable*){ observable().Notify(OBJECT_DEFINITION_CHANGED, this); });

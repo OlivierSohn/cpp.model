@@ -187,7 +187,7 @@ namespace imajuscule
     protected:
         Persistable();
 
-        const FunctionInfo<PersistableEvent> addSpecAndForwardNotifications(Persistable * upd);
+        FunctionInfo<PersistableEvent> addSpecAndForwardNotifications(Persistable * upd);
         void removeSpecAndUnforward(Persistable * upd, const FunctionInfo<PersistableEvent> & reg);
         void removeSpecAndDelete(Persistable * upd);
 

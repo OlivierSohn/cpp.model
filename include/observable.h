@@ -103,7 +103,7 @@ namespace imajuscule
         }
 
         template <typename Observer>
-        const FunctionInfo<Event> Register(const Event &evt, Observer&& observer)
+        FunctionInfo<Event> Register(const Event &evt, Observer&& observer)
         {
                 //OBS_LG(INFO, "Observable::Register(%d) #%d", evt, m_curNotifStamp);
 
@@ -194,8 +194,9 @@ namespace imajuscule
 
         const void Remove(const std::vector< FunctionInfo<Event> > & functionInfo)
         {
-            for (auto it : functionInfo)
+            for (auto it : functionInfo) {
                 Remove(it);
+            }
         }
 
         const void Remove(const FunctionInfo<Event> &functionInfo)

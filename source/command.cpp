@@ -232,8 +232,9 @@ bool Undoable::CommandExec::Run()
         if_A(!m_command->isObsolete()) // else the command will be deleted by the group
         {
             FunctionInfo<Event> reg;
-            if (m_pResFunc)
+            if (m_pResFunc) {
                 reg = m_command->observable().Register(Event::RESULT, *m_pResFunc);
+            }
             
             switch (m_command->getState())
             {
@@ -259,8 +260,9 @@ bool Undoable::CommandExec::Run()
                     break;
             }
             
-            if (m_pResFunc)
+            if (m_pResFunc) {
                 m_command->observable().Remove(reg);
+            }
         }
     }
     
