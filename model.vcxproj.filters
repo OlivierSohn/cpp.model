@@ -111,6 +111,9 @@
     <ClInclude Include="include\raii.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\referentiables.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\persistable.cpp">
@@ -144,6 +147,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\referentiable.root.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\referentiables.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
