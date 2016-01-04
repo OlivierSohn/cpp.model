@@ -21,6 +21,9 @@
 		09429CB31AD38243001513DA /* undoable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A81AD357F70099DA54 /* undoable.cpp */; };
 		09429CB41AD38243001513DA /* updatable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A91AD357F70099DA54 /* updatable.cpp */; };
 		09429CB51AD38243001513DA /* visitable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662AA1AD357F70099DA54 /* visitable.cpp */; };
+		095F43E61C3A2010005BE7DA /* referentiables.h in Headers */ = {isa = PBXBuildFile; fileRef = 095F43E51C3A2010005BE7DA /* referentiables.h */; };
+		095F43E81C3A20F9005BE7DA /* referentiables.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 095F43E71C3A20F9005BE7DA /* referentiables.cpp */; };
+		095F43E91C3A20F9005BE7DA /* referentiables.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 095F43E71C3A20F9005BE7DA /* referentiables.cpp */; };
 		09681A0C1B1AAACE00678885 /* referentiable.root.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09681A0B1B1AAACE00678885 /* referentiable.root.cpp */; };
 		09681A0D1B1AAACE00678885 /* referentiable.root.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09681A0B1B1AAACE00678885 /* referentiable.root.cpp */; };
 		09681A0F1B1AAAED00678885 /* referentiable.root.h in Headers */ = {isa = PBXBuildFile; fileRef = 09681A0E1B1AAAED00678885 /* referentiable.root.h */; };
@@ -74,6 +77,8 @@
 		0927A81A1B3F987B00872BC9 /* referentiable.cmd.simpleset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.cmd.simpleset.h; sourceTree = "<group>"; };
 		0927A81B1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.cmd.simpleset.hpp; sourceTree = "<group>"; };
 		09429C961AD38207001513DA /* libmodel.ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmodel.ios.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		095F43E51C3A2010005BE7DA /* referentiables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiables.h; sourceTree = "<group>"; };
+		095F43E71C3A20F9005BE7DA /* referentiables.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = referentiables.cpp; sourceTree = "<group>"; };
 		09681A0B1B1AAACE00678885 /* referentiable.root.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = referentiable.root.cpp; sourceTree = "<group>"; };
 		09681A0E1B1AAAED00678885 /* referentiable.root.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.root.h; sourceTree = "<group>"; };
 		0973B4CD1B256100007EFBDD /* referentiable.cmd.list.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.cmd.list.hpp; sourceTree = "<group>"; };
@@ -177,6 +182,7 @@
 				0976629A1AD357F70099DA54 /* referentiable.manager.h */,
 				0976629B1AD357F70099DA54 /* referentiable.manager.hpp */,
 				09681A0E1B1AAAED00678885 /* referentiable.root.h */,
+				095F43E51C3A2010005BE7DA /* referentiables.h */,
 				0976629C1AD357F70099DA54 /* session.h */,
 				0976629D1AD357F70099DA54 /* undoable.h */,
 				090578071BAE00E800FA8E42 /* undoable.hpp */,
@@ -195,6 +201,7 @@
 				097662A41AD357F70099DA54 /* history.manager.cpp */,
 				097662A51AD357F70099DA54 /* persistable.cpp */,
 				097662A61AD357F70099DA54 /* referentiable.cpp */,
+				095F43E71C3A20F9005BE7DA /* referentiables.cpp */,
 				09681A0B1B1AAACE00678885 /* referentiable.root.cpp */,
 				097662A71AD357F70099DA54 /* session.cpp */,
 				097662A81AD357F70099DA54 /* undoable.cpp */,
@@ -252,6 +259,7 @@
 				097662B71AD357F70099DA54 /* referentiable.cmd.set.hpp in Headers */,
 				09681A0F1B1AAAED00678885 /* referentiable.root.h in Headers */,
 				097662BC1AD357F70099DA54 /* undoable.h in Headers */,
+				095F43E61C3A2010005BE7DA /* referentiables.h in Headers */,
 				097662B81AD357F70099DA54 /* referentiable.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -340,6 +348,7 @@
 				09429CB01AD38243001513DA /* persistable.cpp in Sources */,
 				09429CB11AD38243001513DA /* referentiable.cpp in Sources */,
 				09429CB21AD38243001513DA /* session.cpp in Sources */,
+				095F43E91C3A20F9005BE7DA /* referentiables.cpp in Sources */,
 				09429CB31AD38243001513DA /* undoable.cpp in Sources */,
 				09429CB41AD38243001513DA /* updatable.cpp in Sources */,
 				09429CB51AD38243001513DA /* visitable.cpp in Sources */,
@@ -357,6 +366,7 @@
 				097662C51AD357F70099DA54 /* session.cpp in Sources */,
 				097662C81AD357F70099DA54 /* visitable.cpp in Sources */,
 				097662C41AD357F70099DA54 /* referentiable.cpp in Sources */,
+				095F43E81C3A20F9005BE7DA /* referentiables.cpp in Sources */,
 				097662C31AD357F70099DA54 /* persistable.cpp in Sources */,
 				097662C61AD357F70099DA54 /* undoable.cpp in Sources */,
 				097662C21AD357F70099DA54 /* history.manager.cpp in Sources */,
