@@ -1,7 +1,5 @@
 #pragma once
 
-#include <list>
-#include <map>
 #include <string>
 #include <vector>
 
@@ -18,6 +16,10 @@
 namespace imajuscule
 {
     class ReferentiableManagerBase;
+    
+    template <typename>
+    class ReferentiableManager; // so that all referentiables can friend their manager
+
     class ReferentiableCmdBase;
     class Command;
     class Referentiable;
@@ -50,7 +52,7 @@ namespace imajuscule
         void Hide();
         bool isHidden();
         
-        static bool ReadIndexForDiskGUID(const Storage::DirectoryPath & path, const std::string & guid, unsigned int &index, std::string & sHintName);
+        static bool ReadIndexForDiskGUID(const DirectoryPath & path, const std::string & guid, unsigned int &index, std::string & sHintName);
         
         void registerSource( Referentiable& source );
         void registerTarget( Referentiable& target );

@@ -1,6 +1,10 @@
-#include "referentiable.cmd.set.h"
-#include "history.manager.h"
 #include "os.log.h"
+
+#include "history.manager.h"
+
+#include "referentiable.cmd.set.h"
+
+#include "referentiable.manager.h"
 
 using namespace imajuscule;
 

@@ -1,5 +1,5 @@
-#include "referentiable.manager.h"
-#include "history.manager.h"
+#pragma once
+
 #include "os.log.h"
 
 namespace imajuscule

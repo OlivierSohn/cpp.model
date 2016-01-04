@@ -1,6 +1,5 @@
 #pragma once
 
-#include "referentiable.h"
 #include "command.h"
 
 namespace imajuscule
@@ -11,6 +10,8 @@ namespace imajuscule
         , void (T::*fAdd)(U*) \
         , void (T::*fRemove)(U*) >
 
+    class ReferentiableManagerBase;
+    
     REF_CMD_LIST
     class RefAttrListCmd : public Command
     {

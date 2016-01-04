@@ -79,49 +79,6 @@ namespace imajuscule
         void RemoveRefInternal(Referentiable*);
     };
     
-    typedef std::vector<ReferentiableManagerBase*> managers;
-    class Referentiables
-    {
-    public:
-        template <class T>
-        using refs = std::vector<T*>;
-        template <class T> static refs<T> List(){
-            refs<T> rs;
-            managers::iterator it, end;
-            traverseManagers(it, end);
-            for(;it!=end;++it)
-            {
-                referentiables vItems;
-                (*it)->ListReferentiablesByCreationDate(vItems);
-                for(auto item:vItems)
-                {
-                    T * t = dynamic_cast<T*>(item);
-                    if(t)
-                        rs.push_back(t);
-                }
-            }
-            return rs;
-        }
-        
-        static Referentiable* fromGUID(const Storage::DirectoryPath & path, const std::string &);
-        static Referentiable* fromGUIDLoaded(const std::string &);
-        static Referentiable* fromSessionNameLoaded(const std::string &);
-        static void registerManager(ReferentiableManagerBase &);
-        static void traverseManagers(managers::iterator & begin, managers::iterator & end);
-
-    private:
-        Referentiables();
-        virtual ~Referentiables();
-        static Referentiables * getInstance();
-        static Referentiables * m_instance;
-        managers m_managers;
-
-        Referentiable* findRefFromGUID(const Storage::DirectoryPath & path, const std::string &);
-        Referentiable* findRefFromGUIDLoaded(const std::string &);
-        Referentiable* findRefFromSessionNameLoaded(const std::string &);
-        void regManager(ReferentiableManagerBase &);
-    };
-
     template <class T>
     class ReferentiableManager : public ReferentiableManagerBase
     {

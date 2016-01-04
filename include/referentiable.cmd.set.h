@@ -1,6 +1,5 @@
 #pragma once
 
-#include "referentiable.h"
 #include "command.h"
 
 namespace imajuscule
@@ -11,6 +10,8 @@ namespace imajuscule
         , bool (T::*fSet)(U*, bool&) \
         , U* (T::*fGet)() > 
 
+    class ReferentiableManagerBase;
+    
     REF_CMD_SET
     class RefChangeAttrCmd : public Command
     {

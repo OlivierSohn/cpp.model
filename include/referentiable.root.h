@@ -1,10 +1,8 @@
 #pragma once
 
-#include "referentiable.h"
-
-#include "referentiable.manager.h"
-
 #include <map>
+
+#include "referentiable.h"
 
 namespace imajuscule
 {

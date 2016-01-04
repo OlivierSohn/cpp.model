@@ -3,11 +3,15 @@
 #include <vector>
 #include <stack>
 #include <string>
-#include "referentiable.h"
+#include <functional>
+
+#include "observable.h"
 #include "execution.h"
 
 namespace imajuscule
 {
+    class ReferentiableManagerBase;
+    class Referentiable;
     class Command;
     class UndoGroup;
     class Undoable;
