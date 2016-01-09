@@ -272,6 +272,7 @@ void HistoryManager::Add(Undoable* c)
     if ( unlikely(m_curExecType != ExecutionType::NONE))
     {
         LG(ERR, "HistoryManager::Add : Memory leak : a command was added to history while %s", (m_curExecType==ExecutionType::UNDO)?"undoing":"redoing");
+        A(0);
         return;
     }
 
@@ -279,6 +280,7 @@ void HistoryManager::Add(Undoable* c)
     {
         // memory leak
         LG(ERR, "HistoryManager::Add : Memory leak : a command was added to history while inactive");
+        A(0);
         return;
     }
 
