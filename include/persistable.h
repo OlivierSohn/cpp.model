@@ -86,7 +86,7 @@ namespace imajuscule { \
 template class RefLink<imajuscule::type> ; \
 eResult type::Save() \
 { \
-type::type ## Persist l( Storage::curDir(), guid(), *this);  \
+type::type ## Persist l( DirectoryPath(), guid(), *this);  \
 eResult res = l.Save();\
 return res;\
 } \
@@ -156,12 +156,12 @@ WriteKeyData(key, vs);  \
 #define R_LNKS_OP( Op, type, key ) \
 case key: \
     for(auto const & guid : vs)\
-        Op( static_cast<type*>(Referentiables::fromGUID(Storage::curDir(), guid)) );\
+        Op( static_cast<type*>(Referentiables::fromGUID(DirectoryPath(), guid)) );\
 break;
 
 #define R_LNK_OP( Op, type, key ) \
 case key: \
-Op( static_cast<type*>(Referentiables::fromGUID(Storage::curDir(), str)) );\
+Op( static_cast<type*>(Referentiables::fromGUID(DirectoryPath(), str)) );\
 break;
 
 namespace imajuscule
