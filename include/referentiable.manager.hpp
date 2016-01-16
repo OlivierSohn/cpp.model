@@ -137,20 +137,20 @@ void ReferentiableManagerBase::ListReferentiablesByCreationDate(referentiables& 
 Referentiable * ReferentiableManagerBase::findByGuid(const std::string & guid)
 {
     //LG(INFO, "ReferentiableManagerBase::findByGuid(%s)", guid.c_str());
-    Referentiable * pRet = NULL;
     guidsToRftbls::iterator it = m_guidsToRftbls.find(guidsToRftbls::key_type(guid));
-    if (it != m_guidsToRftbls.end())
-        pRet = it->second;
-    return pRet;
+    if (it != m_guidsToRftbls.end()) {
+        return it->second;
+    }
+    return NULL;
 }
 // session name is unique per-session
 Referentiable * ReferentiableManagerBase::findBySessionName(const std::string & sessionName)
 {
-    Referentiable * pRet = NULL;
     snsToRftbls::iterator it = m_snsToRftbls.find(snsToRftbls::key_type(sessionName));
-    if (it != m_snsToRftbls.end())
-        pRet = it->second;
-    return pRet;
+    if (it != m_snsToRftbls.end()) {
+        return it->second;
+    }
+    return NULL;
 }
 
 bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r, bool bFinalize)
@@ -199,7 +199,8 @@ std::string ReferentiableManagerBase::generateGuid()
     //LG(INFO, "ReferentiableManagerBase::generateGuid : begin");
 
     std::string sGuid;
-    
+    sGuid.reserve(32);
+
 #ifdef _WIN32
     GUID guid;
 	HRESULT hr = CoCreateGuid(&guid);
@@ -234,8 +235,11 @@ std::string ReferentiableManagerBase::generateGuid()
                 : HRESULT_FROM_WIN32(GetLastError());
             if (likely(SUCCEEDED(hr)))
             {
-                sGuid.clear();
-                sGuid.append(pszData);
+                for( int i=0; i<cbData; i++ ) {
+                    if(pszData[i] != '-'){
+                        sGuid.push_back(pszData[i]);
+                    }
+                }
             }
             delete[] pszData;
         }
@@ -250,13 +254,25 @@ std::string ReferentiableManagerBase::generateGuid()
     uuid_generate(uu);
     char uuid[37];
     uuid_unparse(uu, uuid);
-    sGuid.push_back('{');
-    sGuid.insert(sGuid.end(),uuid, uuid+sizeof(uuid)-1/*before end of string*/);
-    sGuid.push_back('}');
+    for( int i=0; i<(int)sizeof(uuid); i++ ) {
+        switch(uuid[i]) {
+            case 0:
+                break;
+            case '-':
+                continue;
+            default:
+                sGuid.push_back(uuid[i]);
+                break;
+        }
+    }
+    //sGuid.push_back('{');
+    //sGuid.insert(sGuid.end(),uuid, uuid+sizeof(uuid)-1/*before end of string*/);
+    //sGuid.push_back('}');
 #endif
 
     //LG(INFO, "ReferentiableManagerBase::generateGuid returns %s", sGuid.c_str());
     
+    A(sGuid.size() == 32);
     return sGuid;
 }
 
