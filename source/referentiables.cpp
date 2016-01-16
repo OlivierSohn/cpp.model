@@ -39,8 +39,9 @@ namespace imajuscule
     Referentiable* Referentiables::findRefFromGUID(const DirectoryPath & path, const std::string & guid)
     {
         Referentiable * r = NULL;
-        if(r = findRefFromGUIDLoaded(guid))
+        if(r = findRefFromGUIDLoaded(guid)) {
             return r;
+        }
         
         unsigned int index;
         std::string nameHint;
@@ -75,8 +76,9 @@ namespace imajuscule
     {
         for(auto man: m_managers)
         {
-            if(Referentiable * ref = man->findByGuid(guid))
+            if(Referentiable * ref = man->findByGuid(guid)) {
                 return ref;
+            }
         }
         return NULL;
     }
