@@ -236,8 +236,15 @@ std::string ReferentiableManagerBase::generateGuid()
             if (likely(SUCCEEDED(hr)))
             {
                 for( int i=0; i<cbData; i++ ) {
-                    if(pszData[i] != '-'){
+                    switch ( pszData[i] ) {
+                    default:
                         sGuid.push_back(pszData[i]);
+                        break;
+                    case 0:
+                    case '-':
+                    case '}':
+                    case '{':
+                        break;
                     }
                 }
             }
