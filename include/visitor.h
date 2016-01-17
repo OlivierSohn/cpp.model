@@ -73,7 +73,7 @@ namespace imajuscule
         virtual void Visit(WireTextModel*) = 0;
         virtual void Visit(ExactVolume*) = 0;
         virtual void Visit(Playable*) {};
-        virtual void Visit(Human*) {};
+        virtual void Visit(Human*) = 0;
         virtual void Visit(HumanControl*) {};
 
     protected:
