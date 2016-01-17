@@ -34,6 +34,8 @@ namespace imajuscule
     class WireTextModel;
     class Playable;
     class ExactVolume;
+    class Human;
+    class HumanControl;
 
     class Visitor
     {
@@ -71,6 +73,8 @@ namespace imajuscule
         virtual void Visit(WireTextModel*) = 0;
         virtual void Visit(ExactVolume*) = 0;
         virtual void Visit(Playable*) {};
+        virtual void Visit(Human*) {};
+        virtual void Visit(HumanControl*) {};
 
     protected:
         Visitor() {}
