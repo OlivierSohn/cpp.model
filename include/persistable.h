@@ -159,6 +159,11 @@ case key: \
         Op( static_cast<type*>(Referentiables::fromGUID(DirectoryPath(), guid)) );\
 break;
 
+#define L_LNKS( key ) \
+case key: \
+    for( auto const & guid : vs ) { Referentiables::fromGUID(DirectoryPath(), guid); }\
+break;
+
 #define R_LNK_OP( Op, type, key ) \
 case key: \
 Op( static_cast<type*>(Referentiables::fromGUID(DirectoryPath(), str)) );\
