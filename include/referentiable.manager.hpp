@@ -398,9 +398,8 @@ template <class T>
 T* ReferentiableManager<T>::New()
 {
     ReferentiableManager<T>* rm = ReferentiableManager<T>::getInstance();
-    if_A(rm)
-        return static_cast<T*>(rm->newReferentiable(true));
-    return NULL;
+    A(rm);
+    return static_cast<T*>(rm->newReferentiable(true));
 }
 
 bool ReferentiableCmdBase::data::operator!=(const Undoable::data& other) const
