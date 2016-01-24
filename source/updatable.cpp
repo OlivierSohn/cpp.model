@@ -95,7 +95,9 @@ void Updatable::resetUpdateStatesRecurse()
 {
     hasBeenUpdated(false);
     for ( auto * u : m_specs ) {
-        u->resetUpdateStatesRecurse();
+        if ( u ) {
+            u->resetUpdateStatesRecurse();
+        }
     }
 }
 void Updatable::resetObserversUpdateStatesRecurse()
