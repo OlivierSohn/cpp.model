@@ -8,7 +8,7 @@ namespace imajuscule
         < class T /* Type of modified object (is a referentiable)*/ \
         , class U /*Type of object attribute (is a Referentiable)*/ \
         , bool (T::*fSet)(U*, bool&) \
-        , U* (T::*fGet)() > 
+        , U* (T::*fGet)() const > 
 
     class ReferentiableManagerBase;
     
