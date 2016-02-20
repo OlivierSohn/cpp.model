@@ -120,18 +120,18 @@ struct pred
     }
 };
 
-void ReferentiableManagerBase::ListReferentiablesByCreationDate(referentiables& vItems)
+referentiables ReferentiableManagerBase::ListReferentiablesByCreationDate() const
 {
-    vItems.clear();
+    referentiables vItems;
 
-    guidsToRftbls::iterator it = m_guidsToRftbls.begin();
-    guidsToRftbls::iterator end = m_guidsToRftbls.end();
-    for (; it != end; ++it)
+    for (auto const & it : m_guidsToRftbls)
     {
-        vItems.emplace_back(it->second);
+        vItems.emplace_back(it.second);
     }
 
     std::sort(vItems.begin(), vItems.end(), pred());
+    
+    return vItems;
 }
 
 Referentiable * ReferentiableManagerBase::findByGuid(const std::string & guid)

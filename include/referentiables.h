@@ -16,7 +16,7 @@ namespace imajuscule
         static Referentiable* fromGUIDLoaded(const std::string &);
         static Referentiable* fromSessionNameLoaded(const std::string &);
         static void registerManager(ReferentiableManagerBase &);
-        static void traverseManagers(managers::iterator & begin, managers::iterator & end);
+        static managers const & getManagers();
 
     private:
         Referentiables();

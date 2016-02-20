@@ -92,10 +92,9 @@ namespace imajuscule
         return getInstance()->regManager(m);
     }
     
-    void Referentiables::traverseManagers(managers::iterator & begin, managers::iterator & end)
+    managers const & Referentiables::getManagers()
     {
         Referentiables * i = Referentiables::getInstance();
-        begin = i->m_managers.begin();
-        end = i->m_managers.end();
+        return i->m_managers;
     }
 }

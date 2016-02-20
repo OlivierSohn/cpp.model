@@ -44,7 +44,7 @@ namespace imajuscule
         // session name is unique per-session
         Referentiable * findBySessionName(const std::string & sessionName);
 
-        void ListReferentiablesByCreationDate(referentiables& vItems);
+        referentiables ListReferentiablesByCreationDate() const;
 
         Observable<Event, Referentiable*> & observable();
 

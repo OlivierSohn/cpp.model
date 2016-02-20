@@ -26,18 +26,13 @@ ReferentiableRoot * ReferentiableRoot::getInstance()
 ReferentiableRoot::ReferentiableRoot(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName) :
 Referentiable(manager, guid, hintName)
 {
-    managers::iterator it, end;
-    Referentiables::traverseManagers(it, end);
-    for(;it!=end;++it)
+    for(auto m : Referentiables::getManagers())
     {
-        ReferentiableManagerBase * rm = *it;
-        
-        referentiables v;
-        rm->ListReferentiablesByCreationDate(v);
-        for (auto & vi : v)
+        for (auto & vi : m->ListReferentiablesByCreationDate() ) {
             addRef(vi);
+        }
         
-        rm->observable().Register(ReferentiableManagerBase::Event::RFTBL_ADD,
+        m->observable().Register(ReferentiableManagerBase::Event::RFTBL_ADD,
                                   [this](Referentiable*r){
                                       if(!dynamic_cast<ReferentiableRoot*>(r))
                                           this->addRef(r);
