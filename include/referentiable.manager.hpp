@@ -123,6 +123,7 @@ struct pred
 referentiables ReferentiableManagerBase::ListReferentiablesByCreationDate() const
 {
     referentiables vItems;
+    vItems.reserve(m_guidsToRftbls.size());
 
     for (auto const & it : m_guidsToRftbls)
     {
