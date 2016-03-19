@@ -36,7 +36,7 @@ namespace imajuscule
     class ExactVolume;
     class Human;
     class HumanControl;
-    class Mixer;
+    class MixerBase;
 
     class Visitor
     {
@@ -76,7 +76,7 @@ namespace imajuscule
         virtual void Visit(Playable*) {};
         virtual void Visit(Human*) = 0;
         virtual void Visit(HumanControl*) {};
-        virtual void Visit(Mixer*) {};
+        virtual void Visit(MixerBase*) {};
 
     protected:
         Visitor() {}
