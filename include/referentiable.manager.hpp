@@ -74,6 +74,8 @@ bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const 
             {
                 A(!"an element was not found in guid map but found in session names map!");
             }
+
+            refs.push_back(r);
         }
     }
 
@@ -101,6 +103,8 @@ void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
         
         count = m_snsToRftbls.erase(sessionName);
         A(count == 1);
+
+        refs.erase(std::remove(refs.begin(), refs.end(), r));
 
         observable().Notify(Event::RFTBL_REMOVE, r); // must be placed after actual delete (use case : delete of joint makes the parent NULL so the joint ui manager draws a joint at root which must be removed)
     }
@@ -222,7 +226,7 @@ std::string ReferentiableManagerBase::generateGuid()
 	}
 
     // First figure out our required buffer size.
-    DWORD cbData = WideCharToMultiByte(CP_ACP, 0, bstrGuid/*pszDataIn*/, -1, NULL, 0, NULL, NULL);
+    int cbData = WideCharToMultiByte(CP_ACP, 0, bstrGuid/*pszDataIn*/, -1, NULL, 0, NULL, NULL);
     hr = (cbData == 0) ? HRESULT_FROM_WIN32(GetLastError()) : S_OK;
     if (likely(SUCCEEDED(hr)))
     {

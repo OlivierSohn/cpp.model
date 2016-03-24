@@ -39,6 +39,8 @@ namespace imajuscule
         Referentiable* newReferentiable(const std::string & nameHint, bool bFinalize);
         Referentiable* newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize, bool bVisibleIfAhistoric);
 
+        referentiables const & traverse() const { return refs; }
+
         // guid is unique
         Referentiable * findByGuid(const std::string & guid);
         // session name is unique per-session
@@ -72,6 +74,7 @@ namespace imajuscule
 
         snsToRftbls m_snsToRftbls;
         guidsToRftbls m_guidsToRftbls;
+        referentiables refs;
 
         Observable<Event, Referentiable*> * m_observable;
 
@@ -198,8 +201,13 @@ namespace imajuscule
     template <class T> T* REF_BY_SN( const std::string & sn ){
         return static_cast<T *>(ReferentiableManager<T>::getInstance()->findBySessionName(sn));
     }
-    template <class T> T* REF_BY_GUID( const std::string & guid ){
+    template <class T> T* REF_BY_GUID(const std::string & guid)
+    {
         return static_cast<T *>(ReferentiableManager<T>::getInstance()->findByGuid(guid));
+    }
+    template <class T> referentiables const & TRAVERSE()
+    {
+        return ReferentiableManager<T>::getInstance()->traverse();
     }
 }
 
