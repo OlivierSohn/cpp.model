@@ -37,6 +37,7 @@ namespace imajuscule
     class Human;
     class HumanControl;
     class MixerBase;
+    class GenericUpdatable;
 
     class Visitor
     {
@@ -77,6 +78,7 @@ namespace imajuscule
         virtual void Visit(Human*) = 0;
         virtual void Visit(HumanControl*) {};
         virtual void Visit(MixerBase*) {};
+        virtual void Visit(GenericUpdatable*) {};
 
     protected:
         Visitor() {}
