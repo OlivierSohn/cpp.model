@@ -54,7 +54,7 @@ namespace imajuscule
         
         virtual unsigned int index() = 0;
 
-        PERSISTABLE_VISITOR_HEADER_IMPL
+        VISITOR_HEADER_IMPL
 
         virtual const char * UIName() = 0;
 

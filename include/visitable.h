@@ -3,9 +3,9 @@
 #include "visitor.h"
 #include "observable.h"
 
-#define PERSISTABLE_VISITOR_PURE_VIRTUAL virtual void accept(Visitor &) = 0;
+#define VISITOR_PURE_VIRTUAL virtual void accept(Visitor &) = 0;
 
-#define PERSISTABLE_VISITOR_HEADER_IMPL void accept(Visitor & vtor) override\
+#define VISITOR_HEADER_IMPL void accept(Visitor & vtor) override\
         {\
         vtor.Visit(this);\
         }
@@ -30,7 +30,7 @@ namespace imajuscule
         Observable<Event, Visitable&> &  observableVisitable();
         Observable<HierarchyEvent, Visitable&, Visitable&> &  observableVisitableH();
 
-        PERSISTABLE_VISITOR_PURE_VIRTUAL
+        VISITOR_PURE_VIRTUAL
     protected:
         Visitable();
 

@@ -19,7 +19,7 @@ namespace imajuscule
         virtual ~ReferentiableRoot();
 
         DECL_PERSIST(ReferentiableRoot, Referentiable)
-        PERSISTABLE_VISITOR_HEADER_IMPL
+        VISITOR_HEADER_IMPL
         
         static ReferentiableRoot * g_instance;
 
