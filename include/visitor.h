@@ -39,6 +39,7 @@ namespace imajuscule
     class MixerBase;
     class GenericUpdatable;
     class Simulation;
+    class Script;
 
     class Visitor
     {
@@ -81,6 +82,7 @@ namespace imajuscule
         virtual void Visit(MixerBase*) {};
         virtual void Visit(GenericUpdatable*) {};
         virtual void Visit(Simulation*) {};
+        virtual void Visit(Script*) {};
 
     protected:
         Visitor() {}
