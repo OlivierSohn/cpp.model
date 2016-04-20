@@ -119,6 +119,10 @@ namespace imajuscule
         RefLink(RefLink const &) = delete;
         RefLink(Referentiable& source, T *target);
         RefLink(RefLink && r);
+        
+        RefLink& operator=(RefLink const&) = delete;
+        RefLink & operator= ( RefLink && );
+
         ~RefLink();
         operator T*();
         operator const T*() const;

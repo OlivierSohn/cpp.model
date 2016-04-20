@@ -107,7 +107,7 @@ A(ILE_SUCCESS == res || ILE_RECURSIVITY == res);
 
 #define W_LNK_SOFT( refExpr, key ) \
 {\
-Referentiable * ref = refExpr;\
+Referentiable * ref = static_cast<Referentiable*>(refExpr);\
 if(ref) \
 {       \
 WriteKeyData(key, ref->guid()); \

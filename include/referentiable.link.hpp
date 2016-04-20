@@ -23,6 +23,19 @@ m_source(r.m_source)
 }
 
 template<class T>
+RefLink<T> & RefLink<T>::operator=(RefLink<T> && r) {
+    m_source = r.m_source;
+    m_target = r.m_target;
+    m_bActive = true;
+    m_bTargetIsUp = true;
+    //LG(INFO,"RefLink move constructor for source %x", &m_source);
+    r.deactivate();
+    RegisterTargetCb();
+    
+    return *this;
+}
+
+template<class T>
 RefLink<T>::~RefLink()
 {
     if(m_bActive)
