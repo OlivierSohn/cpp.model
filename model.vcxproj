@@ -157,6 +157,8 @@
     <ClInclude Include="include\command.hpp" />
     <ClInclude Include="include\execution.h" />
     <ClInclude Include="include\history.manager.h" />
+    <ClInclude Include="include\managed.reflist.hpp" />
+    <ClInclude Include="include\managed.reflist.hxx" />
     <ClInclude Include="include\model.allincludes.h" />
     <ClInclude Include="include\observable.h" />
     <ClInclude Include="include\operation.geo.h" />

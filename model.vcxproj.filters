@@ -114,6 +114,12 @@
     <ClInclude Include="include\referentiables.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\managed.reflist.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\managed.reflist.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\persistable.cpp">
