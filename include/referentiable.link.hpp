@@ -98,6 +98,12 @@ T& RefLink<T>::operator*() const
     return *get();
 }
 template<class T>
+auto RefLink<T>::operator= (T * pointer) -> RefLink &
+{
+    set(pointer);
+    return *this;
+}
+template<class T>
 bool RefLink<T>::operator < (RefLink & other)
 {
     T * t1 = *this;

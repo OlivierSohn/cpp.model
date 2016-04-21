@@ -125,6 +125,7 @@ namespace imajuscule
 
         ~RefLink();
         operator T*() const;
+        RefLink & operator= (T * pointer);
         T* operator->() const;
         T& operator*() const;
         T * edit() const; // TODO remove

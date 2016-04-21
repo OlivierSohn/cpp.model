@@ -25,12 +25,12 @@ namespace imajuscule
     }
     
     MANAGED_REF_LIST
-    void ManagedRefList<Owner, T, Add, Remove>::ManagedRefList<Owner, T, Add, Remove>::add(T*mc)
+    void ManagedRefList<Owner, T, Add, Remove>::add(T*mc)
     {
         cmd::ManageAttr(*owner, mc, cmd::Type::TYPE_ADD);
     }
     MANAGED_REF_LIST
-    void ManagedRefList<Owner, T, Add, Remove>::ManagedRefList<Owner, T, Add, Remove>::remove(T*mc)
+    void ManagedRefList<Owner, T, Add, Remove>::remove(T*mc)
     {
         cmd::ManageAttr(*owner, mc, cmd::Type::TYPE_REMOVE);
     }
