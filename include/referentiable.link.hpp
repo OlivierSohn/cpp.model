@@ -7,6 +7,7 @@ m_source(source)
 ,m_bActive(true)
 ,m_bTargetIsUp(true)
 {
+    //LG(INFO, "%p link construct for source %x", this, &m_source);
     set(target);
 }
 
@@ -17,7 +18,7 @@ m_source(r.m_source)
 ,m_bActive(true)
 ,m_bTargetIsUp(true)
 {
-    //LG(INFO,"RefLink move constructor for source %x", &m_source);
+    //LG(INFO, "%p link move construct from %p for source %x", this, &r, &m_source);
     r.deactivate();
     RegisterTargetCb();
 }
@@ -28,23 +29,29 @@ RefLink<T> & RefLink<T>::operator=(RefLink<T> && r) {
     m_target = r.m_target;
     m_bActive = true;
     m_bTargetIsUp = true;
-    //LG(INFO,"RefLink move constructor for source %x", &m_source);
     r.deactivate();
+    m_targetRegs.clear();
     RegisterTargetCb();
     
+    //LG(INFO, "%p link move assign from %p for source %x", this, &r, &m_source);
     return *this;
 }
 
 template<class T>
 RefLink<T>::~RefLink()
 {
-    if(m_bActive)
+    if(m_bActive) {
+        //LG(INFO, "%p destruct active for source %x", this, &m_source);
         set(NULL);
+    } else {
+        //LG(INFO, "%p destruct inactive for source %x", this, &m_source);
+    }
 }
 
 template<class T>
 void RefLink<T>::deactivate()
 {
+    //LG(INFO, "%p deactivate", this);
     A(m_bActive);
     m_bActive = false;
     UnregisterTargetCb();
@@ -55,6 +62,10 @@ void RefLink<T>::RegisterTargetCb()
 {
     if(m_target)
     {
+        //LG(INFO, "    register target %x", m_target);
+        
+        A(m_targetRegs.empty());
+
         m_targetRegs.push_back(m_target->observableReferentiable().Register(Referentiable::Event::DEACTIVATE_LINKS, [this](Referentiable*r){
             
             A(r==m_target);
@@ -76,6 +87,7 @@ void RefLink<T>::UnregisterTargetCb()
 {
     if(m_target && m_bTargetIsUp)
     {
+        //LG(INFO, "    unregister target %x", m_target);
         for(auto &i:m_targetRegs)
             m_target->observableReferentiable().Remove(i);        
     }

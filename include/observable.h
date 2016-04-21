@@ -21,7 +21,7 @@ namespace imajuscule
     struct FunctionInfo
     {
         Event m_event;
-        size_t m_key;
+        int m_key;
     };
 
     template <typename Event, typename... Args>
@@ -37,12 +37,12 @@ namespace imajuscule
         // map doesn't work when the callback modifies the map 
         // so we use a list instead : its iterators are not invalidated by insertion / removal
         typedef std::list< std::tuple<
-            size_t /*key*/,
+            int /*key*/,
             bool /*active (false means scheduled for removal)*/, 
             int /*recursive level (>0 means being sent)*/,
             std::function<void(Args...) /*function*/ > > > callbacksList;
 
-        typedef std::stack<size_t> availableKeys;
+        typedef std::stack<int> availableKeys;
         enum EvtNtfTupleIndex
         {
             AVAILABLE_KEYS = 0,
@@ -122,7 +122,7 @@ namespace imajuscule
             }
 
             // take key from stack of available keys, or if it's empty, that means the next available key is the size of the map
-            size_t key;
+            int key;
             availableKeys & avKeys = std::get<AVAILABLE_KEYS>(*v);
             callbacksList & cbslist = std::get<CBS_LIST>(*v);
             if (avKeys.empty())
@@ -219,6 +219,7 @@ namespace imajuscule
                     if (std::get<KEY>(*it) == functionInfo.m_key)
                     {
                         bFound = true;
+                        //LG(INFO, "  %d", std::get<KEY>(*it));
 
                         if (std::get<RECURSIVE_LEVEL>(*it) > 0)
                         {
@@ -242,6 +243,12 @@ namespace imajuscule
 
                 if (unlikely(!bFound))
                 {
+#ifndef NDEBUG
+                    LG(ERR, "key %d not found. list of present keys : ", functionInfo.m_key);
+                    for(auto const & cb : std::get<CBS_LIST>(*(it1->second)) ) {
+                        LG(ERR, "  %d", std::get<KEY>(cb));
+                    }
+#endif
                     A(!"attempt to remove a registration that is not here");
                 }
             }
