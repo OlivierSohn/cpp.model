@@ -36,7 +36,7 @@ namespace imajuscule
         Owner_T & editOwner() { return *owner; }
         void add(T*);
         void remove(T*);
-        void set(listT &&);
+        void set(std::vector<T*> &&);
         bool has(T const *) const;
         int size() const;
         bool empty() const;

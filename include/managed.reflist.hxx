@@ -127,16 +127,23 @@ namespace imajuscule
     }
     
     MANAGED_REF_LIST
-    void ManagedRefList<Owner, T, Add, Remove>::set(listT && v)
+    void ManagedRefList<Owner, T, Add, Remove>::set(std::vector<T*> && v)
     {
-        clear();
+        bool changed = false;
+        if ( !list.empty() ) {
+            changed = true;
+            clear();
+        }
         
         if (!v.empty())
         {
-            for ( auto const & t : v) {
-                add( t.get() );
+            for ( auto t : v) {
+                add( t );
             }
             
+            changed = true;
+        }
+        if ( changed ) {
             owner->hasNewContentForUpdate(true);
         }
     }
