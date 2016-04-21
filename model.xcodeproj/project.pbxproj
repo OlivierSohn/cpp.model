@@ -12,6 +12,8 @@
 		0927A8191B3F2DCF00872BC9 /* command.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0927A8181B3F2DCF00872BC9 /* command.hpp */; };
 		0927A81C1B3F987B00872BC9 /* referentiable.cmd.simpleset.h in Headers */ = {isa = PBXBuildFile; fileRef = 0927A81A1B3F987B00872BC9 /* referentiable.cmd.simpleset.h */; };
 		0927A81D1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0927A81B1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp */; };
+		0930C5811CC8688F00AB958B /* managed.reflist.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0930C57F1CC8688F00AB958B /* managed.reflist.hpp */; };
+		0930C5821CC8688F00AB958B /* managed.reflist.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 0930C5801CC8688F00AB958B /* managed.reflist.hxx */; };
 		09429CAD1AD38243001513DA /* asyncnotifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A21AD357F70099DA54 /* asyncnotifier.cpp */; };
 		09429CAE1AD38243001513DA /* command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A31AD357F70099DA54 /* command.cpp */; };
 		09429CAF1AD38243001513DA /* history.manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A41AD357F70099DA54 /* history.manager.cpp */; };
@@ -76,6 +78,8 @@
 		0927A8181B3F2DCF00872BC9 /* command.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = command.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		0927A81A1B3F987B00872BC9 /* referentiable.cmd.simpleset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.cmd.simpleset.h; sourceTree = "<group>"; };
 		0927A81B1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.cmd.simpleset.hpp; sourceTree = "<group>"; };
+		0930C57F1CC8688F00AB958B /* managed.reflist.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = managed.reflist.hpp; sourceTree = "<group>"; };
+		0930C5801CC8688F00AB958B /* managed.reflist.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = managed.reflist.hxx; sourceTree = "<group>"; };
 		09429C961AD38207001513DA /* libmodel.ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmodel.ios.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		095F43E51C3A2010005BE7DA /* referentiables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiables.h; sourceTree = "<group>"; };
 		095F43E71C3A20F9005BE7DA /* referentiables.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = referentiables.cpp; sourceTree = "<group>"; };
@@ -162,6 +166,8 @@
 		0976628F1AD357F70099DA54 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				0930C57F1CC8688F00AB958B /* managed.reflist.hpp */,
+				0930C5801CC8688F00AB958B /* managed.reflist.hxx */,
 				097662901AD357F70099DA54 /* asyncnotifier.h */,
 				097662911AD357F70099DA54 /* command.h */,
 				0927A8181B3F2DCF00872BC9 /* command.hpp */,
@@ -235,6 +241,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				097662B31AD357F70099DA54 /* observable.h in Headers */,
+				0930C5811CC8688F00AB958B /* managed.reflist.hpp in Headers */,
 				097662B21AD357F70099DA54 /* model.allincludes.h in Headers */,
 				097662B11AD357F70099DA54 /* history.manager.h in Headers */,
 				097662B61AD357F70099DA54 /* referentiable.cmd.set.h in Headers */,
@@ -242,6 +249,7 @@
 				09DBDCA91B07C00200870E0A /* referentiable.link.hpp in Headers */,
 				0905780A1BAE12BA00FA8E42 /* execution.h in Headers */,
 				09B330B71BF56DCE00DE437C /* raii.hpp in Headers */,
+				0930C5821CC8688F00AB958B /* managed.reflist.hxx in Headers */,
 				097662BE1AD357F70099DA54 /* visitable.h in Headers */,
 				097662B91AD357F70099DA54 /* referentiable.manager.h in Headers */,
 				097662BD1AD357F70099DA54 /* updatable.h in Headers */,

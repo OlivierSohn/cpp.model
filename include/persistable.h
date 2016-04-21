@@ -134,9 +134,9 @@ if_A(ref) \
 #define W_LNKS( vec, key ) \
 { \
 std::vector<std::string> vs; \
-for(auto & it : vec) \
+for(auto const & link : vec) \
 { \
-    Referentiable * ref = it; \
+    Referentiable * ref = link; \
     W_LNK_ELT( ref, vs); \
 } \
 WriteKeyData(key, vs);  \

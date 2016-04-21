@@ -83,32 +83,17 @@ void RefLink<T>::UnregisterTargetCb()
 }
 
 template<class T>
-RefLink<T>::operator T*()
-{
-    return edit();
-}
-template<class T>
-RefLink<T>::operator const T*() const
+RefLink<T>::operator T*() const
 {
     return get();
 }
 template<class T>
-T* RefLink<T>::operator->()
-{
-    return edit();
-}
-template<class T>
-const T* RefLink<T>::operator->() const
+T* RefLink<T>::operator->() const
 {
     return get();
 }
 template<class T>
-T& RefLink<T>::operator*()
-{
-    return *edit();
-}
-template<class T>
-const T& RefLink<T>::operator*() const
+T& RefLink<T>::operator*() const
 {
     return *get();
 }
@@ -166,7 +151,7 @@ void RefLink<T>::set(T * target)
 }
 
 template<class T>
-const T * RefLink<T>::get() const
+T * RefLink<T>::get() const
 {
     return m_target;
 }
