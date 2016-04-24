@@ -43,8 +43,8 @@ namespace imajuscule
         void clear();
         T const * get(int) const;
         T * edit(int);
-        T& operator[] (const int index) { return *(list[index].get()); }
-        const T& operator[] (const int index) const { return *(list[index].get()); }
+        T& operator[] (const int index) { return *list[index]; }
+        const T& operator[] (const int index) const { return *list[index]; }
         
         listT const & get() const { return list; }
         listT & edit() { return list; }

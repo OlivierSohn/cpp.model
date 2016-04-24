@@ -128,8 +128,7 @@ namespace imajuscule
         RefLink & operator= (T * pointer);
         T* operator->() const;
         T& operator*() const;
-        T * edit() const; // TODO remove
-        T * get() const;
+        T * ptr() const;
 
         bool operator < (RefLink & other);
         

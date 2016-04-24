@@ -97,17 +97,17 @@ void RefLink<T>::UnregisterTargetCb()
 template<class T>
 RefLink<T>::operator T*() const
 {
-    return get();
+    return ptr();
 }
 template<class T>
 T* RefLink<T>::operator->() const
 {
-    return get();
+    return ptr();
 }
 template<class T>
 T& RefLink<T>::operator*() const
 {
-    return *get();
+    return *ptr();
 }
 template<class T>
 auto RefLink<T>::operator= (T * pointer) -> RefLink &
@@ -157,15 +157,7 @@ void RefLink<T>::set(T * target)
 }
 
 template<class T>
-T * RefLink<T>::get() const
+T * RefLink<T>::ptr() const
 {
     return m_target;
 }
-
-template<class T>
-T * RefLink<T>::edit() const
-{
-    return m_target;
-}
-
-

@@ -16,7 +16,7 @@ namespace imajuscule
         {
             A( registration != registration_end );
             
-            auto * l = layer->get();
+            auto * l = layer->ptr();
             owner->removeSpec( l );
             l->observableReferentiable().Remove( *registration );
         }
@@ -38,7 +38,7 @@ namespace imajuscule
     MANAGED_REF_LIST
     void ManagedRefList<Owner, T, Add, Remove>::remove( vregs::iterator & reg, listIterator & layer )
     {
-        auto * pML = layer->get();
+        auto * pML = layer->ptr();
         owner->removeSpec(pML);
         pML->observableReferentiable().Remove( *reg );
         
@@ -174,12 +174,12 @@ namespace imajuscule
     MANAGED_REF_LIST
     const T * ManagedRefList<Owner, T, Add, Remove>::get(int index) const
     {
-        return list[index].get();
+        return list[index].ptr();
     }
     
     MANAGED_REF_LIST
     T * ManagedRefList<Owner, T, Add, Remove>::edit(int index)
     {
-        return list[index].edit();
+        return list[index].ptr();
     }
 }
