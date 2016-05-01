@@ -126,7 +126,7 @@ namespace imajuscule
             availableKeys & avKeys = std::get<AVAILABLE_KEYS>(*v);
             callbacksList & cbslist = std::get<CBS_LIST>(*v);
             if (avKeys.empty())
-                key = cbslist.size();
+                key = (int)cbslist.size();
             else
             {
                 key = avKeys.top();
