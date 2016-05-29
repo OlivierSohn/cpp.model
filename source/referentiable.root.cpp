@@ -28,7 +28,7 @@ Referentiable(manager, guid, hintName)
 {
     for(auto m : Referentiables::getManagers())
     {
-        for (auto & vi : m->ListReferentiablesByCreationDate() ) {
+        for (auto vi : m->traverse() ) {
             addRef(vi);
         }
         

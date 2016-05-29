@@ -126,13 +126,7 @@ struct pred
 
 referentiables ReferentiableManagerBase::ListReferentiablesByCreationDate() const
 {
-    referentiables vItems;
-    vItems.reserve(m_guidsToRftbls.size());
-
-    for (auto const & it : m_guidsToRftbls)
-    {
-        vItems.emplace_back(it.second);
-    }
+    referentiables vItems = refs;
 
     std::sort(vItems.begin(), vItems.end(), pred());
     

@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "visitable.h"
 #include "observable.h"
@@ -65,7 +66,6 @@ namespace imajuscule
         bool ComputeSessionName(Referentiable*, bool bFinalize);
 
         bool RegisterWithSessionName(Referentiable*, const std::string& sessionName);
-
     private:
         // guid - referentiable
         typedef std::map<std::string, Referentiable*> guidsToRftbls;
@@ -96,6 +96,12 @@ namespace imajuscule
         
         static T* New();
 
+        void forEachReferentiable(std::function<void(T&)> && f) {
+            for(auto r : traverse()) {
+                T * cast = static_cast<T*>(r);
+                f(*cast);
+            }
+        }
     private:
         static ReferentiableManager * g_pRefManager;
 
@@ -104,6 +110,10 @@ namespace imajuscule
 
         Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible, bool bFinalize) override;
     };
+    template <class T>
+    void forEach(std::function<void(T&)> && f) {
+        ReferentiableManager<T>::getInstance()->forEachReferentiable(std::move(f));
+    }
 
     class ReferentiableCmdBase : public Command
     {
