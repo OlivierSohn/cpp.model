@@ -74,8 +74,8 @@ namespace imajuscule
 
         virtual bool doUpdate() { return hasNewContentForUpdate(); };
 
-        bool Updatable::hasBeenUpdated() const { return m_bHasBeenUpdated; }
-        void Updatable::hasBeenUpdated(bool bVal) { m_bHasBeenUpdated = bVal; }
+        bool hasBeenUpdated() const { return m_bHasBeenUpdated; }
+        void hasBeenUpdated(bool bVal) { m_bHasBeenUpdated = bVal; }
 
     private:
         typedef std::vector<Updatable*> updatables;
