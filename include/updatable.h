@@ -36,16 +36,29 @@ namespace imajuscule
 
         // while you work with this vector, make sure to not remove or add any specs to this object
         // else you're in BIG trouble...
-        specs const & getSpecs() const;
+        specs const & getSpecs() const { return m_specs; }
 
         void addObserver(observer);
         void removeObserver(observer);
-        void traverseObservers(observers::iterator & begin, observers::iterator & end);
-        void listObservers(observers &);
-        void listObserversRecurse(observers &);
 
-        bool hasNewContentForUpdate() const;
-        void hasNewContentForUpdate(bool);
+        template<class func>
+        bool forEachObserverRecurse(func & f) {
+            for ( auto * observer : m_observers )
+            {
+                if ( !observer ) { continue; }
+                if ( !f(observer) ) { 
+                    return false; 
+                }
+                if ( !observer->forEachObserverRecurse(f) ) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        bool hasNewContentForUpdate() const { return m_bHasNewContentForUpdate; }
+
+        void hasNewContentForUpdate(bool bVal) { m_bHasNewContentForUpdate = bVal; }
 
         static void onUpdateEnd();
         void resetUpdateStatesRecurse();
@@ -61,8 +74,8 @@ namespace imajuscule
 
         virtual bool doUpdate() { return hasNewContentForUpdate(); };
 
-        void hasBeenUpdated(bool);
-        bool hasBeenUpdated() const;
+        bool Updatable::hasBeenUpdated() const { return m_bHasBeenUpdated; }
+        void Updatable::hasBeenUpdated(bool bVal) { m_bHasBeenUpdated = bVal; }
 
     private:
         typedef std::vector<Updatable*> updatables;
@@ -76,7 +89,7 @@ namespace imajuscule
 
         Observable<Event, Updatable& /*observed*/, Updatable&/*spec*/> * m_observableUpdatable;
 
-        static void traverseAll(updatables::iterator & begin, updatables::iterator & end);
+        static updatables const & traverse() { return m_all; }
         bool isObserver(observer item) const;
 
         bool isConsistent() const;

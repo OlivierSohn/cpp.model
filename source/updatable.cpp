@@ -57,15 +57,20 @@ void Updatable::Update()
         // vector can change size
         // so we access elements by [] instead of iterators
 
-        for ( int i = 0; i < m_specs.size(); i++ )
+        bool oneNull = false;
+        for ( int i = 0; i < (int)m_specs.size(); i++ )
         {
             if( auto s = m_specs[i] )
             {
                 s->Update();
+            } else {
+                oneNull = true;
             }
         }
         
-        m_specs.erase(std::remove(m_specs.begin(), m_specs.end(), (void*)0), m_specs.end());
+        if ( oneNull ) {
+            m_specs.erase(std::remove(m_specs.begin(), m_specs.end(), (void*)0), m_specs.end());
+        }
     }
 
     bool bNewVal = doUpdate();
@@ -228,46 +233,15 @@ void Updatable::removeSpec(spec item)
     }
 }
 
-auto Updatable::getSpecs() const -> specs const &
-{
-    return m_specs;
-}
-
-void Updatable::traverseAll(updatables::iterator & begin, updatables::iterator & end)
-{
-    begin = m_all.begin();
-    end = m_all.end();
-}
-
 void Updatable::onUpdateEnd()
 {
     for (auto * pIt: m_all)
     {
-        auto & it = *pIt;
-        it.hasNewContentForUpdate(false);
-        it.hasBeenUpdated(false);
+        pIt->hasNewContentForUpdate(false);
+        pIt->hasBeenUpdated(false);
     }
 }
 
-bool Updatable::hasNewContentForUpdate() const
-{
-    return m_bHasNewContentForUpdate;
-}
-
-void Updatable::hasNewContentForUpdate(bool bVal)
-{
-    m_bHasNewContentForUpdate = bVal;
-}
-
-bool Updatable::hasBeenUpdated() const
-{
-    return m_bHasBeenUpdated;
-}
-
-void Updatable::hasBeenUpdated(bool bVal)
-{
-    m_bHasBeenUpdated = bVal;
-}
 
 bool Updatable::isObserverRecurse(observer item) const
 {
@@ -319,26 +293,3 @@ void Updatable::removeObserver(observer item)
     m_observers.erase(std::remove(m_observers.begin(), m_observers.end(), item), m_observers.end());
 }
 
-void Updatable::traverseObservers(observers::iterator & begin, observers::iterator & end)
-{
-    begin = m_observers.begin();
-    end = m_observers.end();
-}
-
-void Updatable::listObservers(observers & v)
-{
-    v.insert(v.end(), m_observers.begin(), m_observers.end());
-}
-void Updatable::listObserversRecurse(observers & v)
-{
-    listObservers(v);
-    for (auto * observer : m_observers)
-    {
-        if(!observer)
-        {
-            continue;
-        }
-        
-        observer->listObserversRecurse(v);
-    }
-}
