@@ -54,27 +54,11 @@ void Updatable::Update()
         return;
 
     {
-        // vector can change size (grow but not shrink) 
+        // vector can change size
         // so we access elements by [] instead of iterators
 
-        int size = (int)m_specs.size();
-        for ( int i = 0; ; i++ )
+        for ( int i = 0; i < m_specs.size(); i++ )
         {
-            if ( i >= size )
-            {
-                auto s = (int) m_specs.size();
-                if ( s == size )
-                {
-                    break;
-                }
-
-                size = s;
-                if ( i >= size )
-                {
-                    break;
-                }
-            }
-
             if( auto s = m_specs[i] )
             {
                 s->Update();
