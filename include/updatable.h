@@ -69,6 +69,9 @@ namespace imajuscule
         bool isSpecRecurse(spec item) const;
         bool isObserverRecurse(spec item) const;
 
+        bool isSpec(spec item) const;
+        bool isObserver(observer item) const;
+
     protected:
         Updatable();
 
@@ -90,10 +93,8 @@ namespace imajuscule
         Observable<Event, Updatable& /*observed*/, Updatable&/*spec*/> * m_observableUpdatable;
 
         static updatables const & traverse() { return m_all; }
-        bool isObserver(observer item) const;
 
         bool isConsistent() const;
-        bool isSpec(spec item) const;
         void onAddRecursiveSpec(spec item);
         void onRemoveRecursiveSpec(spec item);
     };
