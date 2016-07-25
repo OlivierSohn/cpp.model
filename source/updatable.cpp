@@ -1,5 +1,11 @@
+//#define LOG_UPDATES
+
 // stl includes
 #include <algorithm>
+
+#if defined (LOG_UPDATES)
+#include <string>
+#endif
 
 // model includes
 #include "updatable.h"
@@ -50,6 +56,21 @@ auto Updatable::observableUpdatable() -> Observable<Event, Updatable& /*observed
 
 void Updatable::Update()
 {
+#if defined (LOG_UPDATES)
+    static int level = 0;
+    struct Level {
+        Level(int&l) : l(l) { l++; };
+        ~ Level() {l--;}
+    private:
+        int&l;
+    };
+    Level l(level);
+    std::string white;
+    for(int i=0; i<level; i++) {
+        white += "  ";
+    }
+    LG(INFO, "%s updating %p", white.c_str(), this);
+#endif
     if (hasBeenUpdated())
         return;
 
@@ -117,9 +138,9 @@ bool Updatable::isConsistent() const
     return true;
 }
 
-bool Updatable::isSpecRecurse(spec item) const
+bool Updatable::isSpecRecurse(Updatable const * item) const
 {
-    for (auto * spec : m_specs)
+    for (auto const * spec : m_specs)
     {
         if(!spec)
         {
@@ -138,9 +159,9 @@ bool Updatable::isSpecRecurse(spec item) const
     return false;
 }
 
-bool Updatable::isSpec(spec item) const
+bool Updatable::isSpec(Updatable const * item) const
 {
-    for (auto * spec : m_specs)
+    for (auto const * spec : m_specs)
     {
         if(!spec)
         {
@@ -160,6 +181,7 @@ void Updatable::addSpec(spec item)
     if (item)
     {
         A(!isSpec(item));
+        A(!isObserver(item));
 
         m_specs.push_back(item);
         item->addObserver(this);
@@ -243,9 +265,9 @@ void Updatable::onUpdateEnd()
 }
 
 
-bool Updatable::isObserverRecurse(observer item) const
+bool Updatable::isObserverRecurse(Updatable const * item) const
 {
-    for (auto * observer : m_observers)
+    for (auto const * observer : m_observers)
     {
         if(!observer)
         {
@@ -264,9 +286,9 @@ bool Updatable::isObserverRecurse(observer item) const
     return false;
 }
 
-bool Updatable::isObserver(observer item) const
+bool Updatable::isObserver(Updatable const * item) const
 {
-    for (auto * observer : m_observers)
+    for (auto const * observer : m_observers)
     {
         if(!observer)
         {
