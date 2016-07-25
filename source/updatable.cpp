@@ -25,7 +25,7 @@ Updatable::updatables Updatable::m_all;
 Updatable::Updatable() :
 Visitable(),
 m_bHasNewContentForUpdate(true),
-m_bHasBeenUpdated(false),
+m_state(NOTUPDATED),
 m_observableUpdatable(Observable<Event, Updatable& /*observed*/, Updatable&/*spec*/>::instantiate())
 {
     m_all.push_back(updatables::value_type(this));
@@ -71,9 +71,12 @@ void Updatable::Update()
     }
     LG(INFO, "%s updating %p", white.c_str(), this);
 #endif
-    if (hasBeenUpdated())
+    if (UPDATED == getUpdateState())
         return;
+    // we can have inner updates : for example if a param is mixed, when updating the param it updates the mixer which in turns (for the first step to ensure param has a value) updates the param
 
+    incrementState(); // the first time, from NOTUPDATED to INUPDATE
+    
     {
         // vector can change size
         // so we access elements by [] instead of iterators
@@ -89,21 +92,30 @@ void Updatable::Update()
             }
         }
         
-        if ( oneNull ) {
+        A(m_state >= INUPDATE);
+        if ( oneNull && m_state == INUPDATE ) {
             m_specs.erase(std::remove(m_specs.begin(), m_specs.end(), (void*)0), m_specs.end());
         }
     }
 
     bool bNewVal = doUpdate();
+    
+    decrementState();
+    
+    if(m_state == NOTUPDATED) {
+        m_state = UPDATED;
 
-    hasNewContentForUpdate(bNewVal);
-
-    hasBeenUpdated(true);
+        hasNewContentForUpdate(bNewVal);
+    } else if(bNewVal) {
+        hasNewContentForUpdate(true);
+    }
 }
 
 void Updatable::resetUpdateStatesRecurse()
 {
-    hasBeenUpdated(false);
+    if(m_state == UPDATED) {
+        m_state = NOTUPDATED;
+    }
     for ( auto * u : m_specs ) {
         if ( u ) {
             u->resetUpdateStatesRecurse();
@@ -116,7 +128,9 @@ void Updatable::resetObserversUpdateStatesRecurse()
     {
         if(observer)
         {
-            observer->hasBeenUpdated(false);
+            if(observer->m_state == UPDATED) {
+                observer->m_state = NOTUPDATED;
+            }
             observer->resetObserversUpdateStatesRecurse();
         }
     }
@@ -260,7 +274,7 @@ void Updatable::onUpdateEnd()
     for (auto * pIt: m_all)
     {
         pIt->hasNewContentForUpdate(false);
-        pIt->hasBeenUpdated(false);
+        pIt->setNotUpdated();
     }
 }
 

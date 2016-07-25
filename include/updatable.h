@@ -77,14 +77,19 @@ namespace imajuscule
 
         virtual bool doUpdate() { return hasNewContentForUpdate(); };
 
-        bool hasBeenUpdated() const { return m_bHasBeenUpdated; }
-        void hasBeenUpdated(bool bVal) { m_bHasBeenUpdated = bVal; }
+        enum UpdateState { UPDATED, NOTUPDATED, INUPDATE /* at the end so that we can increment it */ };
+        void setNotUpdated()
+        {
+            if(getUpdateState() == UPDATED) {
+                setUpdateState(NOTUPDATED);
+            }
+        }
 
     private:
         typedef std::vector<Updatable*> updatables;
         static updatables m_all;
 
-        bool m_bHasBeenUpdated;
+        UpdateState m_state;
         bool m_bHasNewContentForUpdate;
 
         specs m_specs;
@@ -93,6 +98,11 @@ namespace imajuscule
         Observable<Event, Updatable& /*observed*/, Updatable&/*spec*/> * m_observableUpdatable;
 
         static updatables const & traverse() { return m_all; }
+
+        void incrementState() { A(m_state >= NOTUPDATED); m_state = (UpdateState)(((int)m_state)+1) ; }
+        void decrementState() { A(m_state > NOTUPDATED); m_state = (UpdateState)(((int)m_state)-1) ; }
+        UpdateState getUpdateState() const { return m_state; }
+        void setUpdateState(UpdateState s) { m_state = s; }
 
         bool isConsistent() const;
         void onAddRecursiveSpec(spec item);
