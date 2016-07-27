@@ -16,9 +16,10 @@ namespace imajuscule
     typedef Updatable * observer;
     typedef std::vector< observer > observers;
 
-    class Updatable;
+    struct UpdatePhase;
     class Updatable : public Visitable
     {
+        friend struct UpdatePhase;
     public:
         enum Event
         {
@@ -60,7 +61,6 @@ namespace imajuscule
 
         void hasNewContentForUpdate(bool bVal) { m_bHasNewContentForUpdate = bVal; }
 
-        static void onUpdateEnd();
         void resetUpdateStatesRecurse();
         void resetObserversUpdateStatesRecurse();
 
@@ -88,6 +88,7 @@ namespace imajuscule
     private:
         typedef std::vector<Updatable*> updatables;
         static updatables m_all;
+        static bool updateAllowed;
 
         UpdateState m_state;
         bool m_bHasNewContentForUpdate;
@@ -107,5 +108,16 @@ namespace imajuscule
         bool isConsistent() const;
         void onAddRecursiveSpec(spec item);
         void onRemoveRecursiveSpec(spec item);
+        
+        static void onUpdateStart();
+        static void onUpdateEnd();
+    };
+    struct UpdatePhase {
+        UpdatePhase() {
+            Updatable::onUpdateStart();
+        }
+        ~UpdatePhase() {
+            Updatable::onUpdateEnd();
+        }
     };
 }

@@ -20,6 +20,7 @@
 using namespace imajuscule;
 
 Updatable::updatables Updatable::m_all;
+bool Updatable::updateAllowed = false;
 
 
 Updatable::Updatable() :
@@ -71,6 +72,17 @@ void Updatable::Update()
     }
     LG(INFO, "%s updating %p", white.c_str(), this);
 #endif
+    
+    // The Update / ForceUpdate calls
+    // should never happen outside the
+    // update region, this leads to
+    // nasty bugs because we think something
+    // is up-to-date and it is not...
+    //
+    // ... so instead of updating something immediately
+    // we  need to setup specs correctly and rely on update
+    A(updateAllowed);
+    
     if (UPDATED == getUpdateState())
         return;
     // we can have inner updates : for example if a param is mixed, when updating the param it updates the mixer which in turns (for the first step to ensure param has a value) updates the param
@@ -268,9 +280,14 @@ void Updatable::removeSpec(spec item)
         }
     }
 }
+void Updatable::onUpdateStart() {
+    updateAllowed = true;
+}
 
 void Updatable::onUpdateEnd()
 {
+    updateAllowed = false;
+    
     for (auto * pIt: m_all)
     {
         pIt->hasNewContentForUpdate(false);
