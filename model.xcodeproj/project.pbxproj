@@ -14,20 +14,7 @@
 		0927A81D1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0927A81B1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp */; };
 		0930C5811CC8688F00AB958B /* managed.reflist.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0930C57F1CC8688F00AB958B /* managed.reflist.hpp */; };
 		0930C5821CC8688F00AB958B /* managed.reflist.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 0930C5801CC8688F00AB958B /* managed.reflist.hxx */; };
-		09429CAD1AD38243001513DA /* asyncnotifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A21AD357F70099DA54 /* asyncnotifier.cpp */; };
-		09429CAE1AD38243001513DA /* command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A31AD357F70099DA54 /* command.cpp */; };
-		09429CAF1AD38243001513DA /* history.manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A41AD357F70099DA54 /* history.manager.cpp */; };
-		09429CB01AD38243001513DA /* persistable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A51AD357F70099DA54 /* persistable.cpp */; };
-		09429CB11AD38243001513DA /* referentiable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A61AD357F70099DA54 /* referentiable.cpp */; };
-		09429CB21AD38243001513DA /* session.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A71AD357F70099DA54 /* session.cpp */; };
-		09429CB31AD38243001513DA /* undoable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A81AD357F70099DA54 /* undoable.cpp */; };
-		09429CB41AD38243001513DA /* updatable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A91AD357F70099DA54 /* updatable.cpp */; };
-		09429CB51AD38243001513DA /* visitable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662AA1AD357F70099DA54 /* visitable.cpp */; };
 		095F43E61C3A2010005BE7DA /* referentiables.h in Headers */ = {isa = PBXBuildFile; fileRef = 095F43E51C3A2010005BE7DA /* referentiables.h */; };
-		095F43E81C3A20F9005BE7DA /* referentiables.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 095F43E71C3A20F9005BE7DA /* referentiables.cpp */; };
-		095F43E91C3A20F9005BE7DA /* referentiables.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 095F43E71C3A20F9005BE7DA /* referentiables.cpp */; };
-		09681A0C1B1AAACE00678885 /* referentiable.root.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09681A0B1B1AAACE00678885 /* referentiable.root.cpp */; };
-		09681A0D1B1AAACE00678885 /* referentiable.root.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09681A0B1B1AAACE00678885 /* referentiable.root.cpp */; };
 		09681A0F1B1AAAED00678885 /* referentiable.root.h in Headers */ = {isa = PBXBuildFile; fileRef = 09681A0E1B1AAAED00678885 /* referentiable.root.h */; };
 		0973B4CF1B256101007EFBDD /* referentiable.cmd.list.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0973B4CD1B256100007EFBDD /* referentiable.cmd.list.hpp */; };
 		0973B4D01B256101007EFBDD /* referentiable.cmd.list.h in Headers */ = {isa = PBXBuildFile; fileRef = 0973B4CE1B256101007EFBDD /* referentiable.cmd.list.h */; };
@@ -42,20 +29,12 @@
 		097662B81AD357F70099DA54 /* referentiable.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662991AD357F70099DA54 /* referentiable.h */; };
 		097662B91AD357F70099DA54 /* referentiable.manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 0976629A1AD357F70099DA54 /* referentiable.manager.h */; };
 		097662BA1AD357F70099DA54 /* referentiable.manager.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0976629B1AD357F70099DA54 /* referentiable.manager.hpp */; };
-		097662BB1AD357F70099DA54 /* session.h in Headers */ = {isa = PBXBuildFile; fileRef = 0976629C1AD357F70099DA54 /* session.h */; };
 		097662BC1AD357F70099DA54 /* undoable.h in Headers */ = {isa = PBXBuildFile; fileRef = 0976629D1AD357F70099DA54 /* undoable.h */; };
 		097662BD1AD357F70099DA54 /* updatable.h in Headers */ = {isa = PBXBuildFile; fileRef = 0976629E1AD357F70099DA54 /* updatable.h */; };
 		097662BE1AD357F70099DA54 /* visitable.h in Headers */ = {isa = PBXBuildFile; fileRef = 0976629F1AD357F70099DA54 /* visitable.h */; };
 		097662BF1AD357F70099DA54 /* visitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 097662A01AD357F70099DA54 /* visitor.h */; };
-		097662C01AD357F70099DA54 /* asyncnotifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A21AD357F70099DA54 /* asyncnotifier.cpp */; };
-		097662C11AD357F70099DA54 /* command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A31AD357F70099DA54 /* command.cpp */; };
-		097662C21AD357F70099DA54 /* history.manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A41AD357F70099DA54 /* history.manager.cpp */; };
-		097662C31AD357F70099DA54 /* persistable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A51AD357F70099DA54 /* persistable.cpp */; };
-		097662C41AD357F70099DA54 /* referentiable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A61AD357F70099DA54 /* referentiable.cpp */; };
-		097662C51AD357F70099DA54 /* session.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A71AD357F70099DA54 /* session.cpp */; };
-		097662C61AD357F70099DA54 /* undoable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A81AD357F70099DA54 /* undoable.cpp */; };
-		097662C71AD357F70099DA54 /* updatable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662A91AD357F70099DA54 /* updatable.cpp */; };
-		097662C81AD357F70099DA54 /* visitable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097662AA1AD357F70099DA54 /* visitable.cpp */; };
+		097835641D57B0B900E47ED3 /* unity.build.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097835631D57B0B900E47ED3 /* unity.build.cpp */; };
+		097835651D57B0B900E47ED3 /* unity.build.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097835631D57B0B900E47ED3 /* unity.build.cpp */; };
 		09B330B71BF56DCE00DE437C /* raii.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 09B330B61BF56DCE00DE437C /* raii.hpp */; };
 		09DBDCA91B07C00200870E0A /* referentiable.link.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 09DBDCA81B07C00200870E0A /* referentiable.link.hpp */; };
 /* End PBXBuildFile section */
@@ -99,7 +78,6 @@
 		097662991AD357F70099DA54 /* referentiable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = referentiable.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		0976629A1AD357F70099DA54 /* referentiable.manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.manager.h; sourceTree = "<group>"; };
 		0976629B1AD357F70099DA54 /* referentiable.manager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = referentiable.manager.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		0976629C1AD357F70099DA54 /* session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = session.h; sourceTree = "<group>"; };
 		0976629D1AD357F70099DA54 /* undoable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = undoable.h; sourceTree = "<group>"; };
 		0976629E1AD357F70099DA54 /* updatable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = updatable.h; sourceTree = "<group>"; };
 		0976629F1AD357F70099DA54 /* visitable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = visitable.h; sourceTree = "<group>"; };
@@ -109,10 +87,10 @@
 		097662A41AD357F70099DA54 /* history.manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = history.manager.cpp; sourceTree = "<group>"; };
 		097662A51AD357F70099DA54 /* persistable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = persistable.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		097662A61AD357F70099DA54 /* referentiable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = referentiable.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		097662A71AD357F70099DA54 /* session.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = session.cpp; sourceTree = "<group>"; };
 		097662A81AD357F70099DA54 /* undoable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = undoable.cpp; sourceTree = "<group>"; };
 		097662A91AD357F70099DA54 /* updatable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = updatable.cpp; sourceTree = "<group>"; };
 		097662AA1AD357F70099DA54 /* visitable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = visitable.cpp; sourceTree = "<group>"; };
+		097835631D57B0B900E47ED3 /* unity.build.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unity.build.cpp; sourceTree = "<group>"; };
 		09B330B61BF56DCE00DE437C /* raii.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = raii.hpp; sourceTree = "<group>"; };
 		09C84A3A1C271D89002CF5B7 /* osx.debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = osx.debug.xcconfig; sourceTree = "<group>"; };
 		09C84A3B1C271D89002CF5B7 /* ios.debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ios.debug.xcconfig; sourceTree = "<group>"; };
@@ -189,7 +167,6 @@
 				0976629B1AD357F70099DA54 /* referentiable.manager.hpp */,
 				09681A0E1B1AAAED00678885 /* referentiable.root.h */,
 				095F43E51C3A2010005BE7DA /* referentiables.h */,
-				0976629C1AD357F70099DA54 /* session.h */,
 				0976629D1AD357F70099DA54 /* undoable.h */,
 				090578071BAE00E800FA8E42 /* undoable.hpp */,
 				0976629E1AD357F70099DA54 /* updatable.h */,
@@ -202,6 +179,7 @@
 		097662A11AD357F70099DA54 /* source */ = {
 			isa = PBXGroup;
 			children = (
+				097835631D57B0B900E47ED3 /* unity.build.cpp */,
 				097662A21AD357F70099DA54 /* asyncnotifier.cpp */,
 				097662A31AD357F70099DA54 /* command.cpp */,
 				097662A41AD357F70099DA54 /* history.manager.cpp */,
@@ -209,7 +187,6 @@
 				097662A61AD357F70099DA54 /* referentiable.cpp */,
 				095F43E71C3A20F9005BE7DA /* referentiables.cpp */,
 				09681A0B1B1AAACE00678885 /* referentiable.root.cpp */,
-				097662A71AD357F70099DA54 /* session.cpp */,
 				097662A81AD357F70099DA54 /* undoable.cpp */,
 				097662A91AD357F70099DA54 /* updatable.cpp */,
 				097662AA1AD357F70099DA54 /* visitable.cpp */,
@@ -261,7 +238,6 @@
 				097662B01AD357F70099DA54 /* command.h in Headers */,
 				0927A8191B3F2DCF00872BC9 /* command.hpp in Headers */,
 				0973B4CF1B256101007EFBDD /* referentiable.cmd.list.hpp in Headers */,
-				097662BB1AD357F70099DA54 /* session.h in Headers */,
 				097662BA1AD357F70099DA54 /* referentiable.manager.hpp in Headers */,
 				097662AF1AD357F70099DA54 /* asyncnotifier.h in Headers */,
 				097662B71AD357F70099DA54 /* referentiable.cmd.set.hpp in Headers */,
@@ -349,17 +325,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				09429CAD1AD38243001513DA /* asyncnotifier.cpp in Sources */,
-				09681A0D1B1AAACE00678885 /* referentiable.root.cpp in Sources */,
-				09429CAE1AD38243001513DA /* command.cpp in Sources */,
-				09429CAF1AD38243001513DA /* history.manager.cpp in Sources */,
-				09429CB01AD38243001513DA /* persistable.cpp in Sources */,
-				09429CB11AD38243001513DA /* referentiable.cpp in Sources */,
-				09429CB21AD38243001513DA /* session.cpp in Sources */,
-				095F43E91C3A20F9005BE7DA /* referentiables.cpp in Sources */,
-				09429CB31AD38243001513DA /* undoable.cpp in Sources */,
-				09429CB41AD38243001513DA /* updatable.cpp in Sources */,
-				09429CB51AD38243001513DA /* visitable.cpp in Sources */,
+				097835651D57B0B900E47ED3 /* unity.build.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,17 +333,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				097662C71AD357F70099DA54 /* updatable.cpp in Sources */,
-				09681A0C1B1AAACE00678885 /* referentiable.root.cpp in Sources */,
-				097662C01AD357F70099DA54 /* asyncnotifier.cpp in Sources */,
-				097662C11AD357F70099DA54 /* command.cpp in Sources */,
-				097662C51AD357F70099DA54 /* session.cpp in Sources */,
-				097662C81AD357F70099DA54 /* visitable.cpp in Sources */,
-				097662C41AD357F70099DA54 /* referentiable.cpp in Sources */,
-				095F43E81C3A20F9005BE7DA /* referentiables.cpp in Sources */,
-				097662C31AD357F70099DA54 /* persistable.cpp in Sources */,
-				097662C61AD357F70099DA54 /* undoable.cpp in Sources */,
-				097662C21AD357F70099DA54 /* history.manager.cpp in Sources */,
+				097835641D57B0B900E47ED3 /* unity.build.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

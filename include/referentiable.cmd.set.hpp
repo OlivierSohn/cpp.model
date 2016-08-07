@@ -6,7 +6,7 @@
 
 #include "referentiable.cmd.set.h"
 
-using namespace imajuscule;
+namespace imajuscule {
 
 
 REF_CMD_SET
@@ -285,3 +285,4 @@ bool RefChangeAttrCmd<T,U,fSet,fGet>::Execute(T & obj, const U * iAttr, bool & b
     bAttrChanged = r.getAttrChanged();
     return r.Success();
 }
+} // namespace imajuscule

@@ -7,8 +7,9 @@
 
 #include "referentiable.manager.h"
 
-using namespace imajuscule;
+#include "referentiable.cmd.list.h"
 
+namespace imajuscule {
 
 REF_CMD_LIST
 RefAttrListCmd<T,U,fAdd,fRemove>::CommandResult::CommandResult(bool bSuccess) :
@@ -233,3 +234,4 @@ bool RefAttrListCmd<T,U,fAdd,fRemove>::Execute(T & obj, const U * iAttr, Type t)
 
     return r.Success();
 }
+} //namespace imajuscule

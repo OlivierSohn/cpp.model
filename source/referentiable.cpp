@@ -4,7 +4,6 @@
 #include <time.h>
 #include "os.log.h"
 #include "os.log.format.h"
-#include "session.h"
 
 #define KEY_DATE_CREA           'd' // string
 #define KEY_GUID                'e' // string
