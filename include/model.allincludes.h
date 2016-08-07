@@ -12,7 +12,6 @@
 #include "referentiable.h"
 #include "referentiable.manager.h"
 #include "referentiable.root.h"
-#include "session.h"
 #include "undoable.h"
 #include "updatable.h"
 #include "visitable.h"

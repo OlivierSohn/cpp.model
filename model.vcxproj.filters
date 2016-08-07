@@ -134,9 +134,6 @@
     <ClCompile Include="source\referentiable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\session.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\asyncnotifier.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

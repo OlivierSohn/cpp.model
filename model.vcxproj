@@ -196,7 +196,6 @@
     <ClCompile Include="source\referentiable.cpp" />
     <ClCompile Include="source\referentiable.root.cpp" />
     <ClCompile Include="source\referentiables.cpp" />
-    <ClCompile Include="source\session.cpp" />
     <ClCompile Include="source\undoable.cpp" />
     <ClCompile Include="source\updatable.cpp" />
     <ClCompile Include="source\visitable.cpp" />
