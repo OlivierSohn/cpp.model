@@ -5,7 +5,7 @@
 
 #include "referentiable.root.h"
 
-#define KEY_TARGETS           -110
+const int KEY_TARGETS = -110;
 
 using namespace imajuscule;
 

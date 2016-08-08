@@ -5,10 +5,10 @@
 #include "os.log.h"
 #include "os.log.format.h"
 
-#define KEY_DATE_CREA           'd' // string
-#define KEY_GUID                'e' // string
-#define KEY_NAME                'i' // string
-#define KEY_MANAGER_INDEX        -10
+const int KEY_DATE_CREA           = 'd' ;// string
+const int KEY_GUID                = 'e' ;// string
+const int KEY_NAME                = 'i' ;// string
+const int KEY_MANAGER_INDEX       =  -10;
 
 using namespace imajuscule;
 
