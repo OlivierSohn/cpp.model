@@ -611,9 +611,8 @@ std::string ReferentiableCmdBase::hintName() const
 }
 ReferentiableManagerBase * ReferentiableCmdBase::manager() const
 {
-    if_A(m_manager)
-        return m_manager;
-    return NULL;
+    A(m_manager);
+    return m_manager;
 }
 
 
