@@ -29,6 +29,38 @@ namespace imajuscule
     {
         friend class ReferentiableManagerBase;
     public:
+        Referentiable(Referentiable&& other)
+        {
+            m_others = std::move(other.m_others);
+            m_guid = std::move(other.m_guid);
+            m_hintName = std::move(other.m_hintName);
+            m_sessionName = std::move(other.m_sessionName);
+            m_dateOfCreation = std::move(other.m_dateOfCreation);
+            m_targets = std::move(other.m_targets);
+            m_sources = std::move(other.m_sources);
+            m_observableReferentiable = std::move(other.m_observableReferentiable);
+            m_bHidden = std::move(other.m_bHidden);
+            m_bHasSessionName = std::move(other.m_bHasSessionName);
+        }
+        
+        Referentiable& operator=(Referentiable&& other)
+        {
+            if (this != &other)
+            {
+                m_others = std::move(other.m_others);
+                m_guid = std::move(other.m_guid);
+                m_hintName = std::move(other.m_hintName);
+                m_sessionName = std::move(other.m_sessionName);
+                m_dateOfCreation = std::move(other.m_dateOfCreation);
+                m_targets = std::move(other.m_targets);
+                m_sources = std::move(other.m_sources);
+                m_observableReferentiable = std::move(other.m_observableReferentiable);
+                m_bHidden = std::move(other.m_bHidden);
+                m_bHasSessionName = std::move(other.m_bHasSessionName);
+            }
+            return *this;
+        }
+        
         static Referentiable * instantiate(ReferentiableManagerBase * rm);
         static Referentiable * instantiate(ReferentiableManagerBase * rm, const std::string & hintName);
         void deinstantiate();

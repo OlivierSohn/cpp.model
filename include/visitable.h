@@ -12,8 +12,13 @@
 
 
 namespace imajuscule
-{    
-    class Visitable
+{
+    struct NonCopyable {
+        NonCopyable() =default;
+        NonCopyable(const NonCopyable &) = delete;
+        NonCopyable & operator=(const NonCopyable&) = delete;
+    };
+    class Visitable : public NonCopyable
     {
     public:
         enum HierarchyEvent

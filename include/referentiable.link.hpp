@@ -25,8 +25,8 @@ m_source(r.m_source)
 
 template<class T>
 RefLink<T> & RefLink<T>::operator=(RefLink<T> && r) {
-    m_source = r.m_source;
-    m_target = r.m_target;
+    m_source = std::move(r.m_source);
+    m_target = std::move(r.m_target);
     m_bActive = true;
     m_bTargetIsUp = true;
     r.deactivate();
