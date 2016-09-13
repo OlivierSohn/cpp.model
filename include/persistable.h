@@ -6,7 +6,7 @@
 #include "os.storage.keys.h"
 #include "os.storage.h"
 
-#define DECL_NO_PERSIST         eResult Save() override {return ILE_SUCCESS;}
+#define DECL_NO_PERSIST         eResult Save(const Directory) override {return ILE_SUCCESS;}
 
 #define DECL_PERSIST_CLASSES( type, supertype ) \
 class type ## Persist : public supertype ## Persist { \
@@ -33,7 +33,7 @@ private: \
 #define DECL_PERSIST( type, supertype ) \
 public: \
 void Load(DirectoryPath d, Storage::FileName f) override; \
-eResult Save() override; \
+eResult Save(const DirectoryPath &) override; \
 protected: \
 DECL_PERSIST_CLASSES( type, supertype ) \
 private:
@@ -84,9 +84,9 @@ m_ ## type.onLoaded(); \
 #define IMPL_PERSIST3( type, supertype, implSave, ilString, ilStringArray, ilInt32 ) IMPL_PERSIST_CLASSES( type, supertype, implSave, ilString, ilStringArray, ilInt32) \
 namespace imajuscule { \
 template class RefLink<imajuscule::type> ; \
-eResult type::Save() \
+eResult type::Save(const DirectoryPath & p) \
 { \
-type::type ## Persist l( DirectoryPath(), guid(), *this);  \
+type::type ## Persist l( p, guid(), *this);  \
 eResult res = l.Save();\
 return res;\
 } \
@@ -102,7 +102,7 @@ l.ReadAllKeys();\
 #define IMPL_PERSIST( type, supertype, implSave, implLoad ) IMPL_PERSIST2( type, supertype, implSave, implLoad, )
 
 #define UGLY_SAVE_REF(ref) \
-eResult res = ref->Save(); \
+eResult res = ref->Save(directory()); \
 A(ILE_SUCCESS == res || ILE_RECURSIVITY == res);
 
 #define W_LNK_SOFT( refExpr, key ) \
@@ -156,17 +156,17 @@ WriteKeyData(key, vs);  \
 #define R_LNKS_OP( Op, type, key ) \
 case key: \
     for(auto const & guid : vs)\
-        Op( static_cast<type*>(Referentiables::fromGUID(DirectoryPath(), guid)) );\
+        Op( static_cast<type*>(Referentiables::fromGUID(directory(), guid)) );\
 break;
 
 #define L_LNKS( key ) \
 case key: \
-    for( auto const & guid : vs ) { Referentiables::fromGUID(DirectoryPath(), guid); }\
+    for( auto const & guid : vs ) { Referentiables::fromGUID(directory(), guid); }\
 break;
 
 #define R_LNK_OP( Op, type, key ) \
 case key: \
-Op( static_cast<type*>(Referentiables::fromGUID(DirectoryPath(), str)) );\
+Op( static_cast<type*>(Referentiables::fromGUID(directory(), str)) );\
 break;
 
 namespace imajuscule
@@ -184,7 +184,7 @@ namespace imajuscule
         Observable<PersistableEvent, Persistable*> & observable();
 
         virtual void Load(DirectoryPath d, Storage::FileName f){A(0);}
-        virtual eResult Save() {A(0); return ILE_ERROR;}
+        virtual eResult Save( DirectoryPath const & ) {A(0); return ILE_ERROR;}
         
         // overload by calling supertype implementation first
         virtual void onLoaded() {};
