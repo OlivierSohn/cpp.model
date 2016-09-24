@@ -75,6 +75,8 @@ namespace imajuscule
         snsToRftbls m_snsToRftbls;
         guidsToRftbls m_guidsToRftbls;
         referentiables refs;
+        
+        int session_name_last_suffix;
 
         Observable<Event, Referentiable*> * m_observable;
 

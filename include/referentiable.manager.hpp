@@ -20,6 +20,7 @@ using namespace imajuscule;
 ReferentiableManagerBase::ReferentiableManagerBase():
 Visitable()
 , m_observable(Observable<Event, Referentiable*>::instantiate())
+, session_name_last_suffix(0)
 {
 }
 
@@ -165,19 +166,18 @@ bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r, bool bFinal
         if(findBySessionName(sessionName))
         {
             sessionName += "_";
-            
-            unsigned int suffix(0);
          
             auto f = [this](const std::string & pre, int i) -> bool {
                 return findBySessionName(pre + std::to_string(i)) ? true: false;
             };
             
-            while (f(sessionName,suffix))
+            while (f(sessionName,session_name_last_suffix))
             {
-                suffix++;
+                session_name_last_suffix++;
             }
             
-            sessionName += std::to_string(suffix);
+            sessionName += std::to_string(session_name_last_suffix);
+            session_name_last_suffix++;
         }
         bRet = RegisterWithSessionName(r, sessionName);
     }
