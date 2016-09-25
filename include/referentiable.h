@@ -144,6 +144,15 @@ namespace imajuscule
         virtual Referentiable * mainRefAttr() const;
     };
     
+    template<class T>
+    struct ref_unique_ptr : std::unique_ptr<T, std::function<void(T*)>> {
+        ref_unique_ptr(T * ref) :
+        std::unique_ptr<T, std::function<void(T*)>>(ref, [](T*r) {
+            r->deinstantiate();
+        })
+        {}
+    };
+    
     template <class T>
     class RefLink
     {
