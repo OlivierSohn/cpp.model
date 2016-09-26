@@ -2,6 +2,8 @@
 
 #include <string>
 #include <vector>
+#include <functional>
+#include <memory>
 
 #include "persistable.h"
 #include "observable.h"

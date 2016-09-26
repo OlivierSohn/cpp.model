@@ -1,4 +1,5 @@
 #ifdef _WIN32
+#define NOMINMAX
 #include "Windows.h"
 #include "Objbase.h"
 #elif __ANDROID__
