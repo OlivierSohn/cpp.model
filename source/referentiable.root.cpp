@@ -23,11 +23,22 @@ ReferentiableRoot * ReferentiableRoot::getInstance()
     return g_instance;
 }
 
+void ReferentiableRoot::teardown() {
+    if(!g_instance) {
+        return;
+    }
+    g_instance->deinstantiate();
+}
+
 ReferentiableRoot::ReferentiableRoot(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName) :
 Referentiable(manager, guid, hintName)
 {
+    auto refroot_manager = getManager();
     for(auto m : Referentiables::getManagers())
     {
+        if(m == refroot_manager) {
+            continue;
+        }
         for (auto vi : m->traverse() ) {
             addRef(vi);
         }

@@ -286,20 +286,20 @@ std::string ReferentiableManagerBase::generateGuid()
 
 void ReferentiableManagerBase::RemoveRef(Referentiable*r)
 {
-    if_A(r)
-    {
-        HistoryManager * h = HistoryManager::getInstance();
+    A(r);
 
-        if (h->isActive())
-        {
-            if (!ReferentiableDeleteCmdBase::ExecuteFromInnerCommand(*r))
-                ReferentiableDeleteCmdBase::Execute(*r);
-        }
-        else
-        {
-            RemoveRefInternal(r);
+    HistoryManager * h = HistoryManager::getInstance();
+    
+    if (h->isActive())
+    {
+        if (!ReferentiableDeleteCmdBase::ExecuteFromInnerCommand(*r)) {
+            ReferentiableDeleteCmdBase::Execute(*r);
         }
     }
+    else
+    {
+        RemoveRefInternal(r);
+    }    
 }
 
 Referentiable* ReferentiableManagerBase::newReferentiable(bool bFinalize)

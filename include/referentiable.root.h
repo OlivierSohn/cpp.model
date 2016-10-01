@@ -11,6 +11,8 @@ namespace imajuscule
         friend class ReferentiableManager<ReferentiableRoot>;
     public:
         static ReferentiableRoot * getInstance();
+        static void teardown();
+
         void addRef(Referentiable*);
         void removeRef(Referentiable*);
     protected:
