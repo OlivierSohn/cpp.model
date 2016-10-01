@@ -63,9 +63,12 @@ Referentiable::~Referentiable()
 {
     //LG(INFO,"delete %s %s destr", m_guid.c_str(), m_sessionName.c_str());
 
+    // todo manage ownership
+    // doc F3F7C744-0B78-4750-A0A1-7A9BAD872188
+    /*
     for(auto r:m_others)
         r->deinstantiate();
-
+*/
     m_observableReferentiable->deinstantiate();
 }
 

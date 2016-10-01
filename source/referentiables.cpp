@@ -11,13 +11,17 @@ namespace imajuscule
     {
         m_managers.reserve( 100 );
     }
-    Referentiables::~Referentiables(){}
+    Referentiables::~Referentiables() {
+        for( auto * m : m_managers) {
+            delete m;
+        }
+    }
     Referentiables * Referentiables::getInstance()
     {
         if (!m_instance)
         {
             m_instance = new Referentiables();
-            InitializeRefManagers();
+            InitializeRefManagers(*m_instance);
         }
         
         return m_instance;
@@ -87,14 +91,17 @@ namespace imajuscule
         A(m.index() == m_managers.size());
         m_managers.push_back(&m);
     }
-    void Referentiables::registerManager(ReferentiableManagerBase & m)
-    {
-        return getInstance()->regManager(m);
-    }
     
     managers const & Referentiables::getManagers()
     {
         Referentiables * i = Referentiables::getInstance();
         return i->m_managers;
     }
+    void Referentiables::tearDown() {
+        if(m_instance) {
+            delete m_instance;
+            m_instance = 0;
+        }
+    }
+
 }

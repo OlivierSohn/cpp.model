@@ -15,8 +15,11 @@ namespace imajuscule
         static Referentiable* fromGUID(const DirectoryPath & path, const std::string &);
         static Referentiable* fromGUIDLoaded(const std::string &);
         static Referentiable* fromSessionNameLoaded(const std::string &);
-        static void registerManager(ReferentiableManagerBase &);
         static managers const & getManagers();
+        
+        static void tearDown();
+
+        void regManager(ReferentiableManagerBase &);
 
     private:
         Referentiables();
@@ -28,6 +31,5 @@ namespace imajuscule
         Referentiable* findRefFromGUID(const DirectoryPath & path, const std::string &);
         Referentiable* findRefFromGUIDLoaded(const std::string &);
         Referentiable* findRefFromSessionNameLoaded(const std::string &);
-        void regManager(ReferentiableManagerBase &);
     };
 }

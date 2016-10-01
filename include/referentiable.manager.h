@@ -12,7 +12,8 @@
 #define NEWREF(x) ReferentiableManager<x>::New()
 namespace imajuscule
 {
-    int InitializeRefManagers();
+    class Referentiables;
+    int InitializeRefManagers(Referentiables &);
 
     class ReferentiableCmdBase;
     class ReferentiableNewCmdBase;
@@ -108,7 +109,7 @@ namespace imajuscule
         static ReferentiableManager * g_pRefManager;
 
         ReferentiableManager();
-        virtual ~ReferentiableManager();
+        ~ReferentiableManager();
 
         Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible, bool bFinalize) override;
     };

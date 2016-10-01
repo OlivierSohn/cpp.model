@@ -28,6 +28,14 @@ void ReferentiableRoot::teardown() {
         return;
     }
     g_instance->deinstantiate();
+    g_instance = 0;
+}
+
+void ReferentiableRoot::recycle_with_leak() {  // doc F3F7C744-0B78-4750-A0A1-7A9BAD872188
+    if(!g_instance) {
+        return;
+    }
+    g_instance = 0;
 }
 
 ReferentiableRoot::ReferentiableRoot(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName) :

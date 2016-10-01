@@ -30,12 +30,10 @@ ReferentiableManagerBase::~ReferentiableManagerBase()
     observable().Notify(Event::MANAGER_DELETE, NULL);
     observable().deinstantiate();
 
-    {
-        guidsToRftbls::iterator it = m_guidsToRftbls.begin();
-        for (; it != m_guidsToRftbls.end(); ++it)
-        {
-            delete (it->second);
-        }
+    // doc F3F7C744-0B78-4750-A0A1-7A9BAD872188
+    // todo to fix this, manage ownership throughout the application
+    for(auto ref : refs) {
+        LG(ERR, "ref %s was not deinstantiated", ref->sessionName().c_str());
     }
 }
 
@@ -353,6 +351,8 @@ ReferentiableManagerBase()
 template <class T>
 ReferentiableManager<T>::~ReferentiableManager()
 {
+    A(g_pRefManager == this);
+    g_pRefManager = 0;
 }
 
 template <class T>
