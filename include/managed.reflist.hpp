@@ -2,6 +2,7 @@
 
 #include <list>
 #include <vector>
+
 #include "referentiable.h"
 #include "referentiable.cmd.list.h"
 
@@ -17,7 +18,7 @@ namespace imajuscule
         
         Owner * owner;
         vregs m_regs;
-        using listT = std::vector<LINK(T)>;
+        using listT = std::vector<ref_unique_ptr<T>>;
         using listIterator = typename listT::iterator;
         listT list;
 

@@ -16,7 +16,7 @@ namespace imajuscule
         {
             A( registration != registration_end );
             
-            auto * l = layer->ptr();
+            auto * l = layer->get();
             owner->removeSpec( l );
             l->observableReferentiable().Remove( *registration );
         }
@@ -38,7 +38,7 @@ namespace imajuscule
     MANAGED_REF_LIST
     void ManagedRefList<Owner, T, Add, Remove>::remove( vregs::iterator & reg, listIterator & layer )
     {
-        auto * pML = layer->ptr();
+        auto * pML = layer->get();
         owner->removeSpec(pML);
         pML->observableReferentiable().Remove( *reg );
         
@@ -60,9 +60,8 @@ namespace imajuscule
             auto registration_end = m_regs.end();
             
             for(; layer != layer_end; ++layer, ++registration) {
-                T * pML = *layer;
-                owner->removeSpec(pML);
-                pML->observableReferentiable().Remove( *registration );
+                owner->removeSpec(layer->get());
+                (*layer)->observableReferentiable().Remove( *registration );
             }
             
             A( registration == registration_end );
@@ -87,7 +86,7 @@ namespace imajuscule
                 return;
             }
             
-            list.emplace_back( *owner, mc );
+            list.emplace_back( mc );
             
             m_regs.push_back( {
                 mc->observableReferentiable().Register(Referentiable::Event::WILL_BE_DELETED, [this](Referentiable*r){
@@ -114,7 +113,7 @@ namespace imajuscule
             for(; layer != layer_end; ++layer, ++registration) {
                 
                 A( registration != registration_end );
-                if( *layer == mc)
+                if( layer->get() == mc)
                 {
                     remove( registration, layer );
                     owner->hasNewContentForUpdate(true);
@@ -163,7 +162,7 @@ namespace imajuscule
     {
         for (auto const & ml : list )
         {
-            if(ml == mc)
+            if(ml.get() == mc)
             {
                 return true;
             }
@@ -174,12 +173,12 @@ namespace imajuscule
     MANAGED_REF_LIST
     const T * ManagedRefList<Owner, T, Add, Remove>::get(int index) const
     {
-        return list[index].ptr();
+        return list[index].get();
     }
     
     MANAGED_REF_LIST
     T * ManagedRefList<Owner, T, Add, Remove>::edit(int index)
     {
-        return list[index].ptr();
+        return list[index].get();
     }
 }
