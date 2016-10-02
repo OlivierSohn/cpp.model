@@ -34,11 +34,11 @@ m_observableUpdatable(Observable<Event, Updatable& /*observed*/, Updatable&/*spe
 
 Updatable::~Updatable()
 {
-    while(unlikely(!m_specs.empty()))
+    // it's ok to still have specs at this point ...
+    while(!m_specs.empty())
     {
         if(auto s = m_specs.back())
         {
-            A(!"some specs needs to be cleaned up");
             removeSpec(s);
         }
         else
@@ -46,6 +46,21 @@ Updatable::~Updatable()
             m_specs.erase(std::remove(m_specs.begin(), m_specs.end(), (void*)0), m_specs.end());
         }
     }
+    
+    // ... but it's not ok to still have observers, because they will use in their doUpdate's specs that don't exist anymore
+    while(!m_observers.empty())
+    {
+        if(auto s = m_observers.back())
+        {
+            A(!"some observers need to be cleaned up");
+            s->removeSpec(this);
+        }
+        else
+        {
+            m_observers.erase(std::remove(m_observers.begin(), m_observers.end(), (void*)0), m_observers.end());
+        }
+    }
+    
     m_all.erase(std::remove(m_all.begin(), m_all.end(), this), m_all.end());
     m_observableUpdatable->deinstantiate();
 }
