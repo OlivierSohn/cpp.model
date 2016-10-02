@@ -162,7 +162,7 @@ WriteKeyData(key, vs);  \
 std::vector<std::string> vs; \
 for(auto & it : container) \
 {\
-    Referentiable * ref = it.first; \
+    Referentiable * ref = it.first.get(); \
     W_LNK_ELT( ref, vs); \
 }\
 WriteKeyData(key, vs);  \
