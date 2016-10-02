@@ -145,10 +145,10 @@ namespace imajuscule
 
         virtual Referentiable * mainRefAttr() const;
     };
-    
+
     template<class T>
-    struct ref_unique_ptr : std::unique_ptr<T, std::function<void(T*)>> {
-        ref_unique_ptr(T * ref) :
+    struct ref_unique_ptr : public std::unique_ptr<T, std::function<void(T*)>> {
+        ref_unique_ptr(T * ref = 0) :
         std::unique_ptr<T, std::function<void(T*)>>(ref, [](T*r) {
             r->deinstantiate();
         })
@@ -172,6 +172,7 @@ namespace imajuscule
         T* operator->() const;
         T& operator*() const;
         T * ptr() const;
+        T * get() const { return ptr(); } // like std::unique_ptr
 
         bool operator < (RefLink & other);
         

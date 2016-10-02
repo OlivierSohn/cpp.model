@@ -115,12 +115,16 @@ UGLY_SAVE_REF(ref);\
 }\
 }
 
+
+#define W_PTR( refExpr, key ) \
+{\
+A(refExpr); \
+W_LNK_SOFT(refExpr, key); \
+}
+
 #define W_LNK( refExpr, key ) \
 {\
-if_A(refExpr) \
-{       \
-W_LNK_SOFT(refExpr, key); \
-}\
+W_PTR(refExpr.get(), key); \
 }
 
 
@@ -136,12 +140,23 @@ if_A(ref) \
 std::vector<std::string> vs; \
 for(auto const & link : vec) \
 { \
-    Referentiable * ref = link; \
-    W_LNK_ELT( ref, vs); \
+Referentiable * ref = link.get(); \
+W_LNK_ELT( ref, vs); \
 } \
 WriteKeyData(key, vs);  \
 }
-    
+
+#define W_PTRS( vec, key ) \
+{ \
+std::vector<std::string> vs; \
+for(auto * link : vec) \
+{ \
+Referentiable * ref = link; \
+W_LNK_ELT( ref, vs); \
+} \
+WriteKeyData(key, vs);  \
+}
+
 #define W_LNKS_P1( container, key ) \
 { \
 std::vector<std::string> vs; \

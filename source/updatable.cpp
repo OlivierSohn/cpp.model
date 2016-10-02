@@ -219,24 +219,25 @@ bool Updatable::isSpec(Updatable const * item) const
 
 void Updatable::addSpec(spec item)
 {
-    if (item)
+    if (!item)
     {
-        A(!isSpec(item));
-        A(!isObserver(item));
-
-        m_specs.push_back(item);
-        item->addObserver(this);
-
-        A(isConsistent());
-
-        observableUpdatable().Notify(ADD_SPEC, *this, *item);
-
-        for (auto * observer : m_observers)
+        return;
+    }
+    A(!isSpec(item));
+    A(!isObserver(item));
+    
+    m_specs.push_back(item);
+    item->addObserver(this);
+    
+    A(isConsistent());
+    
+    observableUpdatable().Notify(ADD_SPEC, *this, *item);
+    
+    for (auto * observer : m_observers)
+    {
+        if(observer)
         {
-            if(observer)
-            {
-                observer->onAddRecursiveSpec(item);
-            }
+            observer->onAddRecursiveSpec(item);
         }
     }
 }
