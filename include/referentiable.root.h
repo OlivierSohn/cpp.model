@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <set>
 
 #include "referentiable.h"
 
@@ -26,7 +26,7 @@ namespace imajuscule
         
         static ReferentiableRoot * g_instance;
 
-        typedef std::map<Referentiable*,LINK(Referentiable)> refs;
+        typedef std::set<Referentiable*> refs;
         refs m_refs;
     };
 }

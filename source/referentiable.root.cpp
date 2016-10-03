@@ -69,7 +69,7 @@ void ReferentiableRoot::addRef(Referentiable* ref)
     auto it = m_refs.find(refs::key_type( ref ));
     if_A(it == m_refs.end())
     {
-        m_refs.insert(refs::value_type(ref,CLINK(Referentiable,ref)));
+        m_refs.insert(ref);
         addSpec(ref);
         ref->observableReferentiable().Register(Referentiable::Event::WILL_BE_DELETED,
                                   [this](Referentiable*r){
@@ -82,7 +82,7 @@ void ReferentiableRoot::removeRef(Referentiable* ref)
 {
     //LG(INFO,"- %x", ref);
     A(ref);
-    auto it = m_refs.find(refs::key_type( ref ));
+    auto it = m_refs.find(ref);
     if_A(it != m_refs.end())
     {
         m_refs.erase(it);
