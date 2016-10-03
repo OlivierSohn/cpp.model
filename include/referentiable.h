@@ -9,10 +9,6 @@
 #include "observable.h"
 #include "os.storage.keys.h"
 
-#define LINK(type) RefLink<type>
-#define ELINK(value) *this, value
-#define ILINKVAL(name,val) name ( ELINK(val) )
-#define ILINK(name) ILINKVAL(name,NULL)
 namespace imajuscule
 {
     class ReferentiableManagerBase;
@@ -152,45 +148,5 @@ namespace imajuscule
         })
         {}
     };
-    
-    template <class T>
-    class RefLink
-    {
-    public:
-        RefLink(RefLink const &) = delete;
-        RefLink(Referentiable& source, T *target);
-        RefLink(RefLink && r);
-        
-        RefLink& operator=(RefLink const&) = delete;
-        RefLink & operator= ( RefLink && );
-
-        ~RefLink();
-        operator T*() const;
-        RefLink & operator= (T * pointer);
-        T* operator->() const;
-        T& operator*() const;
-        T * ptr() const;
-        T * get() const { return ptr(); } // like std::unique_ptr
-
-        bool operator < (RefLink & other);
-        
-    private:
-        T* m_target;
-        Referentiable & m_source;
-        bool m_bActive;
-        bool m_bTargetIsUp;
-
-        std::vector<FunctionInfo<Referentiable::Event>> m_targetRegs;
-        
-        void set(T * target);
-        RefLink();
-        void deactivate();
-        
-        void RegisterTargetCb();
-        void UnregisterTargetCb();
-    };
-
 }
-
-#include "referentiable.link.hpp"
 

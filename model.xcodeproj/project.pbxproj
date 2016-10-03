@@ -36,7 +36,6 @@
 		097835641D57B0B900E47ED3 /* unity.build.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097835631D57B0B900E47ED3 /* unity.build.cpp */; };
 		097835651D57B0B900E47ED3 /* unity.build.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097835631D57B0B900E47ED3 /* unity.build.cpp */; };
 		09B330B71BF56DCE00DE437C /* raii.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 09B330B61BF56DCE00DE437C /* raii.hpp */; };
-		09DBDCA91B07C00200870E0A /* referentiable.link.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 09DBDCA81B07C00200870E0A /* referentiable.link.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -101,7 +100,6 @@
 		09C84A401C271D89002CF5B7 /* Project.Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Project.Debug.xcconfig; sourceTree = "<group>"; };
 		09C84A411C271D89002CF5B7 /* Project.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Project.Release.xcconfig; sourceTree = "<group>"; };
 		09C84A421C271D89002CF5B7 /* Project.Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Project.Shared.xcconfig; sourceTree = "<group>"; };
-		09DBDCA81B07C00200870E0A /* referentiable.link.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.link.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,7 +160,6 @@
 				0927A81A1B3F987B00872BC9 /* referentiable.cmd.simpleset.h */,
 				0927A81B1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp */,
 				097662991AD357F70099DA54 /* referentiable.h */,
-				09DBDCA81B07C00200870E0A /* referentiable.link.hpp */,
 				0976629A1AD357F70099DA54 /* referentiable.manager.h */,
 				0976629B1AD357F70099DA54 /* referentiable.manager.hpp */,
 				09681A0E1B1AAAED00678885 /* referentiable.root.h */,
@@ -223,7 +220,6 @@
 				097662B11AD357F70099DA54 /* history.manager.h in Headers */,
 				097662B61AD357F70099DA54 /* referentiable.cmd.set.h in Headers */,
 				0927A81C1B3F987B00872BC9 /* referentiable.cmd.simpleset.h in Headers */,
-				09DBDCA91B07C00200870E0A /* referentiable.link.hpp in Headers */,
 				0905780A1BAE12BA00FA8E42 /* execution.h in Headers */,
 				09B330B71BF56DCE00DE437C /* raii.hpp in Headers */,
 				0930C5821CC8688F00AB958B /* managed.reflist.hxx in Headers */,

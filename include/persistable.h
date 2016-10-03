@@ -83,7 +83,6 @@ m_ ## type.onLoaded(); \
 
 #define IMPL_PERSIST3( type, supertype, implSave, ilString, ilStringArray, ilInt32 ) IMPL_PERSIST_CLASSES( type, supertype, implSave, ilString, ilStringArray, ilInt32) \
 namespace imajuscule { \
-template class RefLink<imajuscule::type> ; \
 eResult type::Save(const DirectoryPath & p) \
 { \
 type::type ## Persist l( p, guid(), *this);  \
