@@ -27,7 +27,6 @@ namespace imajuscule
     public:
         Referentiable(Referentiable&& other)
         {
-            m_others = std::move(other.m_others);
             m_guid = std::move(other.m_guid);
             m_hintName = std::move(other.m_hintName);
             m_sessionName = std::move(other.m_sessionName);
@@ -43,7 +42,6 @@ namespace imajuscule
         {
             if (this != &other)
             {
-                m_others = std::move(other.m_others);
                 m_guid = std::move(other.m_guid);
                 m_hintName = std::move(other.m_hintName);
                 m_sessionName = std::move(other.m_sessionName);
@@ -92,7 +90,6 @@ namespace imajuscule
         void traverseTargets(refs::iterator & begin, refs::iterator & end);
         void traverseSources(refs::iterator & begin, refs::iterator & end);
     protected:
-        std::vector<Referentiable*> m_others;
         
         virtual ~Referentiable();
 
