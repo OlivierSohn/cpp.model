@@ -41,11 +41,9 @@ bool UndoGroup::isObsolete() const
     auto end = m_undoables.end();
     while (it != end)
     {
-        Undoable * u = *it;
-        if (u->isObsolete())
+        if ((*it)->isObsolete())
         {
             //HistoryManager::getInstance()->logObsoleteCommand(c);
-            delete u;
             it = m_undoables.erase(it);
             end = m_undoables.end(); // because vector changed
         }
@@ -78,13 +76,12 @@ bool UndoGroup::Undo(Undoable *limit, bool bStrict, bool & bFoundLimit)
 
     while(it != end)
     {
-        Undoable * u = *it;
+        Undoable * u = it->get();
         if_A (u)
         {
             if (u->isObsolete())
             {
                 //HistoryManager::getInstance()->logObsoleteCommand(c);
-                delete u;
                 it = std::reverse_iterator<Undoables::iterator>(m_undoables.erase((std::next(it)).base()));
                 end = m_undoables.rend();
                 continue;
@@ -123,13 +120,12 @@ bool UndoGroup::Redo(Undoable * limit, bool bStrict, bool & bFoundLimit)
 
     while (it != end)
     {
-        Undoable * u = *it;
+        Undoable * u = it->get();
         if_A(u)
         {
             if (u->isObsolete())
             {
                 //HistoryManager::getInstance()->logObsoleteCommand(c);
-                delete u;
                 it = m_undoables.erase(it);
                 end = m_undoables.end();
                 continue;

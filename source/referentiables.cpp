@@ -11,9 +11,10 @@ namespace imajuscule
     {
         m_managers.reserve( 100 );
     }
+
     Referentiables::~Referentiables() {
-        for( auto * m : m_managers) {
-            delete m;
+        for(auto const & m : m_managers) {
+            m->teardown();
         }
     }
     Referentiables * Referentiables::getInstance()
@@ -58,7 +59,7 @@ namespace imajuscule
                 HistoryManagerPause p;
                 
                 std::vector<std::string> guids{guid};
-                ReferentiableManagerBase * rm = m_managers[index];
+                ReferentiableManagerBase * rm = m_managers[index].get();
                 r = rm->newReferentiable(nameHint, guids, false, true);
                 r->Load(path, guid);
                 rm->observable().Notify(ReferentiableManagerBase::Event::RFTBL_ADD, r);
@@ -69,7 +70,7 @@ namespace imajuscule
     }
     Referentiable* Referentiables::findRefFromSessionNameLoaded(const std::string & sn)
     {
-        for(auto man: m_managers)
+        for(auto const & man: m_managers)
         {
             if(Referentiable * ref = man->findBySessionName(sn))
                 return ref;
@@ -78,7 +79,7 @@ namespace imajuscule
     }
     Referentiable* Referentiables::findRefFromGUIDLoaded(const std::string & guid)
     {
-        for(auto man: m_managers)
+        for(auto const & man: m_managers)
         {
             if(Referentiable * ref = man->findByGuid(guid)) {
                 return ref;
@@ -89,7 +90,7 @@ namespace imajuscule
     void Referentiables::regManager(ReferentiableManagerBase & m)
     {
         A(m.index() == m_managers.size());
-        m_managers.push_back(&m);
+        m_managers.emplace_back(&m);
     }
     
     managers const & Referentiables::getManagers()

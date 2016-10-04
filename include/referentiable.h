@@ -145,5 +145,12 @@ namespace imajuscule
         })
         {}
     };
+    
+    template<class T, class... Args>
+    inline ref_unique_ptr<T>
+    make_unique_ref(Args&&... args)
+    {
+        return ref_unique_ptr<T>(new T(_VSTD::forward<Args>(args)...));
+    }
 }
 

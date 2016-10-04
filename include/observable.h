@@ -50,7 +50,7 @@ namespace imajuscule
         };
         typedef std::tuple<availableKeys, callbacksList> eventNotification;
         typedef std::map<Event, eventNotification *> observers;
-        std::vector<eventNotification*> m_allocatedPairs;
+        std::vector<std::unique_ptr<eventNotification>> m_allocatedPairs;
 
         // constructor is private, please call ::instantiate instead
         Observable():
@@ -63,13 +63,6 @@ namespace imajuscule
         virtual ~Observable()
         {
             //OBS_LG(INFO, "Observable::~Observable() #%d : delete %d pairs", m_curNotifStamp, m_allocatedPairs.size());
-
-            auto it = m_allocatedPairs.begin();
-            auto end = m_allocatedPairs.end();
-            for (; it != end; ++it)
-            {
-                delete *it;
-            }
         }
 
     public:
@@ -114,7 +107,7 @@ namespace imajuscule
             {
                 v = new eventNotification();
                 m_observers.insert(typename observers::value_type(evt, v));
-                m_allocatedPairs.push_back(v);
+                m_allocatedPairs.emplace_back(std::unique_ptr<eventNotification>(v));
             }
             else
             {

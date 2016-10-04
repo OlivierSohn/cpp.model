@@ -35,6 +35,11 @@ namespace imajuscule
             MANAGER_DELETE// the manager is being deleted
         };
         ReferentiableManagerBase();
+        
+        // at this point, all ReferentiableManagers are live
+        void teardown() {doTearDown();}
+        
+        // at this point, some ReferentiableManagers have been deleted already
         virtual ~ReferentiableManagerBase();
 
         Referentiable* newReferentiable(bool bFinalize);
@@ -67,6 +72,8 @@ namespace imajuscule
         bool ComputeSessionName(Referentiable*, bool bFinalize);
 
         bool RegisterWithSessionName(Referentiable*, const std::string& sessionName);
+        
+        virtual void doTearDown() = 0;
     private:
         // guid - referentiable
         typedef std::map<std::string, Referentiable*> guidsToRftbls;
@@ -105,6 +112,7 @@ namespace imajuscule
                 f(*cast);
             }
         }
+
     private:
         static ReferentiableManager * g_pRefManager;
 
@@ -112,6 +120,7 @@ namespace imajuscule
         ~ReferentiableManager();
 
         Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible, bool bFinalize) override;
+        void doTearDown() override {}
     };
     template <class T>
     void forEach(std::function<void(T&)> && f) {

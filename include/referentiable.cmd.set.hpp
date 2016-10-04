@@ -156,8 +156,8 @@ bool RefChangeAttrCmd<T,U,fSet,fGet>::ExecuteFromInnerCommand(T & obj, U * newAt
     bSuccess = false;
     bAttrChanged = false;
 
-    Command::data * before = data::instantiate(obj);
-    Command::data * after = data::instantiate(newAttr);
+    std::unique_ptr<Command::data> before(data::instantiate(obj));
+    std::unique_ptr<Command::data> after(data::instantiate(newAttr));
 
     CommandResult r;
     resFunc f(RESULT_BY_REF(r));
@@ -167,11 +167,6 @@ bool RefChangeAttrCmd<T,U,fSet,fGet>::ExecuteFromInnerCommand(T & obj, U * newAt
         *after,
         dynamic_cast<Referentiable*>(&obj),
         &f);
-
-    if (before)
-        delete before;
-    if (after)
-        delete after;
 
     if (bDone)
     {

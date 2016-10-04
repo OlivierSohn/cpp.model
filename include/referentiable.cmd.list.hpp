@@ -1,3 +1,4 @@
+#include <memory>
 
 #include "os.log.h"
 
@@ -161,8 +162,8 @@ bool RefAttrListCmd<T,U,fAdd,fRemove>::ExecuteFromInnerCommand(T & obj, U * newA
 {
     bSuccess = false;
 
-    Command::data * before = data::instantiate(newAttr, Other(t));
-    Command::data * after = data::instantiate(newAttr, t);
+    std::unique_ptr<Command::data> before(data::instantiate(newAttr, Other(t)));
+    std::unique_ptr<Command::data> after(data::instantiate(newAttr, t));
 
     CommandResult r;
     resFunc f(RESULT_BY_REF(r));
@@ -172,11 +173,6 @@ bool RefAttrListCmd<T,U,fAdd,fRemove>::ExecuteFromInnerCommand(T & obj, U * newA
         *after,
         dynamic_cast<Referentiable*>(&obj),
         &f);
-
-    if (before)
-        delete before;
-    if (after)
-        delete after;
 
     if (bDone)
     {

@@ -19,22 +19,17 @@ Undoable()
 }
 Command::~Command()
 {
-    if (m_pAfter)
-        delete m_pAfter;
-    if (m_pBefore)
-        delete m_pBefore;
-
     if (m_obsolescenceObservable && !isObsolete())
         m_obsolescenceObservable->Remove(m_reg);
 }
 
 auto Command::Before() const -> data *
 {
-    return m_pBefore;
+    return m_pBefore.get();
 }
 auto Command::After() const -> data *
 {
-    return m_pAfter;
+    return m_pAfter.get();
 }
 
 void Command::onObsolete()
@@ -122,7 +117,7 @@ bool Command::Redo()
 
         bRelevant = doRedo();
 
-        for (auto g : m_undoables)
+        for (auto const &g : m_undoables)
         {
             if (g->Redo())
                 bRelevant = true;

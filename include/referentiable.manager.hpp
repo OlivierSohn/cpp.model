@@ -104,7 +104,12 @@ void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
         count = m_snsToRftbls.erase(sessionName);
         A(count == 1);
 
-        refs.erase(std::remove(refs.begin(), refs.end(), r));
+        for(auto it = refs.begin(); it != refs.end(); ++it) {
+            if(*it == r) {
+                refs.erase(it);
+                break;
+            }
+        }
 
         observable().Notify(Event::RFTBL_REMOVE, r); // must be placed after actual delete (use case : delete of joint makes the parent NULL so the joint ui manager draws a joint at root which must be removed)
     }
@@ -224,11 +229,11 @@ std::string ReferentiableManagerBase::generateGuid()
     if (likely(SUCCEEDED(hr)))
     {
         // Now allocate a buffer of the required size, and call WideCharToMultiByte again to do the actual conversion.
-        char *pszData = new (std::nothrow) CHAR[cbData];
-        hr = pszData ? S_OK : E_OUTOFMEMORY;
+        std::unique_ptr<char[]> pszData( new (std::nothrow) CHAR[cbData] );
+        hr = pszData.get() ? S_OK : E_OUTOFMEMORY;
         if (likely(SUCCEEDED(hr)))
         {
-            hr = WideCharToMultiByte(CP_ACP, 0, bstrGuid/*pszDataIn*/, -1, pszData, cbData, NULL, NULL)
+            hr = WideCharToMultiByte(CP_ACP, 0, bstrGuid/*pszDataIn*/, -1, pszData.get(), cbData, NULL, NULL)
                 ? S_OK
                 : HRESULT_FROM_WIN32(GetLastError());
             if (likely(SUCCEEDED(hr)))
@@ -246,7 +251,6 @@ std::string ReferentiableManagerBase::generateGuid()
                     }
                 }
             }
-            delete[] pszData;
         }
     }
 
@@ -355,6 +359,7 @@ ReferentiableManager<T>::~ReferentiableManager()
     g_pRefManager = 0;
 }
 
+
 template <class T>
 Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible, bool bFinalize)
 {
@@ -362,13 +367,9 @@ Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::stri
         (nameHint.c_str() ? nameHint.c_str() : "NULL"),
         guids.size());*/
 
-    T * ref = NULL;
-
     std::string guid;
 
-    size_t sizeGuids = guids.size();
-
-    if (sizeGuids > 0)
+    if (!guids.empty())
     {
         guid.assign(guids[0]);
     }
@@ -377,18 +378,15 @@ Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::stri
         guid = generateGuid();
     }
 
-    ref = new T(this, guid, nameHint);
+    auto ref = new T(this, guid, nameHint);
     if (!bVisible)
         ref->Hide();
     if (unlikely(!ComputeSessionName(ref, bFinalize)))
     {
         LG(ERR, "ReferentiableManager<T>::newReferentiable : ComputeSessionName failed (uuid: %s)", guid.c_str());
         delete ref;
-        ref = NULL;
-        goto end;
+        return 0;
     }
-
-end:
 
     //LG((ref ? INFO : ERR), "ReferentiableManager<T>::newReferentiable(...) returns 0x%x", ref);
     return ref;
@@ -565,8 +563,8 @@ bool ReferentiableNewCmdBase::ExecuteFromInnerCommand(ReferentiableManagerBase &
 {
     oRefAddr = NULL;
 
-    Undoable::data * before = data::instantiate(ACTION_DELETE, nameHint, &rm);
-    Undoable::data * after = data::instantiate(ACTION_NEW, nameHint, &rm);
+    std::unique_ptr<Undoable::data> before(data::instantiate(ACTION_DELETE, nameHint, &rm));
+    std::unique_ptr<Undoable::data> after(data::instantiate(ACTION_NEW, nameHint, &rm));
 
     CommandResult r;
     resFunc f(RESULT_BY_REF(r));
@@ -576,11 +574,6 @@ bool ReferentiableNewCmdBase::ExecuteFromInnerCommand(ReferentiableManagerBase &
         *after,
         NULL,
         &f);
-
-    if (before)
-        delete before;
-    if (after)
-        delete after;
     
     if (bDone)
     {
@@ -649,17 +642,12 @@ bool ReferentiableDeleteCmdBase::ExecuteFromInnerCommand(Referentiable & r)
     std::string nameHint = r.hintName();
     ReferentiableManagerBase * rm = r.getManager();
     
-    Undoable::data * before = data::instantiate(ACTION_NEW, nameHint, rm);
-    Undoable::data * after = data::instantiate(ACTION_DELETE, nameHint, rm);
+    std::unique_ptr<Undoable::data> before(data::instantiate(ACTION_NEW, nameHint, rm));
+    std::unique_ptr<Undoable::data> after(data::instantiate(ACTION_DELETE, nameHint, rm));
 
     bool bDone = Undoable::ExecuteFromInnerCommand<ReferentiableCmdBase>(
         *before,
         *after);
-
-    if (before)
-        delete before;
-    if (after)
-        delete after;
 
     return bDone;
 }

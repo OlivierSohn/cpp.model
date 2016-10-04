@@ -15,7 +15,7 @@ namespace imajuscule
     class Command;
     class UndoGroup;
     class Undoable;
-    typedef std::vector<Undoable*> Undoables;
+    typedef std::vector<std::unique_ptr<Undoable>> Undoables;
     class Undoable
     {
     public:
@@ -45,7 +45,7 @@ namespace imajuscule
         
         void traverseForward(Undoables::iterator & begin, Undoables::iterator& end) const;
 
-        void traverseForwardRecurse(Undoables &) const;
+        void traverseForwardRecurse(std::vector<Undoable*> &) const;
         
         bool contains(Undoable * u);
         
@@ -198,8 +198,7 @@ namespace imajuscule
     protected:
         Command(data * pDataBefore, data * pDataAfter, Referentiable * r = NULL, Observable<ObsolescenceEvent> * o = NULL);
         
-        data *m_pBefore;
-        data *m_pAfter;
+        std::unique_ptr<data> m_pBefore, m_pAfter;
         
         data * Before() const;
         data * After() const;

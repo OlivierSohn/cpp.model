@@ -42,9 +42,9 @@ ReferentiableRoot::ReferentiableRoot(ReferentiableManagerBase * manager, const s
 Referentiable(manager, guid, hintName)
 {
     auto refroot_manager = getManager();
-    for(auto m : Referentiables::getManagers())
+    for(auto const &m : Referentiables::getManagers())
     {
-        if(m == refroot_manager) {
+        if(m.get() == refroot_manager) {
             continue;
         }
         for (auto vi : m->traverse() ) {

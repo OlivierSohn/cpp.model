@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include "referentiable.h"
 
@@ -8,7 +9,7 @@ namespace imajuscule
 {
     class ReferentiableManagerBase;
     
-    typedef std::vector<ReferentiableManagerBase*> managers;
+    typedef std::vector<std::unique_ptr<ReferentiableManagerBase>> managers;
     class Referentiables
     {
     public:
@@ -23,9 +24,9 @@ namespace imajuscule
 
     private:
         Referentiables();
-        virtual ~Referentiables();
+        ~Referentiables();
         static Referentiables * getInstance();
-        static Referentiables * m_instance;
+        static Referentiables* m_instance;
         managers m_managers;
 
         Referentiable* findRefFromGUID(const DirectoryPath & path, const std::string &);

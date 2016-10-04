@@ -51,7 +51,7 @@ auto Undoable::ListInnerCommandsReadyFor(const data & dataBefore, const data & d
     traverseForward(itG, endG);
     for (; itG != endG; ++itG)
     {
-        Undoable * u = *itG;
+        Undoable * u = itG->get();
         
         if(UndoGroup * g = dynamic_cast<UndoGroup*>(u))
         {
