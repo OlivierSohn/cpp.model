@@ -240,20 +240,11 @@ static FunctionInfo<Event> ListenToResult(Command & c, CommandResult & r)       
 return c.observable().Register(Event::RESULT, RESULT_BY_REF(r));            \
 }
 
-#define SUBCR_DFLT_CONTRUCTOR \
-CommandResult() : Command::CommandResult() {}
-
-#define SUBCR_DESTRUCTOR  \
-~CommandResult() {}
-
 #define SUBCR \
 public:                           \
-SUBCR_DFLT_CONTRUCTOR;        \
-SUBCR_DESTRUCTOR;             \
+CommandResult() = default; \
 SUBCR_LISTEN_TO_RESULT;       \
 private:
-
-//#include "command.h"
 
 #include "undoable.hpp"
 

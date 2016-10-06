@@ -12,7 +12,6 @@
 class type ## Persist : public supertype ## Persist { \
 public: \
     type ## Persist(DirectoryPath, FileName, type & r); \
-    virtual ~type ## Persist(); \
     eResult doSave() override; \
 private: \
     type & m_ ## type; \
@@ -20,7 +19,6 @@ private: \
 class type ## Load : public supertype ## Load { \
 public: \
     type ## Load( DirectoryPath, FileName, type&); \
-    virtual ~type ## Load(); \
 protected: \
     void LoadStringForKey(char key, std::string & str) override; \
     void LoadStringArrayForKey(char key, std::vector<std::string> const &) override; \
@@ -42,13 +40,11 @@ private:
 #define IMPL_PERSIST_CLASSES( type, supertype, implSave, ilString, ilStringArray, ilInt32 ) \
 namespace imajuscule { \
 type::type ## Persist :: type ## Persist(DirectoryPath d, FileName f, type & r) : supertype ## Persist(d, f, r), m_ ## type(r) {} \
-type::type ## Persist ::~ type ## Persist () {} \
 eResult type::type ## Persist::doSave() { \
 implSave \
 return supertype ## Persist::doSave(); \
 } \
 type::type ## Load :: type ## Load(DirectoryPath d, FileName f, type & r) : supertype ## Load(d, f, r), m_ ## type(r) {} \
-type::type ## Load ::~ type ## Load() {} \
 void type::type ## Load ::LoadStringForKey(char key, std::string & str) { \
 switch(key) \
 { \
@@ -139,18 +135,7 @@ if_A(ref) \
 std::vector<std::string> vs; \
 for(auto const & link : vec) \
 { \
-Referentiable * ref = link.get(); \
-W_LNK_ELT( ref, vs); \
-} \
-WriteKeyData(key, vs);  \
-}
-
-#define W_PTRS( vec, key ) \
-{ \
-std::vector<std::string> vs; \
-for(auto * link : vec) \
-{ \
-Referentiable * ref = link; \
+Referentiable * ref = &*link; \
 W_LNK_ELT( ref, vs); \
 } \
 WriteKeyData(key, vs);  \
@@ -171,6 +156,12 @@ WriteKeyData(key, vs);  \
 case key: \
     for(auto const & guid : vs)\
         Op( static_cast<type*>(Referentiables::fromGUID(directory(), guid)) );\
+break;
+
+#define R_UNIQUE_LNKS_OP( Op, type, key ) \
+case key: \
+    for(auto const & guid : vs)\
+        Op( ref_unique_ptr<type>(static_cast<type*>(Referentiables::fromGUID(directory(), guid))) );\
 break;
 
 #define L_LNKS( key ) \

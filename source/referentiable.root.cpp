@@ -19,7 +19,7 @@ IMPL_PERSIST2(ReferentiableRoot, Referentiable,
 ReferentiableRoot * ReferentiableRoot::getInstance()
 {
     if(!g_instance)
-        g_instance = NEWREF(ReferentiableRoot);
+        g_instance = MAKE_UNIQUE(ReferentiableRoot).release();
     return g_instance;
 }
 

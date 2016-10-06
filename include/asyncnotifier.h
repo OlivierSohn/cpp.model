@@ -12,9 +12,9 @@ namespace imajuscule
             m_f(f)
         {}
         AsyncNotifier(std::function<void(void)> && f) :
-            m_f(f)
+        m_f(std::move(f))
         {}
-        virtual ~AsyncNotifier(){}
+        virtual ~AsyncNotifier() {}
 
         static void runScheduledNotifications();
         void schedule();

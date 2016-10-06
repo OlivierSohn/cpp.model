@@ -44,7 +44,7 @@ namespace imajuscule
     class Visitor
     {
     public:
-        virtual ~Visitor(){}
+        virtual ~Visitor() {}
 
         virtual void Visit(PathSuite*) = 0;
         virtual void Visit(Referentiable*) = 0;
@@ -85,6 +85,6 @@ namespace imajuscule
         virtual void Visit(Script*) {};
 
     protected:
-        Visitor() {}
+        Visitor() = default;
     };
 }

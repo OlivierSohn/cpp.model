@@ -5,6 +5,7 @@
 #include <functional>
 #include <memory>
 
+#include "ref_unique_ptr.h"
 #include "persistable.h"
 #include "observable.h"
 #include "os.storage.keys.h"
@@ -137,20 +138,15 @@ namespace imajuscule
         virtual Referentiable * mainRefAttr() const;
     };
 
-    template<class T>
-    struct ref_unique_ptr : public std::unique_ptr<T, std::function<void(T*)>> {
-        ref_unique_ptr(T * ref = 0) :
-        std::unique_ptr<T, std::function<void(T*)>>(ref, [](T*r) {
-            r->deinstantiate();
-        })
-        {}
-    };
-    
-    template<class T, class... Args>
-    inline ref_unique_ptr<T>
-    make_unique_ref(Args&&... args)
-    {
-        return ref_unique_ptr<T>(new T(_VSTD::forward<Args>(args)...));
-    }
 }
+#define SET_ref_unique(type, name, methodPostFix) \
+void set##methodPostFix(ref_unique_ptr<type> p) { \
+    if(p == name) {\
+        return;\
+    }\
+    removeSpec(name.get());\
+    name.swap(p);\
+    addSpec(name.get());\
+}
+
 

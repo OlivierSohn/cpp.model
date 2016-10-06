@@ -393,11 +393,11 @@ Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::stri
 }
 
 template <class T>
-T* ReferentiableManager<T>::New()
+ref_unique_ptr<T> ReferentiableManager<T>::New()
 {
     ReferentiableManager<T>* rm = ReferentiableManager<T>::getInstance();
     A(rm);
-    return static_cast<T*>(rm->newReferentiable(true));
+    return ref_unique_ptr<T>( static_cast<T*>(rm->newReferentiable(true)) );
 }
 
 bool ReferentiableCmdBase::data::operator!=(const Undoable::data& other) const

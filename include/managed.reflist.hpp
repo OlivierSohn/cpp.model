@@ -8,6 +8,15 @@
 
 namespace imajuscule
 {
+    template <class T>
+    struct VECTOR_ELEMENT {
+        using type = ref_unique_ptr<T>;
+    };
+    template <>
+    struct VECTOR_ELEMENT<MotionLayer> {
+        using type = MotionLayer *;
+    };
+    
     using regs = std::vector < FunctionInfo< Referentiable::Event >>;
     using vregs = std::vector < regs >;
     
@@ -18,7 +27,8 @@ namespace imajuscule
         
         Owner * owner;
         vregs m_regs;
-        using listT = std::vector<ref_unique_ptr<T>>;
+        using ELEM_T = typename VECTOR_ELEMENT<T>::type;
+        using listT = std::vector<ELEM_T>;
         using listIterator = typename listT::iterator;
         listT list;
 
@@ -31,13 +41,23 @@ namespace imajuscule
     public:
         using Owner_T = Owner;
         using Element_T = T;
+        
         ManagedRefList(Owner * owner) : owner(owner) {}
         ~ManagedRefList();
 
         Owner_T & editOwner() { return *owner; }
-        void add(T*);
+
+        template<class U> // U is T or subclass
+        void add(ref_unique_ptr<U> ptr) {
+            cmd::ManageAttr(*owner, ptr.release(), cmd::Type::TYPE_ADD);
+        }
+        
+        // TODO remove once we figured out a way to handle shared MotionLayer
+        void add(T * ptr) {
+            cmd::ManageAttr(*owner, ptr, cmd::Type::TYPE_ADD);
+        }
         void remove(T*);
-        void set(std::vector<T*> &&);
+        void set(listT &&);
         bool has(T const *) const;
         int size() const;
         bool empty() const;

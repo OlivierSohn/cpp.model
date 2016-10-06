@@ -5,11 +5,13 @@
 #include <vector>
 #include <functional>
 
+#include "ref_unique_ptr.h"
 #include "visitable.h"
 #include "observable.h"
 #include "undoable.h"
 
-#define NEWREF(x) ReferentiableManager<x>::New()
+#define MAKE_UNIQUE(x) ReferentiableManager<x>::New()
+#define MAKE_SHARED(x) make_shared_ptr<x>(ReferentiableManager<x>::New().release())
 namespace imajuscule
 {
     class Referentiables;
@@ -104,7 +106,7 @@ namespace imajuscule
         
         unsigned int index() override;
         
-        static T* New();
+        static ref_unique_ptr<T> New();
 
         void forEachReferentiable(std::function<void(T&)> && f) {
             for(auto r : traverse()) {

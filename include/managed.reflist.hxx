@@ -1,3 +1,4 @@
+#include <type_traits>
 
 namespace imajuscule
 {
@@ -15,20 +16,15 @@ namespace imajuscule
         for(; layer != layer_end; ++layer, ++registration)
         {
             A( registration != registration_end );
-            
-            auto * l = layer->get();
-            owner->removeSpec( l );
-            l->observableReferentiable().Remove( *registration );
+            A(*layer);
+            T & l = **layer;
+            owner->removeSpec( &l );
+            l.observableReferentiable().Remove( *registration );
         }
         
         A( registration == registration_end );
     }
     
-    MANAGED_REF_LIST
-    void ManagedRefList<Owner, T, Add, Remove>::add(T*mc)
-    {
-        cmd::ManageAttr(*owner, mc, cmd::Type::TYPE_ADD);
-    }
     MANAGED_REF_LIST
     void ManagedRefList<Owner, T, Add, Remove>::remove(T*mc)
     {
@@ -38,9 +34,9 @@ namespace imajuscule
     MANAGED_REF_LIST
     void ManagedRefList<Owner, T, Add, Remove>::remove( vregs::iterator & reg, listIterator & layer )
     {
-        auto * pML = layer->get();
-        owner->removeSpec(pML);
-        pML->observableReferentiable().Remove( *reg );
+        T & l = **layer;
+        owner->removeSpec(&l);
+        l.observableReferentiable().Remove( *reg );
         
         m_regs.erase( reg );
         list.erase( layer );
@@ -60,7 +56,7 @@ namespace imajuscule
             auto registration_end = m_regs.end();
             
             for(; layer != layer_end; ++layer, ++registration) {
-                owner->removeSpec(layer->get());
+                owner->removeSpec(&(**layer));
                 (*layer)->observableReferentiable().Remove( *registration );
             }
             
@@ -113,7 +109,7 @@ namespace imajuscule
             for(; layer != layer_end; ++layer, ++registration) {
                 
                 A( registration != registration_end );
-                if( layer->get() == mc)
+                if( &**layer == mc)
                 {
                     remove( registration, layer );
                     owner->hasNewContentForUpdate(true);
@@ -126,7 +122,7 @@ namespace imajuscule
     }
     
     MANAGED_REF_LIST
-    void ManagedRefList<Owner, T, Add, Remove>::set(std::vector<T*> && v)
+    void ManagedRefList<Owner, T, Add, Remove>::set(listT && v)
     {
         bool changed = false;
         if ( !list.empty() ) {
@@ -136,8 +132,8 @@ namespace imajuscule
         
         if (!v.empty())
         {
-            for ( auto t : v) {
-                add( t );
+            for ( auto & t : v) {
+                add( std::move(t) );
             }
             
             changed = true;
@@ -162,7 +158,7 @@ namespace imajuscule
     {
         for (auto const & ml : list )
         {
-            if(ml.get() == mc)
+            if(&*ml == mc)
             {
                 return true;
             }
@@ -173,12 +169,12 @@ namespace imajuscule
     MANAGED_REF_LIST
     const T * ManagedRefList<Owner, T, Add, Remove>::get(int index) const
     {
-        return list[index].get();
+        return &*list[index];
     }
     
     MANAGED_REF_LIST
     T * ManagedRefList<Owner, T, Add, Remove>::edit(int index)
     {
-        return list[index].get();
+        return &*list[index];
     }
 }
