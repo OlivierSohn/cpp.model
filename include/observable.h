@@ -6,6 +6,8 @@
 #include <list>
 #include <stack>
 #include <tuple>
+#include <memory>
+
 #include "os.log.h"
 
 #define OBSERVABLE_LOG 0
