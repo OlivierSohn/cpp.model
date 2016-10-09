@@ -235,21 +235,6 @@ namespace imajuscule
                 }
 
                 OBS_LG(INFO, "Observable(%x)::Remove(%d) : size after %d", this, functionInfo.m_event, std::get<CBS_LIST>(*(it1->second)).size());
-
-                if (unlikely(!bFound))
-                {
-#ifndef NDEBUG
-                    LG(ERR, "key %d not found. list of present keys : ", functionInfo.m_key);
-                    for(auto const & cb : std::get<CBS_LIST>(*(it1->second)) ) {
-                        LG(ERR, "  %d", std::get<KEY>(cb));
-                    }
-#endif
-                    A(!"attempt to remove a registration that is not here");
-                }
-            }
-            else
-            {
-                A(!"attempt to remove a registration that doesn't exist");
             }
         }
 
