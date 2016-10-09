@@ -54,7 +54,7 @@ Updatable::~Updatable()
         {
             // ... except if we are resetting
             if(!GlobalsImpl::getInstance()->isResetting()) {
-                A(!"some observers need to be cleaned up");
+                LG(WARN, "some observers need to be cleaned up");
             }
             s->removeSpec(this);
         }
