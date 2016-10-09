@@ -2,9 +2,7 @@
 
 #include "gl.platform.h"
 
-#include "globals.h"
-
-#include "referentiables.h"
+#include "application.h"
 
 #include "referentiable.root.h"
 
@@ -20,10 +18,7 @@ namespace {
     public:
         void SetUp() {
             try {
-                // App initialization //
-                LG(INFO, "SetUp initialize managers");
-                Referentiables::getManagers();
-                ////////////////////////
+                Application::Init();
                 
                 LG(INFO, "SetUp setGlFPP");
                 setGlFPP(true);
@@ -51,10 +46,8 @@ namespace {
                 }
                 LG(INFO, "TearDown unregisterAbstraction");
                 OSAbstraction::unregisterAbstraction(&os_abstraction);
-                
-                // App termination //
-                Globals::reset();
-                /////////////////////
+
+                Application::TearDown();
             }
             catch(...) {
                 LG(ERR, "!!! TearDown exception");

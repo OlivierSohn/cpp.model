@@ -15,6 +15,7 @@
 		0930C5811CC8688F00AB958B /* managed.reflist.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0930C57F1CC8688F00AB958B /* managed.reflist.hpp */; };
 		0930C5821CC8688F00AB958B /* managed.reflist.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 0930C5801CC8688F00AB958B /* managed.reflist.hxx */; };
 		0931815D1DA389F500DF8B3B /* ref_unique_ptr.h in Headers */ = {isa = PBXBuildFile; fileRef = 0931815C1DA389F500DF8B3B /* ref_unique_ptr.h */; };
+		093733971DAA4AE900F01BD0 /* application.h in Headers */ = {isa = PBXBuildFile; fileRef = 093733961DAA4AE900F01BD0 /* application.h */; };
 		095F43E61C3A2010005BE7DA /* referentiables.h in Headers */ = {isa = PBXBuildFile; fileRef = 095F43E51C3A2010005BE7DA /* referentiables.h */; };
 		09681A0F1B1AAAED00678885 /* referentiable.root.h in Headers */ = {isa = PBXBuildFile; fileRef = 09681A0E1B1AAAED00678885 /* referentiable.root.h */; };
 		0973B4CF1B256101007EFBDD /* referentiable.cmd.list.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0973B4CD1B256100007EFBDD /* referentiable.cmd.list.hpp */; };
@@ -60,6 +61,7 @@
 		0930C57F1CC8688F00AB958B /* managed.reflist.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = managed.reflist.hpp; sourceTree = "<group>"; };
 		0930C5801CC8688F00AB958B /* managed.reflist.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = managed.reflist.hxx; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		0931815C1DA389F500DF8B3B /* ref_unique_ptr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ref_unique_ptr.h; sourceTree = "<group>"; };
+		093733961DAA4AE900F01BD0 /* application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = application.h; sourceTree = "<group>"; };
 		09429C961AD38207001513DA /* libmodel.ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmodel.ios.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		095F43E51C3A2010005BE7DA /* referentiables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiables.h; sourceTree = "<group>"; };
 		095F43E71C3A20F9005BE7DA /* referentiables.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = referentiables.cpp; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 		0976628F1AD357F70099DA54 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				093733961DAA4AE900F01BD0 /* application.h */,
 				097662901AD357F70099DA54 /* asyncnotifier.h */,
 				097662911AD357F70099DA54 /* command.h */,
 				0927A8181B3F2DCF00872BC9 /* command.hpp */,
@@ -242,6 +245,7 @@
 				090578081BAE00E800FA8E42 /* undoable.hpp in Headers */,
 				0973B4D01B256101007EFBDD /* referentiable.cmd.list.h in Headers */,
 				097662B01AD357F70099DA54 /* command.h in Headers */,
+				093733971DAA4AE900F01BD0 /* application.h in Headers */,
 				0927A8191B3F2DCF00872BC9 /* command.hpp in Headers */,
 				0973B4CF1B256101007EFBDD /* referentiable.cmd.list.hpp in Headers */,
 				097662BA1AD357F70099DA54 /* referentiable.manager.hpp in Headers */,
