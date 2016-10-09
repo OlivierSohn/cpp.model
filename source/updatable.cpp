@@ -52,7 +52,10 @@ Updatable::~Updatable()
     {
         if(auto s = m_observers.back())
         {
-            A(!"some observers need to be cleaned up");
+            // ... except if we are resetting
+            if(!GlobalsImpl::getInstance()->isResetting()) {
+                A(!"some observers need to be cleaned up");
+            }
             s->removeSpec(this);
         }
         else

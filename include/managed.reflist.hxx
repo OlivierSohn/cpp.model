@@ -18,7 +18,6 @@ namespace imajuscule
             A( registration != registration_end );
             A(*layer);
             T & l = **layer;
-            owner->removeSpec( &l );
             l.observableReferentiable().Remove( *registration );
         }
         

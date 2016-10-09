@@ -32,7 +32,6 @@ ReferentiableManagerBase::~ReferentiableManagerBase()
     observable().deinstantiate();
 
     // doc F3F7C744-0B78-4750-A0A1-7A9BAD872188
-    // todo to fix this, manage ownership throughout the application
     for(auto ref : refs) {
         LG(ERR, "ref %s was not deinstantiated", ref->sessionName().c_str());
     }
