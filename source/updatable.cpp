@@ -283,10 +283,6 @@ void Updatable::removeSpec(spec item)
     {
         *f = NULL;
     }
-    else
-    {
-        A(0);
-    }
     
     A(!isSpec(item));
     
