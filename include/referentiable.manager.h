@@ -97,6 +97,7 @@ namespace imajuscule
     template <class T>
     class ReferentiableManager : public ReferentiableManagerBase
     {
+        friend class Globals;
         friend T;
     public:
         static ReferentiableManager * getInstance();
@@ -118,15 +119,16 @@ namespace imajuscule
     private:
         static ReferentiableManager * g_pRefManager;
 
-        ReferentiableManager();
-        ~ReferentiableManager();
-
         Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible, bool bFinalize) override;
         void doTearDown() override {}
     };
     template <class T>
     void forEach(std::function<void(T&)> && f) {
-        ReferentiableManager<T>::getInstance()->forEachReferentiable(std::move(f));
+        auto rm = ReferentiableManager<T>::getInstance();
+        if(!rm) {
+            return;
+        }
+        rm->forEachReferentiable(std::move(f));
     }
 
     class ReferentiableCmdBase : public Command
@@ -164,7 +166,6 @@ namespace imajuscule
         std::string m_GUID;
     
         ReferentiableCmdBase(ReferentiableManagerBase * manager, const std::string & nameHint, Action action);
-        ~ReferentiableCmdBase();
 
         void doInstantiate();
         void doDeinstantiate();
@@ -196,7 +197,6 @@ namespace imajuscule
     
     protected:
         ReferentiableNewCmdBase(ReferentiableManagerBase & rm, const std::string & nameHint, const std::vector<std::string> guids);
-        ~ReferentiableNewCmdBase();
 
         std::vector<std::string> m_guids;
     private:
@@ -215,7 +215,6 @@ namespace imajuscule
 
     protected:
         ReferentiableDeleteCmdBase(Referentiable&);
-        ~ReferentiableDeleteCmdBase();
 
     private:
         static bool ExecuteFromInnerCommand(Referentiable&);
@@ -223,15 +222,29 @@ namespace imajuscule
     };
     
     template <class T> T* REF_BY_SN( const std::string & sn ){
-        return static_cast<T *>(ReferentiableManager<T>::getInstance()->findBySessionName(sn));
+        auto rm = ReferentiableManager<T>::getInstance();
+        if(!rm) {
+            return {};
+        }
+        return static_cast<T *>(rm->findBySessionName(sn));
     }
     template <class T> T* REF_BY_GUID(const std::string & guid)
     {
-        return static_cast<T *>(ReferentiableManager<T>::getInstance()->findByGuid(guid));
+        auto rm = ReferentiableManager<T>::getInstance();
+        if(!rm) {
+            return {};
+        }
+        return static_cast<T *>(rm->findByGuid(guid));
     }
     template <class T> referentiables const & TRAVERSE()
     {
-        return ReferentiableManager<T>::getInstance()->traverse();
+        auto rm = ReferentiableManager<T>::getInstance();
+        if(!rm) {
+            static referentiables rs;
+            return rs;
+        }
+
+        return rm->traverse();
     }
 }
 

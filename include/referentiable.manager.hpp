@@ -9,6 +9,7 @@
 
 #include <algorithm>
 
+#include "globals.h"
 #include "referentiable.h"
 #include "referentiable.manager.h"
 #include "history.manager.h"
@@ -110,7 +111,10 @@ void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
                 break;
             }
         }
-
+        
+        A(refs.size() == m_guidsToRftbls.size());
+        A(refs.size() == m_snsToRftbls.size());
+        
         observable().Notify(Event::RFTBL_REMOVE, r); // must be placed after actual delete (use case : delete of joint makes the parent NULL so the joint ui manager draws a joint at root which must be removed)
     }
 }
@@ -338,25 +342,7 @@ ReferentiableManager<T> * ReferentiableManager<T>::g_pRefManager = NULL;
 template <class T>
 ReferentiableManager<T> * ReferentiableManager<T>::getInstance()
 {
-    if (unlikely(!g_pRefManager))
-    {
-        g_pRefManager = new ReferentiableManager<T>();
-    }
-
-    return g_pRefManager;
-}
-
-template <class T>
-ReferentiableManager<T>::ReferentiableManager() :
-ReferentiableManagerBase()
-{
-}
-
-template <class T>
-ReferentiableManager<T>::~ReferentiableManager()
-{
-    A(g_pRefManager == this);
-    g_pRefManager = 0;
+    return Globals::ptr<ReferentiableManager<T>>(g_pRefManager);
 }
 
 
@@ -396,7 +382,9 @@ template <class T>
 ref_unique_ptr<T> ReferentiableManager<T>::New()
 {
     ReferentiableManager<T>* rm = ReferentiableManager<T>::getInstance();
-    A(rm);
+    if(!rm) {
+        return {};
+    }
     return ref_unique_ptr<T>( static_cast<T*>(rm->newReferentiable(true)) );
 }
 
@@ -456,8 +444,7 @@ Command(new data(other(action), nameHint, manager), new data(action, nameHint, m
 , m_manager(manager)
 , m_hintName(nameHint)
 {}
-ReferentiableCmdBase::~ReferentiableCmdBase()
-{}
+
 
 bool ReferentiableCmdBase::doExecute(const Undoable::data & data)
 {
@@ -537,9 +524,6 @@ ReferentiableCmdBase(&manager, nameHint, ACTION_NEW)
         m_GUID = guids.front();
 }
 
-ReferentiableNewCmdBase::~ReferentiableNewCmdBase()
-{}
-
 void ReferentiableNewCmdBase::Instantiate()
 {
     if (getState() == NOT_EXECUTED)
@@ -615,9 +599,6 @@ ReferentiableCmdBase(r.getManager(), r.hintName(), ACTION_DELETE)
 {
     m_GUID = r.guid();
 }
-
-ReferentiableDeleteCmdBase::~ReferentiableDeleteCmdBase()
-{}
 
 void ReferentiableDeleteCmdBase::getSentenceDescription(std::string & desc) const
 {

@@ -8,3 +8,4 @@
 #include "undoable.cpp"
 #include "updatable.cpp"
 #include "visitable.cpp"
+#include "globals.cpp"

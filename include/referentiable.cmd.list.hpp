@@ -96,11 +96,6 @@ Command(RefAttrListCmd<T,U,fAdd,fRemove>::data::instantiate(iAttr, Other(t)), Re
 }
 
 REF_CMD_LIST
-RefAttrListCmd<T,U,fAdd,fRemove>::~RefAttrListCmd()
-{
-}
-
-REF_CMD_LIST
 void RefAttrListCmd<T,U,fAdd,fRemove>::getSentenceDescription(std::string & desc) const
 {
     desc.append(std::string("manage list : "));
@@ -110,8 +105,9 @@ REF_CMD_LIST
 bool RefAttrListCmd<T,U,fAdd,fRemove>::ManageAttr(T & obj, U * Attr, Type t)
 {
     bool bSuccess = true;
-    
-    if (HistoryManager::getInstance()->isActive())
+
+    auto hm = HistoryManager::getInstance();
+    if (hm && hm->isActive())
     {
         if (!ExecuteFromInnerCommand(obj, Attr, t, bSuccess))
             bSuccess = Execute(obj, Attr, t);

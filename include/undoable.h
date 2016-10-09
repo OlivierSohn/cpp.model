@@ -61,7 +61,7 @@ namespace imajuscule
         public:
             CommandResult();
             CommandResult(bool bSuccess);
-            virtual ~CommandResult();
+            virtual ~CommandResult() {}
             
             bool initialized() const;
             
@@ -91,15 +91,13 @@ namespace imajuscule
             virtual bool operator!=(const data&) const = 0;
             virtual std::string getDesc() const = 0;
             
-            virtual ~data();
-            data();
+            virtual ~data() {}
         };
 
-        class CommandExec
+        class CommandExec final
         {
         public:
             CommandExec(UndoGroup *, Command*, const resFunc *);
-            virtual ~CommandExec();
             
             bool Run();
         private:
@@ -128,10 +126,7 @@ namespace imajuscule
     // an UndoGroup is a way to sequence undoables for Undo/Redo
     class UndoGroup : public Undoable
     {
-    public:
-        UndoGroup();
-        ~UndoGroup();
-        
+    public:        
         bool Execute() override;
         bool Undo() override;
         bool Redo() override;

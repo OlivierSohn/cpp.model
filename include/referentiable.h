@@ -107,7 +107,6 @@ namespace imajuscule
         {
         public:
             ReferentiableIndexLoad( DirectoryPath, FileName);
-            ~ReferentiableIndexLoad();
             
             bool found(unsigned int &index, std::string & nameHint);
             const std::string & dateCrea();

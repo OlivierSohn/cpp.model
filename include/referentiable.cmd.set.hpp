@@ -136,7 +136,8 @@ bool RefChangeAttrCmd<T, U, fSet, fGet>::ChangeAttr(T & obj, U * newAttr, bool &
 
     if (newAttr != std::bind(fGet,&obj)())
     {
-        if (HistoryManager::getInstance()->isActive())
+        auto hm = HistoryManager::getInstance();
+        if (hm && hm->isActive())
         {
             if (!ExecuteFromInnerCommand(obj, newAttr, bSuccess, bAttrChanged))
                 bSuccess = Execute(obj, newAttr, bAttrChanged);

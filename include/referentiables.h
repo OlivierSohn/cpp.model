@@ -9,22 +9,20 @@ namespace imajuscule
 {
     class ReferentiableManagerBase;
     
-    typedef std::vector<std::unique_ptr<ReferentiableManagerBase>> managers;
-    class Referentiables
+    typedef std::vector<ReferentiableManagerBase*> managers;
+    class Referentiables final
     {
+        friend class Globals;
     public:
         static Referentiable* fromGUID(const DirectoryPath & path, const std::string &);
         static Referentiable* fromGUIDLoaded(const std::string &);
         static Referentiable* fromSessionNameLoaded(const std::string &);
         static managers const & getManagers();
         
-        static void tearDown();
-
-        void regManager(ReferentiableManagerBase &);
+        void regManager(ReferentiableManagerBase *);
 
     private:
         Referentiables();
-        ~Referentiables();
         static Referentiables * getInstance();
         static Referentiables* m_instance;
         managers m_managers;

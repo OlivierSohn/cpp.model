@@ -29,7 +29,6 @@ namespace imajuscule
 
     protected:
         RefAttrListCmd(T & ref, const U * attr, Type t);
-        ~RefAttrListCmd();
 
         class CommandResult : public Command::CommandResult
         {

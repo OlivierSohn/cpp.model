@@ -1,5 +1,7 @@
 #pragma once
 
+#include "globals.h"
+
 #include "referentiable.manager.h"
 
 #include "referentiables.h"
@@ -12,17 +14,14 @@ namespace imajuscule
         m_managers.reserve( 100 );
     }
 
-    Referentiables::~Referentiables() {
-        for(auto const & m : m_managers) {
-            m->teardown();
-        }
-    }
     Referentiables * Referentiables::getInstance()
     {
         if (!m_instance)
         {
-            m_instance = new Referentiables();
-            InitializeRefManagers(*m_instance);
+            Globals::make_ptr<Referentiables>(m_instance);
+            if(m_instance) {
+                InitializeRefManagers(*m_instance);
+            }
         }
         
         return m_instance;
@@ -44,7 +43,7 @@ namespace imajuscule
     Referentiable* Referentiables::findRefFromGUID(const DirectoryPath & path, const std::string & guid)
     {
         Referentiable * r = NULL;
-        if(r = findRefFromGUIDLoaded(guid)) {
+        if((r = findRefFromGUIDLoaded(guid))) {
             return r;
         }
         
@@ -59,7 +58,7 @@ namespace imajuscule
                 HistoryManagerPause p;
                 
                 std::vector<std::string> guids{guid};
-                ReferentiableManagerBase * rm = m_managers[index].get();
+                ReferentiableManagerBase * rm = m_managers[index];
                 r = rm->newReferentiable(nameHint, guids, false, true);
                 r->Load(path, guid);
                 rm->observable().Notify(ReferentiableManagerBase::Event::RFTBL_ADD, r);
@@ -70,7 +69,7 @@ namespace imajuscule
     }
     Referentiable* Referentiables::findRefFromSessionNameLoaded(const std::string & sn)
     {
-        for(auto const & man: m_managers)
+        for(auto * man: m_managers)
         {
             if(Referentiable * ref = man->findBySessionName(sn))
                 return ref;
@@ -79,7 +78,7 @@ namespace imajuscule
     }
     Referentiable* Referentiables::findRefFromGUIDLoaded(const std::string & guid)
     {
-        for(auto const & man: m_managers)
+        for(auto * man: m_managers)
         {
             if(Referentiable * ref = man->findByGuid(guid)) {
                 return ref;
@@ -87,10 +86,12 @@ namespace imajuscule
         }
         return NULL;
     }
-    void Referentiables::regManager(ReferentiableManagerBase & m)
+    void Referentiables::regManager(ReferentiableManagerBase * m)
     {
-        A(m.index() == m_managers.size());
-        m_managers.emplace_back(&m);
+        if(m) {
+            A(m->index() == m_managers.size());
+        }
+        m_managers.emplace_back(m);
     }
     
     managers const & Referentiables::getManagers()
@@ -98,11 +99,4 @@ namespace imajuscule
         Referentiables * i = Referentiables::getInstance();
         return i->m_managers;
     }
-    void Referentiables::tearDown() {
-        if(m_instance) {
-            delete m_instance;
-            m_instance = 0;
-        }
-    }
-
 }

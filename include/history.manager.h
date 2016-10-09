@@ -12,6 +12,7 @@ namespace imajuscule
     class Undoable;
     class HistoryManager
     {
+        friend class Globals;
     public:
         enum Event
         {
@@ -26,12 +27,13 @@ namespace imajuscule
 
         HistoryManager();
         virtual ~HistoryManager();
+        void reset();
+        
         static HistoryManager * getInstance();
         
         void PushPause();
         void PopPause();
         bool isActive() const;
-        void EmptyStacks();
 
         void Add(Undoable*);
         void StartTransaction();
@@ -74,12 +76,14 @@ namespace imajuscule
         HistoryManagerTransaction();
         ~HistoryManagerTransaction();
     };
+    
     class HistoryManagerPause
     {
     public:
         HistoryManagerPause();
         ~HistoryManagerPause();
     };
+    
     template <bool cond, class CLASS >
     class if_
     {
@@ -92,5 +96,3 @@ namespace imajuscule
 }
 
 #include "undoable.h"
-
-#define inCmd (HistoryManager::getInstance()->CurrentCommand())

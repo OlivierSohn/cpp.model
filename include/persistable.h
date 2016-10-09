@@ -206,7 +206,6 @@ namespace imajuscule
         {
         public:
             PersistablePersist(DirectoryPath d, FileName f, Persistable & p);
-            virtual ~PersistablePersist();
             
             eResult doSave() override;
             
@@ -219,7 +218,6 @@ namespace imajuscule
         {
         public:
             PersistableLoad(DirectoryPath d, FileName f, Persistable & p);
-            virtual ~PersistableLoad();
         private:
             Persistable & m_persistable;
         };

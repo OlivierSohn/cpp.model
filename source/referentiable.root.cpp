@@ -1,5 +1,7 @@
 #include "os.log.h"
 
+#include "globals.h"
+
 #include "referentiables.h"
 #include "referentiable.manager.h"
 
@@ -18,33 +20,22 @@ IMPL_PERSIST2(ReferentiableRoot, Referentiable,
 
 ReferentiableRoot * ReferentiableRoot::getInstance()
 {
-    if(!g_instance)
-        g_instance = MAKE_UNIQUE(ReferentiableRoot).release();
-    return g_instance;
-}
-
-void ReferentiableRoot::teardown() {
-    if(!g_instance) {
-        return;
-    }
-    g_instance->deinstantiate();
-    g_instance = 0;
-}
-
-void ReferentiableRoot::recycle_with_leak() {  // doc F3F7C744-0B78-4750-A0A1-7A9BAD872188
-    if(!g_instance) {
-        return;
-    }
-    g_instance = 0;
+    return Globals::ref<ReferentiableRoot>(g_instance);
 }
 
 ReferentiableRoot::ReferentiableRoot(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName) :
 Referentiable(manager, guid, hintName)
-{
+{}
+
+void ReferentiableRoot::initialize() {
     auto refroot_manager = getManager();
-    for(auto const &m : Referentiables::getManagers())
+    for(auto * m : Referentiables::getManagers())
     {
-        if(m.get() == refroot_manager) {
+        if(!m) {
+            continue;
+        }
+
+        if(m == refroot_manager) {
             continue;
         }
         for (auto vi : m->traverse() ) {
@@ -57,9 +48,6 @@ Referentiable(manager, guid, hintName)
                                           this->addRef(r);
                                   });
     }
-}
-ReferentiableRoot::~ReferentiableRoot()
-{
 }
 
 void ReferentiableRoot::addRef(Referentiable* ref)

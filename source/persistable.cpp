@@ -50,9 +50,6 @@ KeysPersist(d, f)
 {
 }
 
-Persistable::PersistablePersist::~PersistablePersist()
-{
-}
     
 eResult Persistable::PersistablePersist::doSave()
 {
@@ -64,8 +61,4 @@ Persistable::PersistableLoad::PersistableLoad(DirectoryPath d, FileName f, Persi
  KeysLoad(d,f)
 , m_persistable(p)
 {
-}
-Persistable::PersistableLoad::~PersistableLoad()
-{
-    
 }

@@ -92,6 +92,8 @@
 		097662A91AD357F70099DA54 /* updatable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = updatable.cpp; sourceTree = "<group>"; };
 		097662AA1AD357F70099DA54 /* visitable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = visitable.cpp; sourceTree = "<group>"; };
 		097835631D57B0B900E47ED3 /* unity.build.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unity.build.cpp; sourceTree = "<group>"; };
+		09963F231DA9056700FBEDD1 /* globals.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = globals.cpp; sourceTree = "<group>"; };
+		09963F241DA9058E00FBEDD1 /* globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = globals.h; sourceTree = "<group>"; };
 		09B330B61BF56DCE00DE437C /* raii.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = raii.hpp; sourceTree = "<group>"; };
 		09C84A3A1C271D89002CF5B7 /* osx.debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = osx.debug.xcconfig; sourceTree = "<group>"; };
 		09C84A3B1C271D89002CF5B7 /* ios.debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ios.debug.xcconfig; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 		09C84A401C271D89002CF5B7 /* Project.Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Project.Debug.xcconfig; sourceTree = "<group>"; };
 		09C84A411C271D89002CF5B7 /* Project.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Project.Release.xcconfig; sourceTree = "<group>"; };
 		09C84A421C271D89002CF5B7 /* Project.Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Project.Shared.xcconfig; sourceTree = "<group>"; };
+		09D756BA1DA7934C004602DE /* fixture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fixture.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,18 +147,20 @@
 		0976628F1AD357F70099DA54 /* include */ = {
 			isa = PBXGroup;
 			children = (
-				0931815C1DA389F500DF8B3B /* ref_unique_ptr.h */,
-				0930C57F1CC8688F00AB958B /* managed.reflist.hpp */,
-				0930C5801CC8688F00AB958B /* managed.reflist.hxx */,
 				097662901AD357F70099DA54 /* asyncnotifier.h */,
 				097662911AD357F70099DA54 /* command.h */,
 				0927A8181B3F2DCF00872BC9 /* command.hpp */,
 				090578091BAE12BA00FA8E42 /* execution.h */,
+				09D756BA1DA7934C004602DE /* fixture.h */,
 				097662921AD357F70099DA54 /* history.manager.h */,
+				0930C57F1CC8688F00AB958B /* managed.reflist.hpp */,
+				0930C5801CC8688F00AB958B /* managed.reflist.hxx */,
 				097662931AD357F70099DA54 /* model.allincludes.h */,
+				09963F241DA9058E00FBEDD1 /* globals.h */,
 				097662941AD357F70099DA54 /* observable.h */,
 				097662951AD357F70099DA54 /* persistable.h */,
 				09B330B61BF56DCE00DE437C /* raii.hpp */,
+				0931815C1DA389F500DF8B3B /* ref_unique_ptr.h */,
 				0973B4CE1B256101007EFBDD /* referentiable.cmd.list.h */,
 				0973B4CD1B256100007EFBDD /* referentiable.cmd.list.hpp */,
 				097662971AD357F70099DA54 /* referentiable.cmd.set.h */,
@@ -179,15 +184,16 @@
 		097662A11AD357F70099DA54 /* source */ = {
 			isa = PBXGroup;
 			children = (
-				097835631D57B0B900E47ED3 /* unity.build.cpp */,
 				097662A21AD357F70099DA54 /* asyncnotifier.cpp */,
 				097662A31AD357F70099DA54 /* command.cpp */,
 				097662A41AD357F70099DA54 /* history.manager.cpp */,
+				09963F231DA9056700FBEDD1 /* globals.cpp */,
 				097662A51AD357F70099DA54 /* persistable.cpp */,
 				097662A61AD357F70099DA54 /* referentiable.cpp */,
-				095F43E71C3A20F9005BE7DA /* referentiables.cpp */,
 				09681A0B1B1AAACE00678885 /* referentiable.root.cpp */,
+				095F43E71C3A20F9005BE7DA /* referentiables.cpp */,
 				097662A81AD357F70099DA54 /* undoable.cpp */,
+				097835631D57B0B900E47ED3 /* unity.build.cpp */,
 				097662A91AD357F70099DA54 /* updatable.cpp */,
 				097662AA1AD357F70099DA54 /* visitable.cpp */,
 			);

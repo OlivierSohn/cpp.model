@@ -182,13 +182,6 @@ m_group(g)
     A(m_command);
 }
 
-Undoable::CommandExec::~CommandExec()
-{}
-
-Command::data::data()
-{}
-Command::data::~data()
-{}
 
 bool Command::data::operator == (const data&d) const
 {
@@ -295,8 +288,6 @@ m_bInitialized(true)
 {}
 Command::CommandResult::CommandResult() :
 m_bInitialized (false)
-{}
-Command::CommandResult::~CommandResult()
 {}
 
 bool Command::CommandResult::initialized() const

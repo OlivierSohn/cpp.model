@@ -100,11 +100,6 @@ Command(RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data::instantiate(obj), RefSimple
 }
 
 REF_CMD_SIMPLESET
-RefSimpleChangeAttrCmd<T,U,fSet,fGet>::~RefSimpleChangeAttrCmd()
-{
-}
-
-REF_CMD_SIMPLESET
 void RefSimpleChangeAttrCmd<T,U,fSet,fGet>::getSentenceDescription(std::string & desc) const
 {
     desc.append(std::string(" attr : "));
@@ -117,7 +112,8 @@ void RefSimpleChangeAttrCmd<T, U, fSet, fGet>::ChangeAttr(T & obj, U * newAttr)
 
     if (newAttr != std::bind(fGet,&obj)())
     {
-        if (HistoryManager::getInstance()->isActive())
+        auto hm = HistoryManager::getInstance();
+        if (hm && hm->isActive())
         {
             if (!ExecuteFromInnerCommand(obj, newAttr, bSuccess))
                 bSuccess = Execute(obj, newAttr);

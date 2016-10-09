@@ -1,8 +1,11 @@
+#include <iostream>
+#include <algorithm>
+
+#include "os.log.h"
+
+#include "globals.h"
 #include "command.h"
 #include "history.manager.h"
-#include <iostream>
-#include "os.log.h"
-#include <algorithm>
 
 using namespace imajuscule;
 
@@ -21,14 +24,6 @@ void HistoryManager::logCommand(Command*c, const char * pre)
     LG(INFO, "%s%s%s", pad.c_str(), pre ? pre : "", desc.c_str());
 }
 
-UndoGroup::UndoGroup():
-Undoable()
-{}
-
-UndoGroup::~UndoGroup()
-{
-}
-
 void UndoGroup::getDescription(std::string &desc) const
 {
     desc.append("group");
@@ -43,7 +38,6 @@ bool UndoGroup::isObsolete() const
     {
         if ((*it)->isObsolete())
         {
-            //HistoryManager::getInstance()->logObsoleteCommand(c);
             it = m_undoables.erase(it);
             end = m_undoables.end(); // because vector changed
         }
@@ -81,7 +75,6 @@ bool UndoGroup::Undo(Undoable *limit, bool bStrict, bool & bFoundLimit)
         {
             if (u->isObsolete())
             {
-                //HistoryManager::getInstance()->logObsoleteCommand(c);
                 it = std::reverse_iterator<Undoables::iterator>(m_undoables.erase((std::next(it)).base()));
                 end = m_undoables.rend();
                 continue;
@@ -125,7 +118,6 @@ bool UndoGroup::Redo(Undoable * limit, bool bStrict, bool & bFoundLimit)
         {
             if (u->isObsolete())
             {
-                //HistoryManager::getInstance()->logObsoleteCommand(c);
                 it = m_undoables.erase(it);
                 end = m_undoables.end();
                 continue;
@@ -173,7 +165,7 @@ m_stacksCapacity(-1)// unsigned -> maximum capacity
 
 HistoryManager::~HistoryManager()
 {
-    EmptyStacks();
+    reset();
 
     m_observable->deinstantiate();
 }
@@ -219,9 +211,22 @@ void HistoryManager::EndTransaction(){
         cc->EndSubElement();
 }
 
-
-void HistoryManager::EmptyStacks()
+void HistoryManager::reset()
 {
+    A(m_curExecType == ExecutionType::NONE);
+    
+    m_curExecType = ExecutionType::NONE;
+    
+    A(transactionCount_ == 0);
+    transactionCount_ = 0;
+    
+    m_iActivated = 1;
+    
+    while ( ! m_curCommandStack.empty() )
+    {
+        m_curCommandStack.pop();
+    }
+    
     m_groups.clear();
     m_appState = m_groups.rbegin();
     m_bAppStateHasNewContent = false;
@@ -229,10 +234,7 @@ void HistoryManager::EmptyStacks()
 
 HistoryManager * HistoryManager::getInstance()
 {
-    if (!g_instance)
-        g_instance = new HistoryManager();
-
-    return g_instance;
+    return Globals::ptr<HistoryManager>(g_instance);
 }
 
 Undoable * HistoryManager::CurrentCommand()
@@ -453,18 +455,26 @@ void HistoryManager::traverseRedos(UndoGroups::const_iterator& begin, UndoGroups
 
 HistoryManagerTransaction::HistoryManagerTransaction()
 {
-    HistoryManager::getInstance()->StartTransaction();
+    if(auto hm = HistoryManager::getInstance()) {
+        hm->StartTransaction();
+    }
 }
 HistoryManagerTransaction::~HistoryManagerTransaction()
 {
-    HistoryManager::getInstance()->EndTransaction();
+    if(auto hm = HistoryManager::getInstance()) {
+        hm->EndTransaction();
+    }
 }
 
 HistoryManagerPause::HistoryManagerPause()
 {
-    HistoryManager::getInstance()->PushPause();
+    if(auto hm = HistoryManager::getInstance()) {
+        hm->PushPause();
+    }
 }
 HistoryManagerPause::~HistoryManagerPause()
 {
-    HistoryManager::getInstance()->PopPause();
+    if(auto hm = HistoryManager::getInstance()) {
+        hm->PopPause();
+    }
 }

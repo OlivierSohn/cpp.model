@@ -23,7 +23,6 @@ namespace imajuscule
             
     protected:
         RefSimpleChangeAttrCmd(T & ref, const U * attr);
-        ~RefSimpleChangeAttrCmd();
 
         class CommandResult : public Command::CommandResult
         {

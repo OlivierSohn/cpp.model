@@ -176,8 +176,7 @@ KeysLoad(d,f,false)
 {
     ReadAllKeys();
 }
-Referentiable::ReferentiableIndexLoad::~ReferentiableIndexLoad()
-{}
+
 void Referentiable::ReferentiableIndexLoad::LoadInt32ForKey(char key, int32_t i)
 {
     switch(key)
