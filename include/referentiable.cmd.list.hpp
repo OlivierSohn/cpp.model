@@ -13,7 +13,8 @@
 namespace imajuscule {
 
 REF_CMD_LIST
-RefAttrListCmd<T,U,fAdd,fRemove>::CommandResult::CommandResult(bool bSuccess) :
+RefAttrListCmd<T,U,fAdd,fRemove>::CommandResult::CommandResult(bool bSuccess, bool found) :
+    found(found),
 Command::CommandResult(bSuccess)
 {}
 
@@ -102,15 +103,15 @@ void RefAttrListCmd<T,U,fAdd,fRemove>::getSentenceDescription(std::string & desc
 }
 
 REF_CMD_LIST
-bool RefAttrListCmd<T,U,fAdd,fRemove>::ManageAttr(T & obj, U * Attr, Type t)
+bool RefAttrListCmd<T,U,fAdd,fRemove>::ManageAttr(T & obj, U * Attr, Type t, bool & found)
 {
     bool bSuccess = true;
 
     auto hm = HistoryManager::getInstance();
     if (hm && hm->isActive())
     {
-        if (!ExecuteFromInnerCommand(obj, Attr, t, bSuccess))
-            bSuccess = Execute(obj, Attr, t);
+        if (!ExecuteFromInnerCommand(obj, Attr, t, bSuccess, found))
+            bSuccess = Execute(obj, Attr, t, found);
     }
     else
     {
@@ -118,10 +119,11 @@ bool RefAttrListCmd<T,U,fAdd,fRemove>::ManageAttr(T & obj, U * Attr, Type t)
         {
             case Type::TYPE_ADD:
                 std::bind(fAdd, &obj, Attr)();
+                found = true;
                 break;
                 
             case Type::TYPE_REMOVE:
-                std::bind(fRemove, &obj, Attr)();
+                found = std::bind(fRemove, &obj, Attr)();
                 break;
                 
             default:
@@ -154,7 +156,7 @@ auto RefAttrListCmd<T,U,fAdd,fRemove>::Other(Type t) -> Type
     }
 }
 REF_CMD_LIST
-bool RefAttrListCmd<T,U,fAdd,fRemove>::ExecuteFromInnerCommand(T & obj, U * newAttr, Type t, bool & bSuccess)
+bool RefAttrListCmd<T,U,fAdd,fRemove>::ExecuteFromInnerCommand(T & obj, U * newAttr, Type t, bool & bSuccess, bool & found)
 {
     bSuccess = false;
 
@@ -173,6 +175,7 @@ bool RefAttrListCmd<T,U,fAdd,fRemove>::ExecuteFromInnerCommand(T & obj, U * newA
     if (bDone)
     {
         bSuccess = r.Success();
+        found = r.getFound();
     }
 
     return bDone;
@@ -181,7 +184,8 @@ REF_CMD_LIST
 bool RefAttrListCmd<T,U,fAdd,fRemove>::doExecute(const Command::data & Data)
 {
     bool bSuccess = false;
-
+    bool found = true;
+    
     const RefAttrListCmd<T,U,fAdd,fRemove>::data * pData = dynamic_cast<const RefAttrListCmd<T,U,fAdd,fRemove>::data*>(&Data);
     if_A(pData)
     {
@@ -196,7 +200,7 @@ bool RefAttrListCmd<T,U,fAdd,fRemove>::doExecute(const Command::data & Data)
                     break;
                     
                 case Type::TYPE_REMOVE:
-                    std::bind(fRemove, obj, pData->Attr())();
+                    found = std::bind(fRemove, obj, pData->Attr())();
                     bSuccess = true;
                     break;
                     
@@ -208,14 +212,14 @@ bool RefAttrListCmd<T,U,fAdd,fRemove>::doExecute(const Command::data & Data)
         }
     }
 
-    CommandResult r(bSuccess);
+    CommandResult r(bSuccess, found);
     observable().Notify(Event::RESULT, &r);
 
     return bSuccess;
 }
 
 REF_CMD_LIST
-bool RefAttrListCmd<T,U,fAdd,fRemove>::Execute(T & obj, const U * iAttr, Type t)
+bool RefAttrListCmd<T,U,fAdd,fRemove>::Execute(T & obj, const U * iAttr, Type t, bool & found)
 {
     auto * c = new RefAttrListCmd(obj, iAttr, t);
     CommandResult r;
@@ -224,6 +228,7 @@ bool RefAttrListCmd<T,U,fAdd,fRemove>::Execute(T & obj, const U * iAttr, Type t)
     if (c->Command::Execute())
         c->observable().Remove(reg);
 
+    found = r.getFound();
     return r.Success();
 }
 } //namespace imajuscule

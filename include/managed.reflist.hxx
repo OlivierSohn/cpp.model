@@ -25,9 +25,11 @@ namespace imajuscule
     }
     
     MANAGED_REF_LIST
-    void ManagedRefList<Owner, T, Add, Remove>::remove(T*mc)
+    bool ManagedRefList<Owner, T, Add, Remove>::remove(T*mc)
     {
-        cmd::ManageAttr(*owner, mc, cmd::Type::TYPE_REMOVE);
+        bool found;
+        cmd::ManageAttr(*owner, mc, cmd::Type::TYPE_REMOVE, found);
+        return found;
     }
     
     MANAGED_REF_LIST
@@ -38,42 +40,41 @@ namespace imajuscule
         l.observableReferentiable().Remove( *reg );
         
         m_regs.erase( reg );
-        list.erase( layer );
-        
+        list.erase(layer);
         owner->observable().Notify(PersistableEvent::OBJECT_DEFINITION_CHANGED, owner);
     }
     
     MANAGED_REF_LIST
     void ManagedRefList<Owner, T, Add, Remove>::clear()
     {
-        if (!list.empty())
-        {
-            auto layer = list.begin();
-            auto layer_end = list.end();
-            
-            auto registration = m_regs.begin();
-            auto registration_end = m_regs.end();
-            
-            for(; layer != layer_end; ++layer, ++registration) {
-                owner->removeSpec(&(**layer));
-                (*layer)->observableReferentiable().Remove( *registration );
-            }
-            
-            A( registration == registration_end );
-            
-            list.clear();
-            m_regs.clear();
-            
-            owner->observable().Notify(PersistableEvent::OBJECT_DEFINITION_CHANGED, owner);
-            owner->hasNewContentForUpdate(true);
+        if (list.empty()) {
+            return;
         }
+        auto layer = list.begin();
+        auto layer_end = list.end();
+        
+        auto registration = m_regs.begin();
+        auto registration_end = m_regs.end();
+        
+        for(; layer != layer_end; ++layer, ++registration) {
+            owner->removeSpec(&(**layer));
+            (*layer)->observableReferentiable().Remove( *registration );
+        }
+        
+        A( registration == registration_end );
+        
+        list.clear();
+        m_regs.clear();
+        
+        owner->observable().Notify(PersistableEvent::OBJECT_DEFINITION_CHANGED, owner);
+        owner->hasNewContentForUpdate(true);
     }
 
     
     MANAGED_REF_LIST
     void ManagedRefList<Owner, T, Add, Remove>::addInternal(T*mc)
     {
-        if_A (mc)
+        if(mc)
         {
             if(unlikely(has(mc)))
             {
@@ -95,29 +96,29 @@ namespace imajuscule
         }
     }
     MANAGED_REF_LIST
-    void ManagedRefList<Owner, T, Add, Remove>::removeInternal(T*mc)
+    bool ManagedRefList<Owner, T, Add, Remove>::removeInternal(T*mc)
     {
-        if_A (mc)
-        {
-            auto layer = list.begin();
-            auto layer_end = list.end();
-            
-            auto registration = m_regs.begin();
-            auto registration_end = m_regs.end();
-            
-            for(; layer != layer_end; ++layer, ++registration) {
-                
-                A( registration != registration_end );
-                if( &**layer == mc)
-                {
-                    remove( registration, layer );
-                    owner->hasNewContentForUpdate(true);
-                    return;
-                }
-            }
-            
-            A(!"Design Error : attempt to remove an absent position");
+        if(!mc) {
+            return false;
         }
+        auto layer = list.begin();
+        auto layer_end = list.end();
+        
+        auto registration = m_regs.begin();
+        auto registration_end = m_regs.end();
+        
+        for(; layer != layer_end; ++layer, ++registration) {
+            
+            A( registration != registration_end );
+            if( &**layer == mc)
+            {
+                remove( registration, layer );
+                owner->hasNewContentForUpdate(true);
+                return true;
+            }
+        }
+
+        return false;
     }
     
     MANAGED_REF_LIST

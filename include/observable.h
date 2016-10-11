@@ -194,7 +194,7 @@ namespace imajuscule
             }
         }
 
-        const void Remove(const FunctionInfo<Event> &functionInfo)
+        const bool Remove(const FunctionInfo<Event> &functionInfo)
         {
             //OBS_LG(INFO, "Observable::Remove(%d) #%d", functionInfo.m_event, m_curNotifStamp);
 
@@ -208,12 +208,10 @@ namespace imajuscule
 
                 OBS_LG(INFO, "Observable(%x)::Remove(%d) : size before %d", this, functionInfo.m_event, std::get<CBS_LIST>(*(it1->second)).size());
 
-                bool bFound = false;
                 for (; it != end; ++it)
                 {
                     if (std::get<KEY>(*it) == functionInfo.m_key)
                     {
-                        bFound = true;
                         //LG(INFO, "  %d", std::get<KEY>(*it));
 
                         if (std::get<RECURSIVE_LEVEL>(*it) > 0)
@@ -230,12 +228,13 @@ namespace imajuscule
                             cbslist.erase(it);
                             OBS_LG(INFO, "Observable(%x)::Remove(%d) : size1 %d (removed a notification)", this, functionInfo.m_event, std::get<CBS_LIST>(*(it1->second)).size());
                         }
-                        break;
+                        return true;
                     }
                 }
 
                 OBS_LG(INFO, "Observable(%x)::Remove(%d) : size after %d", this, functionInfo.m_event, std::get<CBS_LIST>(*(it1->second)).size());
             }
+            return false;
         }
 
         Observable(const Observable &) = delete;

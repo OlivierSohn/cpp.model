@@ -32,8 +32,6 @@ namespace imajuscule
             m_hintName = std::move(other.m_hintName);
             m_sessionName = std::move(other.m_sessionName);
             m_dateOfCreation = std::move(other.m_dateOfCreation);
-            m_targets = std::move(other.m_targets);
-            m_sources = std::move(other.m_sources);
             m_observableReferentiable = std::move(other.m_observableReferentiable);
             m_bHidden = std::move(other.m_bHidden);
             m_bHasSessionName = std::move(other.m_bHasSessionName);
@@ -47,8 +45,6 @@ namespace imajuscule
                 m_hintName = std::move(other.m_hintName);
                 m_sessionName = std::move(other.m_sessionName);
                 m_dateOfCreation = std::move(other.m_dateOfCreation);
-                m_targets = std::move(other.m_targets);
-                m_sources = std::move(other.m_sources);
                 m_observableReferentiable = std::move(other.m_observableReferentiable);
                 m_bHidden = std::move(other.m_bHidden);
                 m_bHasSessionName = std::move(other.m_bHasSessionName);
@@ -80,16 +76,6 @@ namespace imajuscule
         bool isHidden();
         
         static bool ReadIndexForDiskGUID(const DirectoryPath & path, const std::string & guid, unsigned int &index, std::string & sHintName);
-        
-        void registerSource( Referentiable& source );
-        void registerTarget( Referentiable& target );
-        size_t countTargets();
-        size_t countSources();
-        void unRegisterTarget( Referentiable& target );
-        void unRegisterSource( Referentiable& source );
-        
-        void traverseTargets(refs::iterator & begin, refs::iterator & end);
-        void traverseSources(refs::iterator & begin, refs::iterator & end);
     protected:
         
         virtual ~Referentiable();
@@ -127,7 +113,6 @@ namespace imajuscule
         std::string m_hintName; // persisted
         std::string m_sessionName; // not persisted
         std::string m_dateOfCreation; // persisted
-        refs m_targets, m_sources;
         Observable<Event, Referentiable*> * m_observableReferentiable;
 
         bool m_bHidden;

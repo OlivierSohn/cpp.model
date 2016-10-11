@@ -49,6 +49,13 @@ namespace imajuscule
         Referentiable* newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize, bool bVisibleIfAhistoric);
 
         referentiables const & traverse() const { return refs; }
+        void forEach(std::function<void(Referentiable &)> && f) {
+            for(auto r : traverse()) {
+                if(r) {
+                    f(*r);
+                }
+            }
+        }
 
         // guid is unique
         Referentiable * findByGuid(const std::string & guid);
@@ -111,8 +118,9 @@ namespace imajuscule
 
         void forEachReferentiable(std::function<void(T&)> && f) {
             for(auto r : traverse()) {
-                T * cast = static_cast<T*>(r);
-                f(*cast);
+                if(T * cast = static_cast<T*>(r)) {
+                    f(*cast);
+                }
             }
         }
 

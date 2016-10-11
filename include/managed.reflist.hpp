@@ -20,7 +20,7 @@ namespace imajuscule
     using regs = std::vector < FunctionInfo< Referentiable::Event >>;
     using vregs = std::vector < regs >;
     
-#define MANAGED_REF_LIST template <typename Owner, class T, void (Owner::*Add)(T*), void (Owner::*Remove)(T*)>
+#define MANAGED_REF_LIST template <typename Owner, class T, void (Owner::*Add)(T*), bool (Owner::*Remove)(T*)>
     MANAGED_REF_LIST
     class ManagedRefList {
         friend Owner;
@@ -33,7 +33,7 @@ namespace imajuscule
         listT list;
 
         void addInternal( T* );
-        void removeInternal( T* );
+        bool removeInternal( T* );
         
         using cmd = RefAttrListCmd < Owner, T, Add, Remove >;
         void remove(vregs::iterator & reg, listIterator & layer);
@@ -49,14 +49,16 @@ namespace imajuscule
 
         template<class U> // U is T or subclass
         void add(ref_unique_ptr<U> ptr) {
-            cmd::ManageAttr(*owner, ptr.release(), cmd::Type::TYPE_ADD);
+            bool found;
+            cmd::ManageAttr(*owner, ptr.release(), cmd::Type::TYPE_ADD, found);
         }
         
         // TODO remove once we figured out a way to handle shared MotionLayer
         void add(T * ptr) {
-            cmd::ManageAttr(*owner, ptr, cmd::Type::TYPE_ADD);
+            bool found;
+            cmd::ManageAttr(*owner, ptr, cmd::Type::TYPE_ADD, found);
         }
-        void remove(T*);
+        bool remove(T*);
         void set(listT &&);
         bool has(T const *) const;
         int size() const;

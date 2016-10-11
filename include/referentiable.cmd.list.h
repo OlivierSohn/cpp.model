@@ -8,7 +8,7 @@ namespace imajuscule
         < class T /* Type of modified object (is a referentiable)*/ \
         , class U /*Type of object attribute (is a Referentiable)*/ \
         , void (T::*fAdd)(U*) \
-        , void (T::*fRemove)(U*) >
+        , bool (T::*fRemove)(U*) >
 
     class ReferentiableManagerBase;
     
@@ -25,7 +25,7 @@ namespace imajuscule
             TYPE_REMOVE
         };
         static Type Other(Type);
-        static bool ManageAttr(T & obj, U * newAttr, Type t);
+        static bool ManageAttr(T & obj, U * newAttr, Type t, bool & found);
 
     protected:
         RefAttrListCmd(T & ref, const U * attr, Type t);
@@ -33,8 +33,10 @@ namespace imajuscule
         class CommandResult : public Command::CommandResult
         {
             SUBCR
+            bool found;
         public:
-            CommandResult(bool bSuccess);
+            CommandResult(bool bSuccess, bool found);
+            bool getFound() const { return found; }
         };
     private:
         struct data : public Command::data
@@ -57,9 +59,9 @@ namespace imajuscule
         bool doExecute(const Command::data & Data) override;
 
         // returns true if a command was executed
-        static bool ExecuteFromInnerCommand(T & obj, U * newAttr, Type t, bool & bSuccess /*returns true if executed command succeeded*/);
+        static bool ExecuteFromInnerCommand(T & obj, U * newAttr, Type t, bool & bSuccess /*returns true if executed command succeeded*/, bool & found);
 
         // returns true if command succeeded
-        static bool Execute(T & obj, const U * attr, Type t);
+        static bool Execute(T & obj, const U * attr, Type t, bool & found);
     };
 }

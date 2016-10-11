@@ -37,13 +37,11 @@ namespace imajuscule
 
         // while you work with this vector, make sure to not remove or add any specs to this object
         // else you're in BIG trouble...
-        specs const & getSpecs() const { return m_specs; }
-
-        void addObserver(observer);
-        void removeObserver(observer);
+        std::vector< Updatable* > const & getSpecs() const { return m_specs; }
+        std::vector< Updatable* > const & getObservers() const { return m_observers; }
 
         template<class func>
-        bool forEachObserverRecurse(func & f) {
+        bool forEachObserverRecurse(func f) {
             for ( auto * observer : m_observers )
             {
                 if ( !observer ) { continue; }
@@ -71,7 +69,7 @@ namespace imajuscule
 
         bool isSpec(Updatable const * item) const;
         bool isObserver(Updatable const * item) const;
-
+        
     protected:
         Updatable();
 
@@ -93,8 +91,8 @@ namespace imajuscule
         UpdateState m_state;
         bool m_bHasNewContentForUpdate;
 
-        specs m_specs;
-        observers m_observers;
+        std::vector< Updatable* > m_specs;
+        std::vector< Updatable* > m_observers;
 
         Observable<Event, Updatable& /*observed*/, Updatable&/*spec*/> * m_observableUpdatable;
 
@@ -108,6 +106,9 @@ namespace imajuscule
         bool isConsistent() const;
         void onAddRecursiveSpec(spec item);
         void onRemoveRecursiveSpec(spec item);
+        
+        void addObserver(observer);
+        void removeObserver(observer);
         
         static void onUpdateStart();
         static void onUpdateEnd();

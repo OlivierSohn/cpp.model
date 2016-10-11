@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "referentiable.h"
+#include "referentiable.manager.h"
 
 namespace imajuscule
 {
@@ -21,6 +22,18 @@ namespace imajuscule
         
         void regManager(ReferentiableManagerBase *);
 
+        template<typename F>
+        static void forEach(F f) {
+            auto r = getInstance();
+            if(!r) {
+                return;
+            }
+            for(auto * m : r->getManagers()) {
+                if(m) {
+                    m->forEach(f);
+                }
+            }
+        }
     private:
         Referentiables();
         static Referentiables * getInstance();
