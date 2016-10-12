@@ -34,7 +34,6 @@ m_observableUpdatable(Observable<Event, Updatable& /*observed*/, Updatable&/*spe
 
 Updatable::~Updatable()
 {
-    // it's ok to still have specs at this point ...
     while(!m_specs.empty())
     {
         if(auto s = m_specs.back())
@@ -47,15 +46,10 @@ Updatable::~Updatable()
         }
     }
     
-    // ... but it's not ok to still have observers, because they will use in their doUpdate's specs that don't exist anymore
     while(!m_observers.empty())
     {
         if(auto s = m_observers.back())
         {
-            // ... except if we are resetting
-            if(!GlobalsImpl::getInstance()->isResetting()) {
-                LG(WARN, "some observers need to be cleaned up");
-            }
             s->removeSpec(this);
         }
         else
