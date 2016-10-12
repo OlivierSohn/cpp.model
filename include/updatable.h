@@ -31,6 +31,7 @@ namespace imajuscule
         virtual ~Updatable();
 
         void Update();
+        static bool updating() { return updateAllowed; }
 
         void addSpec(spec);
         void removeSpec(spec);

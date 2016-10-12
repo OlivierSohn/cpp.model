@@ -54,6 +54,9 @@ bool RefAttrListCmd<T,U,fAdd,fRemove>::data::operator!=(const Command::data&othe
 REF_CMD_LIST
 U * RefAttrListCmd<T,U,fAdd,fRemove>::data::Attr() const
 {
+    if(!m_manager) {
+        return NULL;
+    }
     return static_cast<U *>(m_manager->findByGuid(m_attrGUID));
 }
 REF_CMD_LIST
