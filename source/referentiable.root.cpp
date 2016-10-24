@@ -59,11 +59,13 @@ void ReferentiableRoot::addRef(Referentiable* ref)
     {
         m_refs.insert(ref);
         addSpec(ref);
-        ref->observableReferentiable().Register(Referentiable::Event::WILL_BE_DELETED,
-                                  [this](Referentiable*r){
-                                      if(r!= this)
-                                          this->removeRef(r);
-                                  });
+        if(auto refobs = ref->observableReferentiable()) {
+            refobs->Register(Referentiable::Event::WILL_BE_DELETED,
+                             [this](Referentiable*r){
+                                 if(r!= this)
+                                     this->removeRef(r);
+                             });
+        }
     }
 }
 void ReferentiableRoot::removeRef(Referentiable* ref)

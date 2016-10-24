@@ -59,9 +59,10 @@ Persistable()
     FormatDate(pTime, m_dateOfCreation);
 }
 
-Referentiable::~Referentiable()
+void Referentiable::deleteObservableReferentiable()
 {
     m_observableReferentiable->deinstantiate();
+    m_observableReferentiable = 0;
 }
 
 ReferentiableManagerBase * Referentiable::getManager() const
@@ -81,9 +82,9 @@ void Referentiable::deinstantiate()
     getManager()->RemoveRef(this);
 }
 
-auto Referentiable::observableReferentiable() -> Observable<Event, Referentiable*> &
+auto Referentiable::observableReferentiable() -> Observable<Event, Referentiable*> *
 {
-    return *m_observableReferentiable;
+    return m_observableReferentiable; // might be zero if it is being destroyed
 }
 
 void Referentiable::Hide()

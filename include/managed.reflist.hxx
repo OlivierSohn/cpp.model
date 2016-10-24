@@ -18,7 +18,9 @@ namespace imajuscule
             A( registration != registration_end );
             A(*layer);
             T & l = **layer;
-            l.observableReferentiable().Remove( *registration );
+            if(auto lobsref = l.observableReferentiable()) {
+                lobsref->Remove( *registration );
+            }
         }
         
         A( registration == registration_end );
@@ -37,7 +39,9 @@ namespace imajuscule
     {
         T & l = **layer;
         owner->removeSpec(&l);
-        l.observableReferentiable().Remove( *reg );
+        if(auto lobsref = l.observableReferentiable()) {
+            lobsref->Remove( *reg );
+        }
         
         m_regs.erase( reg );
         list.erase(layer);
@@ -58,7 +62,9 @@ namespace imajuscule
         
         for(; layer != layer_end; ++layer, ++registration) {
             owner->removeSpec(&(**layer));
-            (*layer)->observableReferentiable().Remove( *registration );
+            if(auto lobsref = (*layer)->observableReferentiable()) {
+                lobsref->Remove( *registration );
+            }
         }
         
         A( registration == registration_end );
@@ -84,11 +90,13 @@ namespace imajuscule
             
             list.emplace_back( mc );
             
-            m_regs.push_back( {
-                mc->observableReferentiable().Register(Referentiable::Event::WILL_BE_DELETED, [this](Referentiable*r){
-                    remove(static_cast<T*>(r));
-                })
-            });
+            if(auto mcobsref = mc->observableReferentiable()) {
+                m_regs.push_back( {
+                    mcobsref->Register(Referentiable::Event::WILL_BE_DELETED, [this](Referentiable*r){
+                        remove(static_cast<T*>(r));
+                    })
+                });
+            }
             
             owner->addSpec(mc);
             owner->hasNewContentForUpdate(true);

@@ -57,12 +57,11 @@ namespace imajuscule
         void deinstantiate();
         enum Event
         {
-            DEACTIVATE_LINKS,
             WILL_BE_DELETED,
             SOURCES_CHANGED,
             TARGETS_CHANGED
         };
-        Observable<Event, Referentiable*> & observableReferentiable();
+        Observable<Event, Referentiable*> * observableReferentiable();
 
         const std::string & guid() const;
         const std::string & sessionName() const;
@@ -78,7 +77,7 @@ namespace imajuscule
         static bool ReadIndexForDiskGUID(const DirectoryPath & path, const std::string & guid, unsigned int &index, std::string & sHintName);
     protected:
         
-        virtual ~Referentiable();
+        virtual ~Referentiable() = default;
 
         virtual void Init() {};
 
@@ -120,6 +119,7 @@ namespace imajuscule
         virtual void setSessionName(const std::string & sn);
 
         virtual Referentiable * mainRefAttr() const;
+        void deleteObservableReferentiable();
     };
 
 }

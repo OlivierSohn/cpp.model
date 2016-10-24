@@ -94,8 +94,9 @@ void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
         // during destruction, the object must be accessible via its manager
         // because for example when destructing a joint, we need to launch a command to change the parent to NULL and this command uses the manager to find the object
         // that's why delete is done before removing guid and session name from maps
-        r->observableReferentiable().Notify(Referentiable::Event::DEACTIVATE_LINKS, r);
-        r->observableReferentiable().Notify(Referentiable::Event::WILL_BE_DELETED, r);
+        r->observableReferentiable()->Notify(Referentiable::Event::WILL_BE_DELETED, r);
+        // to make sure that the observable is not used during the destructor
+        r->deleteObservableReferentiable();
         delete r;
 
         size_t count = m_guidsToRftbls.erase(guid);
