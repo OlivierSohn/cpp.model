@@ -270,25 +270,23 @@ void Updatable::removeSpec(spec item)
         return;
     }
     
-    item->removeObserver(this);
-    
     auto f = std::find(m_specs.begin(), m_specs.end(), item);
     if(f != m_specs.end())
     {
         *f = NULL;
-    }
-    
-    A(!isSpec(item));
-    
-    observableUpdatable().Notify(REMOVE_SPEC, *this, *item);
-    
-    for (auto * observer : m_observers)
-    {
-        if(observer)
+        item->removeObserver(this);
+        observableUpdatable().Notify(REMOVE_SPEC, *this, *item);
+        
+        for (auto * observer : m_observers)
         {
-            observer->onRemoveRecursiveSpec(item);
+            if(observer)
+            {
+                observer->onRemoveRecursiveSpec(item);
+            }
         }
     }
+    
+    A(!isSpec(item));    
 }
 void Updatable::onUpdateStart() {
     updateAllowed = true;
