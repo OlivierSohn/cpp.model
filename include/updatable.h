@@ -34,7 +34,7 @@ namespace imajuscule
         static bool updating() { return updateAllowed; }
 
         void addSpec(spec);
-        void removeSpec(spec);
+        bool removeSpec(spec);
 
         // while you work with this vector, make sure to not remove or add any specs to this object
         // else you're in BIG trouble...

@@ -26,15 +26,11 @@ FunctionInfo<PersistableEvent> Persistable::addSpecAndForwardNotifications(Persi
     return upd->observable().Register(OBJECT_DEFINITION_CHANGED, [this](Persistable*){ observable().Notify(OBJECT_DEFINITION_CHANGED, this); });
 }
 
-void Persistable::removeSpecAndDelete(Persistable * upd)
-{
-    removeSpec(upd);
-    delete upd;
-}
 void Persistable::removeSpecAndUnforward(Persistable * upd, const FunctionInfo<PersistableEvent> & reg)
 {
-    removeSpec(upd);
-    upd->observable().Remove(reg);
+    if(removeSpec(upd)) {
+        upd->observable().Remove(reg);
+    }
 }
 
 eResult Persistable::Save(PersistablePersist&pp)

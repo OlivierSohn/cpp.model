@@ -73,9 +73,8 @@ void ReferentiableRoot::removeRef(Referentiable* ref)
     //LG(INFO,"- %x", ref);
     A(ref);
     auto it = m_refs.find(ref);
-    if_A(it != m_refs.end())
-    {
-        m_refs.erase(it);
-        removeSpec(ref);
-    }
+    A(it != m_refs.end());
+
+    m_refs.erase(it);
+    removeSpec(ref);
 }

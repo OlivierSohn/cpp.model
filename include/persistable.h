@@ -199,7 +199,6 @@ namespace imajuscule
 
         FunctionInfo<PersistableEvent> addSpecAndForwardNotifications(Persistable * upd);
         void removeSpecAndUnforward(Persistable * upd, const FunctionInfo<PersistableEvent> & reg);
-        void removeSpecAndDelete(Persistable * upd);
 
         // these are not defined through macros
         class PersistablePersist : public KeysPersist
