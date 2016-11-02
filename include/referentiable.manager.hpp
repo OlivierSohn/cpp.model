@@ -203,8 +203,6 @@ bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r, bool bFinal
 
 std::string ReferentiableManagerBase::generateGuid()
 {
-    //LG(INFO, "ReferentiableManagerBase::generateGuid : begin");
-
     std::string sGuid;
     sGuid.reserve(32);
 
@@ -274,17 +272,12 @@ std::string ReferentiableManagerBase::generateGuid()
             case '-':
                 continue;
             default:
-                sGuid.push_back(uuid[i]);
+                sGuid.push_back(toupper(uuid[i]));
                 break;
         }
     }
-    //sGuid.push_back('{');
-    //sGuid.insert(sGuid.end(),uuid, uuid+sizeof(uuid)-1/*before end of string*/);
-    //sGuid.push_back('}');
 #endif
 
-    //LG(INFO, "ReferentiableManagerBase::generateGuid returns %s", sGuid.c_str());
-    
     A(sGuid.size() == 32);
     return sGuid;
 }
