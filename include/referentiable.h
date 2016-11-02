@@ -122,6 +122,63 @@ namespace imajuscule
         void deleteObservableReferentiable();
     };
 
+    
+    /*
+     * weak pointer for referentiable
+     */
+    template<class T>
+    struct WeakPtr {
+        WeakPtr() = default;
+        WeakPtr(T*ptr) {
+            set(ptr);
+        }
+        
+        ~WeakPtr() {
+            reset();
+        }
+        
+        WeakPtr<T> & operator=(T*p) {
+            set(p);
+            return *this;
+        }
+        
+        explicit operator T*() const { return ref; }
+        operator bool() const { return static_cast<bool>(ref); }
+        T& operator*() { return *ref; }
+        
+        void set(T*b) {
+            reset();
+            ref = b;
+            if(ref) {
+                if(auto o = ref->observableReferentiable() ) {
+                    m_reg.emplace_back(o->Register(Referentiable::Event::WILL_BE_DELETED, [this](Referentiable*){
+                        ref = nullptr;
+                        m_reg.clear();
+                    }));
+                } else {
+                    // ref is already deleted
+                    ref = 0;
+                }
+            }
+        }
+        
+        T * ptr() const { return ref; }
+        
+        void reset() {
+            if(ref) {
+                if(auto o = ref->observableReferentiable() ) {
+                    o->Remove(m_reg);
+                }
+            }
+            m_reg.clear();
+            ref = nullptr;
+        }
+        
+    private:
+        T * ref = 0;
+        std::vector<FunctionInfo<Referentiable::Event>> m_reg;
+    };
+    
 }
 #define SET_ref_unique(type, name, methodPostFix) \
 void set##methodPostFix(ref_unique_ptr<type> p) { \

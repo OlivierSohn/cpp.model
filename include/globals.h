@@ -42,7 +42,6 @@ namespace imajuscule {
         template<typename T, typename... Args>
         static void make_ptr(T *& p, Args&&... args) {
             if( GlobalsImpl::getInstance()->isResetting() ) {
-                LG(ERR, "GlobalsImpl is resetting, cannot make pointer");
                 delete p;
                 p=0;
                 return;
