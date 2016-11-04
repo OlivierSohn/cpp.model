@@ -145,6 +145,7 @@ namespace imajuscule
         explicit operator T*() const { return ref; }
         operator bool() const { return static_cast<bool>(ref); }
         T& operator*() { return *ref; }
+        T* operator -> () { return ref; }
         
         void set(T*b) {
             reset();
