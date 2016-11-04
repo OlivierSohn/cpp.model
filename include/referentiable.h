@@ -127,7 +127,7 @@ namespace imajuscule
      * weak pointer for referentiable
      */
     template<class T>
-    struct WeakPtr {
+    struct WeakPtr : public NonCopyable {
         WeakPtr() = default;
         WeakPtr(T*ptr) {
             set(ptr);
@@ -144,8 +144,8 @@ namespace imajuscule
         
         explicit operator T*() const { return ref; }
         operator bool() const { return static_cast<bool>(ref); }
-        T& operator*() { return *ref; }
-        T* operator -> () { return ref; }
+        T& operator*() const { return *ref; }
+        T* operator -> () const { return ref; }
         
         void set(T*b) {
             reset();
