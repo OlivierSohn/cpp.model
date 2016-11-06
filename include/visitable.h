@@ -18,7 +18,13 @@ namespace imajuscule
         NonCopyable(const NonCopyable &) = delete;
         NonCopyable & operator=(const NonCopyable&) = delete;
     };
-    class Visitable : public NonCopyable
+    
+    class Object : public NonCopyable {
+    public:
+        virtual ~Object() = default;
+    };
+    
+    class Visitable : public Object
     {
     public:
         enum HierarchyEvent
@@ -30,7 +36,7 @@ namespace imajuscule
         {
             VISITABLE_DELETE,
         };
-        virtual ~Visitable();
+        ~Visitable();
 
         Observable<Event, Visitable&> &  observableVisitable();
         Observable<HierarchyEvent, Visitable&, Visitable&> &  observableVisitableH();
