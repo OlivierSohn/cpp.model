@@ -128,6 +128,17 @@ namespace imajuscule
      */
     template<class T>
     struct WeakPtr : public NonCopyable {
+        WeakPtr(WeakPtr && o) {
+            o.Unregister();
+            set(o.ref);
+        }
+        
+        WeakPtr & operator = (WeakPtr && o) {
+            o.Unregister();
+            set(o.ref);
+            return *this;
+        }
+        
         WeakPtr() = default;
         WeakPtr(T*ptr) {
             set(ptr);
@@ -147,37 +158,65 @@ namespace imajuscule
         T& operator*() const { return *ref; }
         T* operator -> () const { return ref; }
         
-        void set(T*b) {
-            reset();
-            ref = b;
-            if(ref) {
-                if(auto o = ref->observableReferentiable() ) {
-                    m_reg.emplace_back(o->Register(Referentiable::Event::WILL_BE_DELETED, [this](Referentiable*){
-                        ref = nullptr;
-                        m_reg.clear();
-                    }));
-                } else {
-                    // ref is already deleted
-                    ref = 0;
-                }
-            }
+        bool operator == (T*o) const {
+            return ref == o;
+        }
+        bool operator != (T*o) const {
+            return ref != o;
         }
         
-        T * ptr() const { return ref; }
+        bool operator == (WeakPtr const & o) const {
+            return ref == o.ref;
+        }
+        bool operator != (WeakPtr const & o) const {
+            return ref != o.ref;
+        }
+        
+        void set(T*b) {
+            if( b == ref) {
+                return;
+            }
+
+            reset();
+            ref = b;
+            Register();
+        }
+        
+        T * get() const { return ref; }
         
         void reset() {
-            if(ref) {
-                if(auto o = ref->observableReferentiable() ) {
-                    o->Remove(m_reg);
-                }
-            }
-            m_reg.clear();
+            Unregister();
             ref = nullptr;
         }
         
     private:
         T * ref = 0;
         std::vector<FunctionInfo<Referentiable::Event>> m_reg;
+
+        void Register() {
+            if(!ref) {
+                return;
+            }
+            
+            if(auto o = ref->observableReferentiable() ) {
+                m_reg.emplace_back(o->Register(Referentiable::Event::WILL_BE_DELETED, [this](Referentiable*){
+                    ref = nullptr;
+                    m_reg.clear();
+                }));
+            } else {
+                // ref is already deleted
+                ref = 0;
+            }
+        }
+        
+        void Unregister() {
+            if(ref) {
+                if(auto o = ref->observableReferentiable() ) {
+                    o->Remove(m_reg);
+                }
+            }
+            m_reg.clear();
+        }
     };
     
 }
