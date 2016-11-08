@@ -91,8 +91,11 @@ namespace imajuscule
         {
             std::vector<FunctionInfo<Event>> rv;
 
-            for (auto&r : evts)
+            rv.reserve(evts.size());
+            
+            for (auto&r : evts) {
                 rv.push_back(Register(r, observer));
+            }
 
             return rv;
         }
@@ -118,8 +121,8 @@ namespace imajuscule
 
             // take key from stack of available keys, or if it's empty, that means the next available key is the size of the map
             int key;
-            availableKeys & avKeys = std::get<AVAILABLE_KEYS>(*v);
-            callbacksList & cbslist = std::get<CBS_LIST>(*v);
+            auto & avKeys = std::get<AVAILABLE_KEYS>(*v);
+            auto & cbslist = std::get<CBS_LIST>(*v);
             if (avKeys.empty())
                 key = (int)cbslist.size();
             else
@@ -128,10 +131,9 @@ namespace imajuscule
                 avKeys.pop();
             }
 
-            cbslist.push_back(typename callbacksList::value_type(key, true, 0, std::forward<Observer>(observer)));
+            cbslist.emplace_back(key, true, 0, std::move(observer));
 
-            FunctionInfo<Event> FunctionInfo{ evt, key };
-            return FunctionInfo;
+            return { evt, key };
         }
 
         void Notify(const Event &event, Args... Params)
@@ -147,8 +149,8 @@ namespace imajuscule
 
                     OBS_LG(INFO, "Observable(%x)::Notify(%d) : size0 %d", this, event, cbslist.size());
 
-                    typename callbacksList::iterator itM = cbslist.begin();
-                    typename callbacksList::iterator endM = cbslist.end();
+                    auto itM = cbslist.begin();
+                    auto endM = cbslist.end();
 
                     for (; itM != endM;)
                     {
@@ -203,8 +205,8 @@ namespace imajuscule
             {
                 callbacksList & cbslist = std::get<CBS_LIST>(*(it1->second));
  
-                typename callbacksList::iterator it = cbslist.begin();
-                typename callbacksList::iterator end = cbslist.end();
+                auto it = cbslist.begin();
+                auto end = cbslist.end();
 
                 OBS_LG(INFO, "Observable(%x)::Remove(%d) : size before %d", this, functionInfo.m_event, std::get<CBS_LIST>(*(it1->second)).size());
 
@@ -247,8 +249,9 @@ namespace imajuscule
 
         void deinstantiateIfNeeded()
         {
-            if (m_deinstantiate && (0 == m_iCurNotifyCalls))
+            if (m_deinstantiate && (0 == m_iCurNotifyCalls)) {
                 delete this;
+            }
         }
     };
 }

@@ -9,6 +9,8 @@
 #include "persistable.h"
 #include "observable.h"
 #include "os.storage.keys.h"
+#include "weak_ptr.h"
+#include "meta.h"
 
 namespace imajuscule
 {
@@ -57,9 +59,7 @@ namespace imajuscule
         void deinstantiate();
         enum Event
         {
-            WILL_BE_DELETED,
-            SOURCES_CHANGED,
-            TARGETS_CHANGED
+            WILL_BE_DELETED
         };
         Observable<Event, Referentiable*> * observableReferentiable();
 
@@ -121,104 +121,9 @@ namespace imajuscule
         virtual Referentiable * mainRefAttr() const;
         void deleteObservableReferentiable();
     };
-
     
-    /*
-     * weak pointer for referentiable
-     */
-    template<class T>
-    struct WeakPtr : public NonCopyable {
-        WeakPtr(WeakPtr && o) {
-            o.Unregister();
-            set(o.ref);
-        }
-        
-        WeakPtr & operator = (WeakPtr && o) {
-            o.Unregister();
-            set(o.ref);
-            return *this;
-        }
-        
-        WeakPtr() = default;
-        WeakPtr(T*ptr) {
-            set(ptr);
-        }
-        
-        ~WeakPtr() {
-            reset();
-        }
-        
-        WeakPtr<T> & operator=(T*p) {
-            set(p);
-            return *this;
-        }
-        
-        explicit operator T*() const { return ref; }
-        operator bool() const { return static_cast<bool>(ref); }
-        T& operator*() const { return *ref; }
-        T* operator -> () const { return ref; }
-        
-        bool operator == (T*o) const {
-            return ref == o;
-        }
-        bool operator != (T*o) const {
-            return ref != o;
-        }
-        
-        bool operator == (WeakPtr const & o) const {
-            return ref == o.ref;
-        }
-        bool operator != (WeakPtr const & o) const {
-            return ref != o.ref;
-        }
-        
-        void set(T*b) {
-            if( b == ref) {
-                return;
-            }
-
-            reset();
-            ref = b;
-            Register();
-        }
-        
-        T * get() const { return ref; }
-        
-        void reset() {
-            Unregister();
-            ref = nullptr;
-        }
-        
-    private:
-        T * ref = 0;
-        std::vector<FunctionInfo<Referentiable::Event>> m_reg;
-
-        void Register() {
-            if(!ref) {
-                return;
-            }
-            
-            if(auto o = ref->observableReferentiable() ) {
-                m_reg.emplace_back(o->Register(Referentiable::Event::WILL_BE_DELETED, [this](Referentiable*){
-                    ref = nullptr;
-                    m_reg.clear();
-                }));
-            } else {
-                // ref is already deleted
-                ref = 0;
-            }
-        }
-        
-        void Unregister() {
-            if(ref) {
-                if(auto o = ref->observableReferentiable() ) {
-                    o->Remove(m_reg);
-                }
-            }
-            m_reg.clear();
-        }
-    };
-    
+    template<class T, typename std::enable_if<IsDerivedFrom<T, Referentiable>::Is>::type* = nullptr >
+    using WeakPtr = WeakPtrBase< T, Referentiable, &Referentiable::observableReferentiable, Referentiable::WILL_BE_DELETED>;
 }
 #define SET_ref_unique(type, name, methodPostFix) \
 void set##methodPostFix(ref_unique_ptr<type> p) { \

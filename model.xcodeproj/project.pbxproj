@@ -64,6 +64,8 @@
 		0931815C1DA389F500DF8B3B /* ref_unique_ptr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ref_unique_ptr.h; sourceTree = "<group>"; };
 		093733961DAA4AE900F01BD0 /* application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = application.h; sourceTree = "<group>"; };
 		09429C961AD38207001513DA /* libmodel.ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmodel.ios.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		094C4E601DD224860074077B /* weak_ptr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = weak_ptr.h; sourceTree = "<group>"; };
+		094C4E611DD224860074077B /* meta.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = meta.h; sourceTree = "<group>"; };
 		095F43E51C3A2010005BE7DA /* referentiables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiables.h; sourceTree = "<group>"; };
 		095F43E71C3A20F9005BE7DA /* referentiables.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = referentiables.cpp; sourceTree = "<group>"; };
 		09681A0B1B1AAACE00678885 /* referentiable.root.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = referentiable.root.cpp; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 				097662921AD357F70099DA54 /* history.manager.h */,
 				0930C57F1CC8688F00AB958B /* managed.reflist.hpp */,
 				0930C5801CC8688F00AB958B /* managed.reflist.hxx */,
+				094C4E611DD224860074077B /* meta.h */,
 				097662931AD357F70099DA54 /* model.allincludes.h */,
 				09EF8E231DAC1EDC00DC7342 /* moveonly_function.h */,
 				097662941AD357F70099DA54 /* observable.h */,
@@ -183,6 +186,7 @@
 				0976629E1AD357F70099DA54 /* updatable.h */,
 				0976629F1AD357F70099DA54 /* visitable.h */,
 				097662A01AD357F70099DA54 /* visitor.h */,
+				094C4E601DD224860074077B /* weak_ptr.h */,
 			);
 			path = include;
 			sourceTree = "<group>";
