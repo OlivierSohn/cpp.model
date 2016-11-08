@@ -22,7 +22,7 @@ Command::CommandResult(bSuccess)
 REF_CMD_LIST
 RefAttrListCmd<T,U,fAdd,fRemove>::data::data(const U * attr, Type t) :
 Command::data()
-, m_manager(NULL)
+, m_manager(nullptr)
 , m_t(t)
 {
     if (attr)
@@ -55,7 +55,7 @@ REF_CMD_LIST
 U * RefAttrListCmd<T,U,fAdd,fRemove>::data::Attr() const
 {
     if(!m_manager) {
-        return NULL;
+        return nullptr;
     }
     return static_cast<U *>(m_manager->findByGuid(m_attrGUID));
 }

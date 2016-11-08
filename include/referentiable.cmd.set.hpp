@@ -26,7 +26,7 @@ REF_CMD_SET
 RefChangeAttrCmd<T,U,fSet,fGet>::data::data(const U * attr) :
 Command::data()
 , m_hasAttr(false)
-, m_manager(NULL)
+, m_manager(nullptr)
 {
     if (attr)
     {
@@ -40,7 +40,7 @@ REF_CMD_SET
 RefChangeAttrCmd<T,U,fSet,fGet>::data::data(T&obj) :
 Command::data()
 , m_hasAttr(false)
-, m_manager(NULL)
+, m_manager(nullptr)
 {
     if (U * attr = std::bind(fGet, &obj)())
     {
@@ -71,7 +71,7 @@ bool RefChangeAttrCmd<T,U,fSet,fGet>::data::operator!=(const Command::data&other
 REF_CMD_SET
 U * RefChangeAttrCmd<T,U,fSet,fGet>::data::Attr() const
 {
-    U * j = NULL;
+    U * j = nullptr;
 
     if (m_hasAttr)
     {
@@ -108,7 +108,7 @@ std::string RefChangeAttrCmd<T,U,fSet,fGet>::data::getDesc() const
 REF_CMD_SET
 RefChangeAttrCmd<T,U,fSet,fGet>::RefChangeAttrCmd(T & obj, const U * iAttr) :
 Command(RefChangeAttrCmd<T,U,fSet,fGet>::data::instantiate(obj), RefChangeAttrCmd<T,U,fSet,fGet>::data::instantiate(iAttr), dynamic_cast<Referentiable*>(&obj))
-, m_preconditionning(NULL)
+, m_preconditionning(nullptr)
 {
 }
 
@@ -117,7 +117,7 @@ RefChangeAttrCmd<T,U,fSet,fGet>::~RefChangeAttrCmd()
 {
     // commented out because preconditionnning command is an inner command so it will be deleted in Commmand::~Commmand()
     // delete m_preconditionning;
-    m_preconditionning = NULL;
+    m_preconditionning = nullptr;
 }
 
 REF_CMD_SET
@@ -232,7 +232,7 @@ bool RefChangeAttrCmd<T,U,fSet,fGet>::doExecute()
         {
             A(!"preconditionning command failed");
             // deleted by previous call
-            m_preconditionning = NULL;
+            m_preconditionning = nullptr;
         }
     }
 

@@ -14,7 +14,7 @@ using namespace imajuscule;
 
 Referentiable::Referentiable() :
 Persistable()
-, m_manager(NULL)
+, m_manager(nullptr)
 , m_guid(std::string(""))
 , m_bHasSessionName(false)
 , m_bHidden(false)
@@ -45,9 +45,9 @@ Persistable()
     A(m_manager);
 
     time_t result;
-    result = time(NULL);
+    result = time(nullptr);
 
-    struct tm * pTime = NULL;
+    struct tm * pTime = nullptr;
 #ifdef _WIN32
     struct tm time;
     pTime = &time;
@@ -113,7 +113,7 @@ const std::string & Referentiable::sessionName() const
 
 void Referentiable::setSessionName(const std::string & sn)
 {
-    //LG(INFO, "Referentiable::setSessionName(%s)", sn.empty()?"NULL" : sn.c_str());
+    //LG(INFO, "Referentiable::setSessionName(%s)", sn.empty()?"nullptr" : sn.c_str());
     m_sessionName = sn;
     m_bHasSessionName = true;
 }
@@ -138,7 +138,7 @@ std::string Referentiable::extendedName() const
 
 Referentiable * Referentiable::mainRefAttr() const
 {
-    return NULL;
+    return nullptr;
 }
 
 IMPL_PERSIST3(Referentiable, Persistable,

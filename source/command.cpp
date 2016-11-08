@@ -11,7 +11,7 @@ Undoable()
 , m_pAfter(pDataAfter)
 , m_pBefore(pDataBefore)
 , m_obsolescenceObservable(o)
-, m_manager(r?(r->getManager()):NULL)
+, m_manager(r?(r->getManager()):nullptr)
 , m_guid(r?r->guid():std::string())
 {
     if (m_obsolescenceObservable)
@@ -47,7 +47,7 @@ void Command::onObsolete()
         if (m_obsolescenceObservable)
         {
             m_obsolescenceObservable->Remove(m_reg);
-            m_obsolescenceObservable = NULL;
+            m_obsolescenceObservable = nullptr;
         }
     }
 }
@@ -193,7 +193,7 @@ Referentiable * Command::getObject() const
     if (m_manager)
         return m_manager->findByGuid(m_guid);
     else
-        return NULL;
+        return nullptr;
 }
 
 bool Command::doExecute()

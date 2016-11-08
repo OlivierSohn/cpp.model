@@ -11,7 +11,7 @@ const int KEY_TARGETS = -110;
 
 using namespace imajuscule;
 
-ReferentiableRoot * ReferentiableRoot::g_instance = NULL;
+ReferentiableRoot * ReferentiableRoot::g_instance = nullptr;
 
 IMPL_PERSIST2(ReferentiableRoot, Referentiable,
             ,

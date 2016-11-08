@@ -14,7 +14,7 @@ REF_CMD_SIMPLESET
 RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data::data(const U * attr) :
 Command::data()
 , m_hasAttr(false)
-, m_manager(NULL)
+, m_manager(nullptr)
 {
     if (attr)
     {
@@ -28,7 +28,7 @@ REF_CMD_SIMPLESET
 RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data::data(T&obj) :
 Command::data()
 , m_hasAttr(false)
-, m_manager(NULL)
+, m_manager(nullptr)
 {
     if (U * attr = std::bind(fGet, &obj)())
     {
@@ -59,7 +59,7 @@ bool RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data::operator!=(const Command::data
 REF_CMD_SIMPLESET
 U * RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data::Attr() const
 {
-    U * j = NULL;
+    U * j = nullptr;
 
     if (m_hasAttr)
     {

@@ -108,13 +108,13 @@ namespace imajuscule
 
         template <class InnerCmdType>
         static bool ExecuteFromInnerCommand(const data & dataBefore, const data & dataAfter, Referentiable* ref =
-                                            NULL, const resFunc * pResFunc = NULL);
+                                            nullptr, const resFunc * pResFunc = nullptr);
 
         template <class InnerCmdType>
-        bool ExecFromInnerCommand(const data & dataBefore, const data & dataAfter, Referentiable* ref = NULL, const resFunc * pResFunc = NULL);
+        bool ExecFromInnerCommand(const data & dataBefore, const data & dataAfter, Referentiable* ref = nullptr, const resFunc * pResFunc = nullptr);
 
         template <class InnerCmdType>
-        std::vector<CommandExec> ListInnerCommandsReadyFor(const data & dataBefore, const data & dataAfter, Referentiable * ref = NULL, const resFunc * pResFunc = NULL);
+        std::vector<CommandExec> ListInnerCommandsReadyFor(const data & dataBefore, const data & dataAfter, Referentiable * ref = nullptr, const resFunc * pResFunc = nullptr);
         
 
     private:
@@ -191,7 +191,7 @@ namespace imajuscule
         bool Redo(Undoable * limit, bool bStrict, bool & bFoundLimit) override;
         
     protected:
-        Command(data * pDataBefore, data * pDataAfter, Referentiable * r = NULL, Observable<ObsolescenceEvent> * o = NULL);
+        Command(data * pDataBefore, data * pDataAfter, Referentiable * r = nullptr, Observable<ObsolescenceEvent> * o = nullptr);
         
         std::unique_ptr<data> m_pBefore, m_pAfter;
         

@@ -12,7 +12,7 @@ bool Command::ReadyFor(const data & Now, const data & Then, Referentiable * pRef
     
     if (InnerCmdType * i = dynamic_cast<InnerCmdType*>(this))
     {
-        if ((NULL == pRef) || (pRef == getObject()))
+        if ((nullptr == pRef) || (pRef == getObject()))
         {
             switch (getState())
             {

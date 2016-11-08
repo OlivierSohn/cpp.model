@@ -21,7 +21,7 @@ void AsyncNotifier::unschedule()
     {
         if(this == p)
         {
-            p = NULL;
+            p = nullptr;
             return;
         }
     }
@@ -29,7 +29,7 @@ void AsyncNotifier::unschedule()
     {
         if(this == p)
         {
-            p = NULL;
+            p = nullptr;
             return;
         }
     }

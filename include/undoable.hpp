@@ -72,7 +72,7 @@ auto Undoable::ListInnerCommandsReadyFor(const data & dataBefore, const data & d
         {
             if (c->ReadyFor<InnerCmdType>(dataBefore, dataAfter, pRef))
             {
-                v.emplace_back((UndoGroup*)NULL, c, pResFunc);
+                v.emplace_back((UndoGroup*)nullptr, c, pResFunc);
             }
         }
         else

@@ -57,7 +57,7 @@ bool UndoGroup::Execute()
     return false;
 }
 
-bool UndoGroup::Undo(){ bool bFoundLimit; return Undo(NULL, false, bFoundLimit); }
+bool UndoGroup::Undo(){ bool bFoundLimit; return Undo(nullptr, false, bFoundLimit); }
 bool UndoGroup::UndoUntil(Undoable *limit){ bool bFoundLimit; return Undo(limit, true, bFoundLimit); }
 bool UndoGroup::Undo(Undoable *limit, bool bStrict, bool & bFoundLimit)
 {
@@ -101,7 +101,7 @@ bool UndoGroup::Undo(Undoable *limit, bool bStrict, bool & bFoundLimit)
     
     return bNotEmpty;
 }
-bool UndoGroup::Redo(){ bool bFoundLimit; return Redo(NULL, false, bFoundLimit); }
+bool UndoGroup::Redo(){ bool bFoundLimit; return Redo(nullptr, false, bFoundLimit); }
 bool UndoGroup::RedoUntil(Undoable * limit){ bool bFoundLimit; return Redo(limit, true, bFoundLimit); }
 bool UndoGroup::Redo(Undoable * limit, bool bStrict, bool & bFoundLimit)
 {
@@ -151,7 +151,7 @@ bool UndoGroup::Redo(Undoable * limit, bool bStrict, bool & bFoundLimit)
 }
 
 
-HistoryManager * HistoryManager::g_instance = NULL;
+HistoryManager * HistoryManager::g_instance = nullptr;
 
 HistoryManager::HistoryManager() :
 m_stacksCapacity(-1)// unsigned -> maximum capacity
@@ -192,7 +192,7 @@ bool HistoryManager::isActive() const
 }
 void HistoryManager::MakeGroup()
 {
-    if(NULL == CurrentCommand() && transactionCount_ == 0)
+    if(nullptr == CurrentCommand() && transactionCount_ == 0)
     {
         if (m_bAppStateHasNewContent)
         {
@@ -240,7 +240,7 @@ HistoryManager * HistoryManager::getInstance()
 Undoable * HistoryManager::CurrentCommand()
 {
     if (m_curCommandStack.empty())
-        return NULL;
+        return nullptr;
     else
         return m_curCommandStack.top();
 }

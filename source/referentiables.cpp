@@ -8,7 +8,7 @@
 
 namespace imajuscule
 {
-    Referentiables * Referentiables::m_instance( NULL );
+    Referentiables * Referentiables::m_instance( nullptr );
     Referentiables::Referentiables()
     {
         m_managers.reserve( 100 );
@@ -42,7 +42,7 @@ namespace imajuscule
     
     Referentiable* Referentiables::findRefFromGUID(const DirectoryPath & path, const std::string & guid)
     {
-        Referentiable * r = NULL;
+        Referentiable * r = nullptr;
         if((r = findRefFromGUIDLoaded(guid))) {
             return r;
         }
@@ -74,7 +74,7 @@ namespace imajuscule
             if(Referentiable * ref = man->findBySessionName(sn))
                 return ref;
         }
-        return NULL;
+        return nullptr;
     }
     Referentiable* Referentiables::findRefFromGUIDLoaded(const std::string & guid)
     {
@@ -84,7 +84,7 @@ namespace imajuscule
                 return ref;
             }
         }
-        return NULL;
+        return nullptr;
     }
     void Referentiables::regManager(ReferentiableManagerBase * m)
     {

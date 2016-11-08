@@ -275,7 +275,7 @@ bool Updatable::removeSpec(spec item)
         return false;
     }
 
-    *f = NULL;
+    *f = nullptr;
     item->removeObserver(this);
     observableUpdatable().Notify(REMOVE_SPEC, *this, *item);
     

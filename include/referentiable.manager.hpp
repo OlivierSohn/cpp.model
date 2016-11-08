@@ -28,7 +28,7 @@ Visitable()
 
 ReferentiableManagerBase::~ReferentiableManagerBase()
 {
-    observable().Notify(Event::MANAGER_DELETE, NULL);
+    observable().Notify(Event::MANAGER_DELETE, nullptr);
     observable().deinstantiate();
 
     // doc F3F7C744-0B78-4750-A0A1-7A9BAD872188
@@ -92,7 +92,7 @@ void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
         //LG(INFO, "delete %s %s", guid.c_str(), sessionName.c_str());
         
         // during destruction, the object must be accessible via its manager
-        // because for example when destructing a joint, we need to launch a command to change the parent to NULL and this command uses the manager to find the object
+        // because for example when destructing a joint, we need to launch a command to change the parent to nullptr and this command uses the manager to find the object
         // that's why delete is done before removing guid and session name from maps
         r->observableReferentiable()->Notify(Referentiable::Event::WILL_BE_DELETED, r);
         // to make sure that the observable is not used during the destructor
@@ -115,7 +115,7 @@ void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
         A(refs.size() == m_guidsToRftbls.size());
         A(refs.size() == m_snsToRftbls.size());
         
-        observable().Notify(Event::RFTBL_REMOVE, r); // must be placed after actual delete (use case : delete of joint makes the parent NULL so the joint ui manager draws a joint at root which must be removed)
+        observable().Notify(Event::RFTBL_REMOVE, r); // must be placed after actual delete (use case : delete of joint makes the parent nullptr so the joint ui manager draws a joint at root which must be removed)
     }
 }
 
@@ -149,7 +149,7 @@ Referentiable * ReferentiableManagerBase::findByGuid(const std::string & guid)
     if (it != m_guidsToRftbls.end()) {
         return it->second;
     }
-    return NULL;
+    return nullptr;
 }
 // session name is unique per-session
 Referentiable * ReferentiableManagerBase::findBySessionName(const std::string & sessionName)
@@ -158,7 +158,7 @@ Referentiable * ReferentiableManagerBase::findBySessionName(const std::string & 
     if (it != m_snsToRftbls.end()) {
         return it->second;
     }
-    return NULL;
+    return nullptr;
 }
 
 bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r, bool bFinalize)
@@ -226,7 +226,7 @@ std::string ReferentiableManagerBase::generateGuid()
 	}
 
     // First figure out our required buffer size.
-    int cbData = WideCharToMultiByte(CP_ACP, 0, bstrGuid/*pszDataIn*/, -1, NULL, 0, NULL, NULL);
+    int cbData = WideCharToMultiByte(CP_ACP, 0, bstrGuid/*pszDataIn*/, -1, nullptr, 0, nullptr, nullptr);
     hr = (cbData == 0) ? HRESULT_FROM_WIN32(GetLastError()) : S_OK;
     if (likely(SUCCEEDED(hr)))
     {
@@ -235,7 +235,7 @@ std::string ReferentiableManagerBase::generateGuid()
         hr = pszData.get() ? S_OK : E_OUTOFMEMORY;
         if (likely(SUCCEEDED(hr)))
         {
-            hr = WideCharToMultiByte(CP_ACP, 0, bstrGuid/*pszDataIn*/, -1, pszData.get(), cbData, NULL, NULL)
+            hr = WideCharToMultiByte(CP_ACP, 0, bstrGuid/*pszDataIn*/, -1, pszData.get(), cbData, nullptr, nullptr)
                 ? S_OK
                 : HRESULT_FROM_WIN32(GetLastError());
             if (likely(SUCCEEDED(hr)))
@@ -312,7 +312,7 @@ Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & na
 }
 Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize, bool bVisibleIfAhistoric)
 {
-    Referentiable * r = NULL;
+    Referentiable * r = nullptr;
 
     HistoryManager * h = HistoryManager::getInstance();
 
@@ -330,7 +330,7 @@ Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & na
     return r;
 }
 template <class T>
-ReferentiableManager<T> * ReferentiableManager<T>::g_pRefManager = NULL;
+ReferentiableManager<T> * ReferentiableManager<T>::g_pRefManager = nullptr;
 
 template <class T>
 ReferentiableManager<T> * ReferentiableManager<T>::getInstance()
@@ -343,7 +343,7 @@ template <class T>
 Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible, bool bFinalize)
 {
     /*LG(INFO, "ReferentiableManager<T>::newReferentiable(%s, %d guids) begin",
-        (nameHint.c_str() ? nameHint.c_str() : "NULL"),
+        (nameHint.c_str() ? nameHint.c_str() : "nullptr"),
         guids.size());*/
 
     std::string guid;
@@ -538,7 +538,7 @@ void ReferentiableNewCmdBase::getSentenceDescription(std::string & desc) const
 
 bool ReferentiableNewCmdBase::ExecuteFromInnerCommand(ReferentiableManagerBase & rm, const std::string & nameHint, const std::vector<std::string> guids, Referentiable*& oRefAddr)
 {
-    oRefAddr = NULL;
+    oRefAddr = nullptr;
 
     std::unique_ptr<Undoable::data> before(data::instantiate(ACTION_DELETE, nameHint, &rm));
     std::unique_ptr<Undoable::data> after(data::instantiate(ACTION_NEW, nameHint, &rm));
@@ -549,7 +549,7 @@ bool ReferentiableNewCmdBase::ExecuteFromInnerCommand(ReferentiableManagerBase &
     bool bDone = Undoable::ExecuteFromInnerCommand<ReferentiableCmdBase>(
         *before,
         *after,
-        NULL,
+        nullptr,
         &f);
     
     if (bDone)
@@ -569,7 +569,7 @@ Referentiable* ReferentiableNewCmdBase::Execute(ReferentiableManagerBase & rm, c
     if (c->Command::Execute())
         c->observable().Remove(reg);
 
-    return (r.Success()? r.addr() : NULL);
+    return (r.Success()? r.addr() : nullptr);
 }
 
 std::string ReferentiableCmdBase::guid() const
