@@ -80,29 +80,31 @@ namespace imajuscule
     MANAGED_REF_LIST
     void ManagedRefList<Owner, T, Add, Remove>::addInternal(T*mc)
     {
-        if(mc)
-        {
-            if(unlikely(has(mc)))
-            {
-                A(!"Design Error : attempt to add a present item");
-                return;
-            }
-            
-            list.emplace_back( mc );
-            
-            if(auto mcobsref = mc->observableReferentiable()) {
-                m_regs.push_back( {
-                    mcobsref->Register(Referentiable::Event::WILL_BE_DELETED, [this](Referentiable*r){
-                        remove(static_cast<T*>(r));
-                    })
-                });
-            }
-            
-            owner->addSpec(mc);
-            owner->hasNewContentForUpdate(true);
-            owner->observable().Notify(PersistableEvent::OBJECT_DEFINITION_CHANGED, owner);
+        if(!mc) {
+            return;
         }
+        
+        if(unlikely(has(mc)))
+        {
+            A(!"Design Error : attempt to add a present item");
+            return;
+        }
+        
+        list.emplace_back( mc );
+        
+        if(auto mcobsref = mc->observableReferentiable()) {
+            m_regs.push_back( {
+                mcobsref->Register(Referentiable::Event::WILL_BE_DELETED, [this](Referentiable*r){
+                    remove(static_cast<T*>(r));
+                })
+            });
+        }
+        
+        owner->addSpec(mc);
+        owner->hasNewContentForUpdate(true);
+        owner->observable().Notify(PersistableEvent::OBJECT_DEFINITION_CHANGED, owner);
     }
+    
     MANAGED_REF_LIST
     bool ManagedRefList<Owner, T, Add, Remove>::removeInternal(T*mc)
     {

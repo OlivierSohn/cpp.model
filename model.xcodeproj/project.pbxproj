@@ -38,7 +38,6 @@
 		097835641D57B0B900E47ED3 /* unity.build.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097835631D57B0B900E47ED3 /* unity.build.cpp */; };
 		097835651D57B0B900E47ED3 /* unity.build.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 097835631D57B0B900E47ED3 /* unity.build.cpp */; };
 		09B330B71BF56DCE00DE437C /* raii.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 09B330B61BF56DCE00DE437C /* raii.hpp */; };
-		09EF8E241DAC1EDC00DC7342 /* moveonly_function.h in Headers */ = {isa = PBXBuildFile; fileRef = 09EF8E231DAC1EDC00DC7342 /* moveonly_function.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -110,7 +109,6 @@
 		09C84A411C271D89002CF5B7 /* Project.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Project.Release.xcconfig; sourceTree = "<group>"; };
 		09C84A421C271D89002CF5B7 /* Project.Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Project.Shared.xcconfig; sourceTree = "<group>"; };
 		09D756BA1DA7934C004602DE /* fixture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fixture.h; sourceTree = "<group>"; };
-		09EF8E231DAC1EDC00DC7342 /* moveonly_function.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = moveonly_function.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,7 +163,6 @@
 				0930C5801CC8688F00AB958B /* managed.reflist.hxx */,
 				094C4E611DD224860074077B /* meta.h */,
 				097662931AD357F70099DA54 /* model.allincludes.h */,
-				09EF8E231DAC1EDC00DC7342 /* moveonly_function.h */,
 				097662941AD357F70099DA54 /* observable.h */,
 				097662951AD357F70099DA54 /* persistable.h */,
 				09B330B61BF56DCE00DE437C /* raii.hpp */,
@@ -256,7 +253,6 @@
 				0927A8191B3F2DCF00872BC9 /* command.hpp in Headers */,
 				0973B4CF1B256101007EFBDD /* referentiable.cmd.list.hpp in Headers */,
 				097662BA1AD357F70099DA54 /* referentiable.manager.hpp in Headers */,
-				09EF8E241DAC1EDC00DC7342 /* moveonly_function.h in Headers */,
 				097662AF1AD357F70099DA54 /* asyncnotifier.h in Headers */,
 				097662B71AD357F70099DA54 /* referentiable.cmd.set.hpp in Headers */,
 				09681A0F1B1AAAED00678885 /* referentiable.root.h in Headers */,

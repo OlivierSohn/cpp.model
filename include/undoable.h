@@ -47,7 +47,7 @@ namespace imajuscule
 
         void traverseForwardRecurse(std::vector<Undoable*> &) const;
         
-        bool contains(Undoable * u);
+//        bool contains(Undoable * u);
         
             
         bool isObsolete() const;

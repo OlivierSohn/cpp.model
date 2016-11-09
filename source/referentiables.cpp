@@ -26,6 +26,7 @@ namespace imajuscule
         
         return m_instance;
     }
+    
     Referentiable* Referentiables::fromGUID(const DirectoryPath & path, const std::string & guid)
     {
         return getInstance()->findRefFromGUID(path, guid);
@@ -35,6 +36,7 @@ namespace imajuscule
     {
         return getInstance()->findRefFromGUIDLoaded( guid);
     }
+    
     Referentiable* Referentiables::fromSessionNameLoaded(const std::string & sn)
     {
         return getInstance()->findRefFromSessionNameLoaded(sn);
@@ -50,32 +52,31 @@ namespace imajuscule
         unsigned int index;
         std::string nameHint;
         auto res = Referentiable::ReadIndexForDiskGUID(path, guid, index, nameHint);
-        if_A(res)
-        {
-            if_A(index < m_managers.size())
-            {
-                // To record this in history we should have a command specializing newRefCmd for Load, with path as input)
-                HistoryManagerPause p;
-                
-                std::vector<std::string> guids{guid};
-                ReferentiableManagerBase * rm = m_managers[index];
-                r = rm->newReferentiable(nameHint, guids, false, true);
-                r->Load(path, guid);
-                rm->observable().Notify(ReferentiableManagerBase::Event::RFTBL_ADD, r);
-            }
-        }
+        A(res);
+        A(index < m_managers.size());
+        // To record this in history we should have a command specializing newRefCmd for Load, with path as input)
+        HistoryManagerPause p;
+        
+        std::vector<std::string> guids{guid};
+        ReferentiableManagerBase * rm = m_managers[index];
+        r = rm->newReferentiable(nameHint, guids, false, true);
+        r->Load(path, guid);
+        rm->observable().Notify(ReferentiableManagerBase::Event::RFTBL_ADD, r);
         
         return r;
     }
+    
     Referentiable* Referentiables::findRefFromSessionNameLoaded(const std::string & sn)
     {
         for(auto * man: m_managers)
         {
-            if(Referentiable * ref = man->findBySessionName(sn))
+            if(Referentiable * ref = man->findBySessionName(sn)) {
                 return ref;
+            }
         }
         return nullptr;
     }
+    
     Referentiable* Referentiables::findRefFromGUIDLoaded(const std::string & guid)
     {
         for(auto * man: m_managers)
@@ -86,6 +87,7 @@ namespace imajuscule
         }
         return nullptr;
     }
+    
     void Referentiables::regManager(ReferentiableManagerBase * m)
     {
         if(m) {
@@ -96,7 +98,8 @@ namespace imajuscule
     
     managers const & Referentiables::getManagers()
     {
-        Referentiables * i = Referentiables::getInstance();
+        auto * i = Referentiables::getInstance();
+        A(i);
         return i->m_managers;
     }
 }

@@ -124,15 +124,10 @@ const std::string & Referentiable::creationDate() const
 
 std::string Referentiable::extendedName() const
 {
-    std::string ret = m_sessionName;
-
-    if (Referentiable * mra = mainRefAttr())
-    {
-        ret.append("(");
-        ret.append(mra->sessionName());
-        ret.append(")");
+    auto ret = m_sessionName;
+    if (auto * mra = mainRefAttr()) {
+        ret += "(" + mra->sessionName() + ")";
     }
-
     return ret;
 }
 

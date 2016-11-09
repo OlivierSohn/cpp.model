@@ -69,109 +69,112 @@ bool Command::Execute()
     h->PopCurrentCommand(this);
 
     // don't log in history the commands that had no effect (example : backspace when edit location is at begin of input)
-    if (bRelevant)
+    if (bRelevant) {
         h->Add(this);
-    else
+    }
+    else {
         delete this;
+    }
 
     return bRelevant;
 }
 
 bool Command::Undo()
 {
-    bool bRelevant = false;
-
-    if (validStateToUndo())
-    {
-        HistoryManager* h = HistoryManager::getInstance();
-        h->PushCurrentCommand(this);
-        
-        // placed after subcommands loop for scenario "new animation / UNDO"
-        // But we shouldn't run subcommands before, it breaks the logic (eg deinstantiates stuff too early) so I put it back here
-        bRelevant = doUndo();
-        
-        Undoables::reverse_iterator it = m_undoables.rbegin();
-        Undoables::reverse_iterator end = m_undoables.rend();
-        for (;it!=end;++it)
-        {
-            if ((*it)->Undo())
-                bRelevant = true;
-        }
-
-        setState(UNDONE);
-
-        h->PopCurrentCommand(this);
+    if (!validStateToUndo()) {
+        return false;
     }
-
+    
+    HistoryManager* h = HistoryManager::getInstance();
+    h->PushCurrentCommand(this);
+    
+    // placed after subcommands loop for scenario "new animation / UNDO"
+    // But we shouldn't run subcommands before, it breaks the logic (eg deinstantiates stuff too early) so I put it back here
+    auto bRelevant = doUndo();
+    
+    auto it = m_undoables.rbegin();
+    auto end = m_undoables.rend();
+    for (;it!=end;++it) {
+        if ((*it)->Undo()) {
+            bRelevant = true;
+        }
+    }
+    
+    setState(UNDONE);
+    
+    h->PopCurrentCommand(this);
+    
     return bRelevant;
 }
 
 bool Command::Redo()
 {
-    bool bRelevant = false;
-
-    if (validStateToRedo())
-    {
-        HistoryManager* h = HistoryManager::getInstance();
-        h->PushCurrentCommand(this);
-
-        bRelevant = doRedo();
-
-        for (auto const &g : m_undoables)
-        {
-            if (g->Redo())
-                bRelevant = true;
-        }
-
-        setState(REDONE);
-
-        h->PopCurrentCommand(this);
+    if (!validStateToRedo()) {
+        return false;
     }
+    HistoryManager* h = HistoryManager::getInstance();
+    h->PushCurrentCommand(this);
+    
+    auto bRelevant = doRedo();
+    
+    for (auto const &g : m_undoables) {
+        if (g->Redo()) {
+            bRelevant = true;
+        }
+    }
+    
+    setState(REDONE);
+    
+    h->PopCurrentCommand(this);
 
     return bRelevant;
 }
 
 bool Command::Undo(Undoable * limit, bool bStrict, bool & bFoundLimit)
 {
-    if (this == limit)
+    if (this == limit) {
         bFoundLimit = true;
-
+    }
     return Undo();
 }
 bool Command::Redo(Undoable * limit, bool bStrict, bool & bFoundLimit)
 {
-    if (this == limit)
+    if (this == limit) {
         bFoundLimit = true;
-    
+    }
     return Redo();
 }
 
 void Command::getDescription(std::string & desc) const
 {
-    if (Referentiable * p = getObject())
+    if (Referentiable * p = getObject()) {
         desc.append(p->sessionName());
-    else if (m_manager)
+    }
+    else if (m_manager) {
         desc.append(std::string("-"));
+    }
 
-    if (!desc.empty())
+    if (!desc.empty()) {
         desc.append(std::string(" : "));
+    }
     
     std::string sentence;
     getSentenceDescription(sentence);
     desc.append(sentence);
-
+    
     switch (getState())
     {
-    case NOT_EXECUTED:
-        desc.append("Waiting for command execution");
-        break;
-    default:
-        size_t size = desc.size();
-        desc.append(Before()->getDesc());
-        if (size != desc.size())
-            desc.append(std::string(" -> "));
-        desc.append(After()->getDesc());
-        break;
+        case NOT_EXECUTED:
+            desc.append("Waiting for command execution");
+            break;
+        default:
+            auto size = desc.size();
+            desc.append(Before()->getDesc());
+            if (size != desc.size()) {
+                desc.append(std::string(" -> "));
+            }
+            desc.append(After()->getDesc());
+            break;
     }
 }
 Undoable::CommandExec::CommandExec(UndoGroup *g, Command* c, const resFunc *f) :
@@ -190,10 +193,10 @@ bool Command::data::operator == (const data&d) const
 
 Referentiable * Command::getObject() const
 {
-    if (m_manager)
-        return m_manager->findByGuid(m_guid);
-    else
+    if (!m_manager) {
         return nullptr;
+    }
+    return m_manager->findByGuid(m_guid);
 }
 
 bool Command::doExecute()
@@ -213,49 +216,44 @@ bool Command::doRedo()
 
 bool Undoable::CommandExec::Run()
 {
-    bool bDone = false;
-    
-    if_A(m_command)
-    {
-        if_A(!m_command->isObsolete()) // else the command will be deleted by the group
-        {
-            FunctionInfo<Event> reg;
-            if (m_pResFunc) {
-                reg = m_command->observable().Register(Event::RESULT, *m_pResFunc);
-            }
-            
-            switch (m_command->getState())
-            {
-                case Command::State::EXECUTED:
-                case Command::State::REDONE:
-                    if(m_group)
-                        m_group->UndoUntil(m_command);
-                    else
-                        m_command->Undo();
-                    A(m_command->getState() == UNDONE);
-                    bDone = true;
-                    break;
-                case Command::State::UNDONE:
-                    if(m_group)
-                        m_group->RedoUntil(m_command);
-                    else
-                        m_command->Redo();
-                    A(m_command->getState() == REDONE);
-                    bDone = true;
-                    break;
-                default:
-                    A(!"unhandled type");
-                    break;
-            }
-            
-            if (m_pResFunc) {
-                m_command->observable().Remove(reg);
-            }
-        }
+    A(m_command);
+    A(!m_command->isObsolete()); // else the command will be deleted by the group
+    FunctionInfo<Event> reg;
+    if (m_pResFunc) {
+        reg = m_command->observable().Register(Event::RESULT, *m_pResFunc);
     }
     
+    switch (m_command->getState())
+    {
+        case Command::State::EXECUTED:
+        case Command::State::REDONE:
+            if(m_group) {
+                m_group->UndoUntil(m_command);
+            }
+            else {
+                m_command->Undo();
+            }
+            A(m_command->getState() == UNDONE);
+            break;
+        case Command::State::UNDONE:
+            if(m_group) {
+                m_group->RedoUntil(m_command);
+            }
+            else {
+                m_command->Redo();
+            }
+            A(m_command->getState() == REDONE);
+            break;
+        default:
+            A(!"unhandled type");
+            break;
+    }
+    
+    if (m_pResFunc) {
+        m_command->observable().Remove(reg);
+    }
 
-    return bDone;
+    return true;
 }
 
 

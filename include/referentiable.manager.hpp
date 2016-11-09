@@ -45,38 +45,36 @@ Observable<ReferentiableManagerBase::Event, Referentiable*> & ReferentiableManag
 bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const std::string & sessionName)
 {
     bool bRet = false;
-    if_A (r)
+    A(r);
+    r->setSessionName(sessionName);
+    
     {
-        r->setSessionName(sessionName);
-
+        auto const & guid = r->guid();
+        guidsToRftbls::iterator it = m_guidsToRftbls.find(guid);
+        if (likely(it == m_guidsToRftbls.end()))
         {
-            std::string guid = r->guid();
-            guidsToRftbls::iterator it = m_guidsToRftbls.find(guid);
-            if (likely(it == m_guidsToRftbls.end()))
-            {
-                m_guidsToRftbls.insert(it, guidsToRftbls::value_type(guid, r));
-                bRet = true;
-            }
-            else
-            {
-                A(!"guid already present");
-            }
+            m_guidsToRftbls.insert(it, guidsToRftbls::value_type(guid, r));
+            bRet = true;
         }
-
-        if ( bRet )
+        else
         {
-            snsToRftbls::iterator it = m_snsToRftbls.find(sessionName);
-            if (likely(it == m_snsToRftbls.end()))
-            {
-                m_snsToRftbls.insert(it, guidsToRftbls::value_type(sessionName, r));
-            }
-            else
-            {
-                A(!"an element was not found in guid map but found in session names map!");
-            }
-
-            refs.push_back(r);
+            A(!"guid already present");
         }
+    }
+    
+    if ( bRet )
+    {
+        snsToRftbls::iterator it = m_snsToRftbls.find(sessionName);
+        if (likely(it == m_snsToRftbls.end()))
+        {
+            m_snsToRftbls.insert(it, guidsToRftbls::value_type(sessionName, r));
+        }
+        else
+        {
+            A(!"an element was not found in guid map but found in session names map!");
+        }
+        
+        refs.push_back(r);
     }
 
     return bRet;
@@ -474,17 +472,16 @@ void ReferentiableCmdBase::doInstantiate()
         bGUID = true;
         guids.push_back(m_GUID);
     }
-    Referentiable * r = manager()->newReferentiableInternal(m_hintName, guids);
-
-    if_A(r)
-    {
-        if (!bGUID)
-            m_GUID = r->guid();
-        else
-            A(m_GUID == r->guid());
-
-        A(m_hintName == r->hintName());
+    auto * r = manager()->newReferentiableInternal(m_hintName, guids);
+    A(r);
+    if (!bGUID) {
+        m_GUID = r->guid();
     }
+    else {
+        A(m_GUID == r->guid());
+    }
+    
+    A(m_hintName == r->hintName());
 
     CommandResult res(true, r);
     observable().Notify(Event::RESULT, &res);
@@ -572,11 +569,11 @@ Referentiable* ReferentiableNewCmdBase::Execute(ReferentiableManagerBase & rm, c
     return (r.Success()? r.addr() : nullptr);
 }
 
-std::string ReferentiableCmdBase::guid() const
+std::string const & ReferentiableCmdBase::guid() const
 {
     return m_GUID;
 }
-std::string ReferentiableCmdBase::hintName() const
+std::string const & ReferentiableCmdBase::hintName() const
 {
     return m_hintName;
 }

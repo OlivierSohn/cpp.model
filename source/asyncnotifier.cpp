@@ -9,26 +9,24 @@ bool AsyncNotifier::isRunning = false;
 
 void AsyncNotifier::schedule()
 {
-    if(isRunning)
+    if(isRunning) {
         g_scheduledMore.push_back(this);
-    else
+    }
+    else {
         g_scheduled.push_back(this);
+    }
 }
 
 void AsyncNotifier::unschedule()
 {
-    for(auto & p : g_scheduled)
-    {
-        if(this == p)
-        {
+    for(auto & p : g_scheduled) {
+        if(this == p) {
             p = nullptr;
             return;
         }
     }
-    for(auto & p : g_scheduledMore)
-    {
-        if(this == p)
-        {
+    for(auto & p : g_scheduledMore) {
+        if(this == p) {
             p = nullptr;
             return;
         }
@@ -41,10 +39,10 @@ void AsyncNotifier::runScheduledNotifications()
     
     do
     {
-        for (auto * p : g_scheduled)
-        {
-            if( p )
+        for (auto * p : g_scheduled) {
+            if( p ) {
                 p->doNotify();
+            }
         }
         
         g_scheduled.clear();

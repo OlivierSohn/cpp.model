@@ -55,17 +55,15 @@ void ReferentiableRoot::addRef(Referentiable* ref)
     //LG(INFO,"+ %x, %s", ref, ref->sessionName().c_str());
     A(ref);
     auto it = m_refs.find(refs::key_type( ref ));
-    if_A(it == m_refs.end())
-    {
-        m_refs.insert(ref);
-        addSpec(ref);
-        if(auto refobs = ref->observableReferentiable()) {
-            refobs->Register(Referentiable::Event::WILL_BE_DELETED,
-                             [this](Referentiable*r){
-                                 if(r!= this)
-                                     this->removeRef(r);
-                             });
-        }
+    A(it == m_refs.end());
+    m_refs.insert(ref);
+    addSpec(ref);
+    if(auto refobs = ref->observableReferentiable()) {
+        refobs->Register(Referentiable::Event::WILL_BE_DELETED,
+                         [this](Referentiable*r){
+                             if(r!= this)
+                                 this->removeRef(r);
+                         });
     }
 }
 void ReferentiableRoot::removeRef(Referentiable* ref)

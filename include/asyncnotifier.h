@@ -5,7 +5,7 @@
 
 namespace imajuscule
 {
-    class AsyncNotifier
+    class AsyncNotifier final
     {
     public:
         AsyncNotifier(std::function<void(void)> & f) :
@@ -14,7 +14,6 @@ namespace imajuscule
         AsyncNotifier(std::function<void(void)> && f) :
         m_f(std::move(f))
         {}
-        virtual ~AsyncNotifier() {}
 
         static void runScheduledNotifications();
         void schedule();

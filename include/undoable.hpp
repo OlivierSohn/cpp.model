@@ -7,39 +7,37 @@ namespace imajuscule
 template <class InnerCmdType>
 bool Undoable::ExecuteFromInnerCommand( const data & dataBefore, const data & dataAfter, Referentiable*pRef, const resFunc * pResFunc)
 {
-    bool bDone = false;
-    HistoryManager * h = HistoryManager::getInstance();
-
-    if (auto * c = h->CurrentCommand())
-    {
-        ExecutionType t;
-        if (h->IsUndoingOrRedoing(t))
-        {
-            if (c)
-            {
-                if (unlikely(!(bDone = c->ExecFromInnerCommand<InnerCmdType>(dataBefore, dataAfter, pRef, pResFunc))))
-                {
-                    // since we have a current command and are undoing or redoing, the inner command should be there
-                    A(!"corresponding inner command not found");
-                }
-            }
-        }
+    auto * h = HistoryManager::getInstance();
+    if(!h) {
+        return false;
+    }
+    auto * c = h->CurrentCommand();
+    if (!c) {
+        return false;
     }
 
-    return bDone;
+    ExecutionType t;
+    if (!h->IsUndoingOrRedoing(t)) {
+        return false;
+    }
+    if (! c->ExecFromInnerCommand<InnerCmdType>(dataBefore, dataAfter, pRef, pResFunc))
+    {
+        // since we have a current command and are undoing or redoing, the inner command should be there
+        A(!"corresponding inner command not found");
+        return false;
+    }
+    
+    return true;
 }
     
     template <class InnerCmdType>
     bool Undoable::ExecFromInnerCommand(const data & dataBefore, const data & dataAfter, Referentiable * pRef, const resFunc * pResFunc)
     {
-        bool bDone = false;
-        
         auto v = ListInnerCommandsReadyFor<InnerCmdType>(dataBefore, dataAfter, pRef, pResFunc);
-        if (!v.empty())
-        {
-            bDone = v.back().Run();
+        if (v.empty()) {
+            return false;
         }
-        return bDone;
+        return v.back().Run();
     }
 
 template <class InnerCmdType>
@@ -75,8 +73,9 @@ auto Undoable::ListInnerCommandsReadyFor(const data & dataBefore, const data & d
                 v.emplace_back((UndoGroup*)nullptr, c, pResFunc);
             }
         }
-        else
+        else {
             A(0);
+        }
     }
 
     return v;

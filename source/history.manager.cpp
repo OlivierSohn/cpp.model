@@ -207,8 +207,9 @@ void HistoryManager::StartTransaction(){
 }
 void HistoryManager::EndTransaction(){
     transactionCount_--;
-    if (auto * cc = CurrentCommand())
+    if (auto * cc = CurrentCommand()) {
         cc->EndSubElement();
+    }
 }
 
 void HistoryManager::reset()
@@ -222,8 +223,7 @@ void HistoryManager::reset()
     
     m_iActivated = 1;
     
-    while ( ! m_curCommandStack.empty() )
-    {
+    while ( ! m_curCommandStack.empty() ) {
         m_curCommandStack.pop();
     }
     
@@ -239,10 +239,10 @@ HistoryManager * HistoryManager::getInstance()
 
 Undoable * HistoryManager::CurrentCommand()
 {
-    if (m_curCommandStack.empty())
+    if (m_curCommandStack.empty()) {
         return nullptr;
-    else
-        return m_curCommandStack.top();
+    }
+    return m_curCommandStack.top();
 }
 
 void HistoryManager::PushCurrentCommand(Undoable*c)
@@ -312,8 +312,7 @@ void HistoryManager::Add(Undoable* c)
 
     observable().Notify(Event::UNDOS_CHANGED);
 
-    if (bRedosChanged)
-    {
+    if (bRedosChanged) {
         observable().Notify(Event::REDOS_CHANGED);
     }
 }
@@ -333,8 +332,9 @@ void HistoryManager::SizeUndos()
                 it = m_groups.erase(it);
                 end = m_groups.end();
             }
-            else
+            else {
                 ++it;
+            }
         }
 
         LG(INFO, "HistoryManager::SizeUndos %u out of %u groups removed because empty", count, size);
@@ -361,15 +361,13 @@ void HistoryManager::Undo()
 
     while (m_appState != m_groups.rend() /*rend must be recomputed at each loop*/)
     {
-        if (!m_appState->Undo())
-        {
+        if (!m_appState->Undo()) {
             // remove this empty state and increment
             bUndosChanged = true;
 
             m_appState = std::reverse_iterator<UndoGroups::iterator>(m_groups.erase(std::next(m_appState).base()));
         }
-        else
-        {
+        else {
             ++m_appState;
             bDone = true;
             bRedosChanged = true;
@@ -378,18 +376,15 @@ void HistoryManager::Undo()
         }
     }
     
-    if (!bDone)
-    {
+    if (!bDone) {
         std::cout << "\a";
     }
 
-    if (bUndosChanged)
-    {
+    if (bUndosChanged) {
         observable().Notify(Event::UNDOS_CHANGED);
     }
 
-    if (bRedosChanged)
-    {
+    if (bRedosChanged) {
         observable().Notify(Event::REDOS_CHANGED);
     }
 
@@ -408,15 +403,13 @@ void HistoryManager::Redo()
     {
         --m_appState;
 
-        if (!m_appState->Redo())
-        {
+        if (!m_appState->Redo()) {
             // remove this empty state
             bRedosChanged = true;
 
             m_appState = std::reverse_iterator<UndoGroups::iterator>(m_groups.erase(std::next(m_appState).base()));
         }
-        else
-        {
+        else {
             bDone = true;
             bRedosChanged = true;
             bUndosChanged = true;
@@ -424,18 +417,15 @@ void HistoryManager::Redo()
         }
     }
 
-    if (!bDone)
-    {
+    if (!bDone) {
         std::cout << "\a";
     }
 
-    if (bUndosChanged)
-    {
+    if (bUndosChanged) {
         observable().Notify(Event::UNDOS_CHANGED);
     }
 
-    if (bRedosChanged)
-    {
+    if (bRedosChanged) {
         observable().Notify(Event::REDOS_CHANGED);
     }
 

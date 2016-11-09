@@ -1,13 +1,7 @@
-//
-//  RAII.hpp
-//  model
-//
-//  Created by Olivier on 12/11/2015.
-//  Copyright © 2015 Olivier. All rights reserved.
-//
 
 #pragma once
 #include <functional>
+
 #include "os.log.h"
 
 namespace imajuscule {

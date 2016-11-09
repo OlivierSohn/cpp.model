@@ -1,6 +1,7 @@
 #pragma once
 
 namespace imajuscule {
+    
     // http://www.gotw.ca/gotw/071.htm
     template<class D, class B>
     class IsDerivedFrom

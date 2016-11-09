@@ -144,8 +144,8 @@ namespace imajuscule
     public:
         Referentiable * refAddr() const;
         ReferentiableManagerBase * manager() const;
-        std::string guid() const;
-        std::string hintName() const;
+        std::string const & guid() const;
+        std::string const & hintName() const;
 
         virtual void Instantiate() = 0;
         virtual void Deinstantiate() = 0;

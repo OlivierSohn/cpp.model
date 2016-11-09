@@ -1,21 +1,14 @@
 //#define LOG_UPDATES
 
-// stl includes
 #include <algorithm>
-
-#if defined (LOG_UPDATES)
 #include <string>
-#endif
 
-// model includes
+#include "os.log.h"
+
 #include "updatable.h"
 #ifndef NDEBUG
 #include "raii.hpp"
 #endif
-
-// os.log includes
-#include "os.log.h"
-
 
 using namespace imajuscule;
 
@@ -108,8 +101,7 @@ void Updatable::Update()
         bool oneNull = false;
         for ( int i = 0; i < (int)m_specs.size(); i++ )
         {
-            if( auto s = m_specs[i] )
-            {
+            if( auto s = m_specs[i] ) {
                 s->Update();
             } else {
                 oneNull = true;

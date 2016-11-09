@@ -50,7 +50,7 @@ bool RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data::operator!=(const Command::data
             return true;
         if (m_manager != pOther->m_manager)
             return true;
-
+        
         return false;
     }
     return true;
@@ -60,13 +60,13 @@ REF_CMD_SIMPLESET
 U * RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data::Attr() const
 {
     U * j = nullptr;
-
+    
     if (m_hasAttr)
     {
         j = static_cast<U *>(m_manager->findByGuid(m_attrGUID));
     }
     return j;
-
+    
 }
 REF_CMD_SIMPLESET
 Command::data * RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data::instantiate(const U * attr){
@@ -79,18 +79,14 @@ Command::data * RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data::instantiate(T& obj)
 REF_CMD_SIMPLESET
 std::string RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data::getDesc() const
 {
-    std::string desc;
-    if (m_hasAttr)
-    {
-        if (Referentiable * ref = Attr())
-            desc.append(ref->sessionName());
-        else
-            desc.append("missing");
+    if (!m_hasAttr) {
+        return "none";
     }
-    else
-        desc.append("none");
-
-    return desc;
+    
+    if (Referentiable * ref = Attr()) {
+        return ref->sessionName();
+    }
+    return "missing";
 }
 
 REF_CMD_SIMPLESET
@@ -109,7 +105,7 @@ REF_CMD_SIMPLESET
 void RefSimpleChangeAttrCmd<T, U, fSet, fGet>::ChangeAttr(T & obj, U * newAttr)
 {
     bool bSuccess = true;
-
+    
     if (newAttr != std::bind(fGet,&obj)())
     {
         auto hm = HistoryManager::getInstance();
@@ -133,42 +129,38 @@ bool RefSimpleChangeAttrCmd<T,U,fSet,fGet>::ExecuteFromInnerCommand(T & obj, U *
     
     std::unique_ptr<Command::data> before(data::instantiate(obj));
     std::unique_ptr<Command::data> after(data::instantiate(newAttr));
-
+    
     CommandResult r;
     resFunc f(RESULT_BY_REF(r));
-
+    
     bool bDone = Command::ExecuteFromInnerCommand<RefSimpleChangeAttrCmd>(
-        *before,
-        *after,
-        dynamic_cast<Referentiable*>(&obj),
-        &f);
-
+                                                                          *before,
+                                                                          *after,
+                                                                          dynamic_cast<Referentiable*>(&obj),
+                                                                          &f);
+    
     if (bDone)
     {
         bSuccess = r.Success();
     }
-
+    
     return bDone;
 }
 REF_CMD_SIMPLESET
 bool RefSimpleChangeAttrCmd<T,U,fSet,fGet>::doExecute(const Command::data & Data)
 {
     bool bSuccess = false;
-
+    
     const RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data * pData = dynamic_cast<const RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data*>(&Data);
-    if_A(pData)
-    {
-        T * obj = dynamic_cast<T*>(getObject());
-        if_A(obj)
-        {
-            bSuccess = true;
-            std::bind(fSet, obj, pData->Attr())();
-        }
-    }
-
+    A(pData);
+    T * obj = dynamic_cast<T*>(getObject());
+    A(obj);
+    bSuccess = true;
+    std::bind(fSet, obj, pData->Attr())();
+    
     CommandResult r(bSuccess);
     observable().Notify(Event::RESULT, &r);
-
+    
     return bSuccess;
 }
 
@@ -178,9 +170,10 @@ bool RefSimpleChangeAttrCmd<T,U,fSet,fGet>::Execute(T & obj, const U * iAttr)
     auto * c = new RefSimpleChangeAttrCmd(obj, iAttr);
     CommandResult r;
     auto reg = CommandResult::ListenToResult(*c, r);
-
-    if (c->Command::Execute())
+    
+    if (c->Command::Execute()) {
         c->observable().Remove(reg);
-
+    }
+    
     return r.Success();
 }

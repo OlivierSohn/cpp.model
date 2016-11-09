@@ -8,10 +8,12 @@ Undoable::Undoable():
 m_obsolete(false)
 , m_observable(Observable<Event, const CommandResult *>::instantiate())
 {}
+
 Undoable::~Undoable()
 {
     m_observable->deinstantiate();
 }
+
 auto Undoable::observable()->Observable < Event, const CommandResult * > &
 {
     return *m_observable;
@@ -46,51 +48,43 @@ void Undoable::traverseForwardRecurse(std::vector<Undoable*> & v) const
 
 void Undoable::Add(Undoable*u)
 {
-    if(m_curSubElts.empty())
+    if(m_curSubElts.empty()) {
         m_undoables.emplace_back(std::unique_ptr<Undoable>(u));
-    else
+    }
+    else {
         m_curSubElts.top()->Add(u);
+    }
 }
 
 void Undoable::StartSubElement()
 {
-    UndoGroup* ug = new UndoGroup();
-
+    auto * ug = new UndoGroup();
     Add(ug);
-    
     m_curSubElts.push(ug);
 }
 
 bool Undoable::EndSubElement()
 {
-    if(!m_curSubElts.empty())
-    {
-        m_curSubElts.pop();
-        return true;
+    if(m_curSubElts.empty()) {
+        return false;
     }
-    return false;
+    m_curSubElts.pop();
+    return true;
 }
-
+/*
 bool Undoable::contains(Undoable * u)
 {
-    bool bRet = false;
-    
-    if(u)
-    {
-        std::vector<Undoable*> v;
-        traverseForwardRecurse(v);
-        for(auto e:v)
-        {
-            if(e == u)
-            {
-                bRet = true;
-                break;
-            }
+    if(!u) {
+        return false;
+    }
+    std::vector<Undoable*> v;
+    traverseForwardRecurse(v);
+    for(auto e:v) {
+        if(e == u) {
+            return true;
         }
     }
-    
-    return bRet;
-}
+}*/
 
 void Undoable::getNRExtendedDescription(std::string & desc) const
 {
