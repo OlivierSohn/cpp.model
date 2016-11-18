@@ -16,25 +16,7 @@ namespace imajuscule
     
     template<class T, class... Args>
     inline ref_unique_ptr<T>
-    make_unique_ref(Args&&... args)
-    {
+    make_unique_ref(Args&&... args) {
         return ref_unique_ptr<T>(new T(std::forward<Args>(args)...));
     }
-    
-    template<class T>
-    struct ref_shared_ptr : public std::shared_ptr<T> {
-        ref_shared_ptr(T * ref = 0) :
-        std::shared_ptr<T>(ref, [](T*r) {
-            r->deinstantiate();
-        })
-        {}
-    };
-    
-    template<class T, class... Args>
-    inline ref_shared_ptr<T>
-    make_shared_ref(Args&&... args)
-    {
-        return ref_shared_ptr<T>(new T(std::forward<Args>(args)...));
-    }
-    
 }

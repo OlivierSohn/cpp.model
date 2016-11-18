@@ -6,12 +6,13 @@
 #include <functional>
 
 #include "ref_unique_ptr.h"
+#include "ref_shared_ptr.h"
 #include "visitable.h"
 #include "observable.h"
 #include "undoable.h"
 
 #define MAKE_UNIQUE(x) ReferentiableManager<x>::New()
-#define MAKE_SHARED(x) make_shared_ptr<x>(ReferentiableManager<x>::New().release())
+#define MAKE_SHARED(x) ref_shared_ptr<x>(ReferentiableManager<x>::New().release())
 namespace imajuscule
 {
     class Referentiables;
