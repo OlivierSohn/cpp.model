@@ -8,7 +8,7 @@ namespace imajuscule
 {
     template<class T>
     struct ref_shared_ptr : public NonCopyable {
-        ref_shared_ptr(T * ref = 0) : p(ref), c(ref?new int:nullptr) {
+        ref_shared_ptr(T * ref = 0) : p(ref), c(ref?new int32_t:nullptr) {
             initialize();
         }
 
@@ -29,7 +29,7 @@ namespace imajuscule
             }
             p = o;
             if(!c) {
-                c = new int;
+                c = new int32_t;
             }
             initialize();
         }
@@ -98,10 +98,10 @@ namespace imajuscule
         }
         
         T * get() const { return p; }
-        int count() const { return p ? *c + 1 : 0; }
+        int32_t count() const { return p ? *c + 1 : 0; }
 
     private:
-        int * c;
+        int32_t * c;
         T* p;
         
         bool decrement() {
