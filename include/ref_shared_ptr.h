@@ -6,7 +6,7 @@
 
 namespace imajuscule
 {
-    template<class T>
+    template<class T = Referentiable>
     struct ref_shared_ptr : public NonCopyable {
         ref_shared_ptr(T * ref = 0) : p(ref), c(ref?new int32_t:nullptr) {
             initialize();
@@ -51,6 +51,7 @@ namespace imajuscule
         
         ref_shared_ptr & operator = (const ref_shared_ptr & o) {
             if(p != o.p) {
+                decrement();
                 p = o.p;
                 c = o.c;
                 if(p) {
@@ -61,6 +62,7 @@ namespace imajuscule
         }
 
         ref_shared_ptr & operator = (ref_shared_ptr && o) {
+            decrement();
             p = o.p;
             c = o.c;
             o.p = nullptr;
