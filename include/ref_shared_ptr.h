@@ -8,7 +8,7 @@ namespace imajuscule
 {
     template<class T = Referentiable>
     struct ref_shared_ptr : public NonCopyable {
-        ref_shared_ptr(T * ref = 0) : p(ref), c(ref?new int32_t:nullptr) {
+        explicit ref_shared_ptr(T * ref = 0) : p(ref), c(ref?new int32_t:nullptr) {
             initialize();
         }
 

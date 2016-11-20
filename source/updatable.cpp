@@ -29,24 +29,20 @@ Updatable::~Updatable()
 {
     while(!m_specs.empty())
     {
-        if(auto s = m_specs.back())
-        {
+        if(auto s = m_specs.back()) {
             removeSpec(s);
         }
-        else
-        {
+        else {
             m_specs.erase(std::remove(m_specs.begin(), m_specs.end(), (void*)0), m_specs.end());
         }
     }
     
     while(!m_observers.empty())
     {
-        if(auto s = m_observers.back())
-        {
+        if(auto s = m_observers.back()) {
             s->removeSpec(this);
         }
-        else
-        {
+        else {
             m_observers.erase(std::remove(m_observers.begin(), m_observers.end(), (void*)0), m_observers.end());
         }
     }
