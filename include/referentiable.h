@@ -140,7 +140,7 @@ void set##methodPostFix(type * p) { \
         return;\
     }\
     removeSpec(name.get());\
-    name = p;\
+    name.reset(p);\
     addSpec(name.get());\
 }
 

@@ -68,7 +68,6 @@ namespace imajuscule
             }
         }
         
-        
         ref_shared_ptr & operator = (const ref_shared_ptr & o) {
             reset(o.p);
             return *this;
