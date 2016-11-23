@@ -60,7 +60,7 @@
 		0927A81B1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.cmd.simpleset.hpp; sourceTree = "<group>"; };
 		0930C57F1CC8688F00AB958B /* managed.reflist.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = managed.reflist.hpp; sourceTree = "<group>"; };
 		0930C5801CC8688F00AB958B /* managed.reflist.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = managed.reflist.hxx; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		0931815C1DA389F500DF8B3B /* ref_unique_ptr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ref_unique_ptr.h; sourceTree = "<group>"; };
+		0931815C1DA389F500DF8B3B /* ref_unique_ptr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ref_unique_ptr.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		093733961DAA4AE900F01BD0 /* application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = application.h; sourceTree = "<group>"; };
 		09429C961AD38207001513DA /* libmodel.ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmodel.ios.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		094C4E601DD224860074077B /* weak_ptr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = weak_ptr.h; sourceTree = "<group>"; };
@@ -68,7 +68,7 @@
 		095F43E51C3A2010005BE7DA /* referentiables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiables.h; sourceTree = "<group>"; };
 		095F43E71C3A20F9005BE7DA /* referentiables.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = referentiables.cpp; sourceTree = "<group>"; };
 		09681A0B1B1AAACE00678885 /* referentiable.root.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = referentiable.root.cpp; sourceTree = "<group>"; };
-		09681A0E1B1AAAED00678885 /* referentiable.root.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.root.h; sourceTree = "<group>"; };
+		09681A0E1B1AAAED00678885 /* referentiable.root.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = referentiable.root.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		0973B4CD1B256100007EFBDD /* referentiable.cmd.list.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.cmd.list.hpp; sourceTree = "<group>"; };
 		0973B4CE1B256101007EFBDD /* referentiable.cmd.list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.cmd.list.h; sourceTree = "<group>"; };
 		097662751AD355F20099DA54 /* libmodel.osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmodel.osx.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -81,11 +81,11 @@
 		097662971AD357F70099DA54 /* referentiable.cmd.set.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.cmd.set.h; sourceTree = "<group>"; };
 		097662981AD357F70099DA54 /* referentiable.cmd.set.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.cmd.set.hpp; sourceTree = "<group>"; };
 		097662991AD357F70099DA54 /* referentiable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = referentiable.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		0976629A1AD357F70099DA54 /* referentiable.manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.manager.h; sourceTree = "<group>"; };
+		0976629A1AD357F70099DA54 /* referentiable.manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = referentiable.manager.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		0976629B1AD357F70099DA54 /* referentiable.manager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = referentiable.manager.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		0976629D1AD357F70099DA54 /* undoable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = undoable.h; sourceTree = "<group>"; };
 		0976629E1AD357F70099DA54 /* updatable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = updatable.h; sourceTree = "<group>"; };
-		0976629F1AD357F70099DA54 /* visitable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = visitable.h; sourceTree = "<group>"; };
+		0976629F1AD357F70099DA54 /* visitable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = visitable.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		097662A01AD357F70099DA54 /* visitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = visitor.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		097662A21AD357F70099DA54 /* asyncnotifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = asyncnotifier.cpp; sourceTree = "<group>"; };
 		097662A31AD357F70099DA54 /* command.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = command.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };

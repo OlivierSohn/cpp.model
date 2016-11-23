@@ -120,7 +120,7 @@ namespace imajuscule
         for(; layer != layer_end; ++layer, ++registration) {
             
             A( registration != registration_end );
-            if( &**layer == mc)
+            if( *layer == mc)
             {
                 remove( registration, layer );
                 owner->hasNewContentForUpdate(true);
@@ -140,8 +140,7 @@ namespace imajuscule
             clear();
         }
         
-        if (!v.empty())
-        {
+        if (!v.empty()) {
             for ( auto & t : v) {
                 add( std::move(t) );
             }
@@ -166,10 +165,8 @@ namespace imajuscule
     MANAGED_REF_LIST
     bool ManagedRefList<Owner, T, Add, Remove>::has(const T*mc) const
     {
-        for (auto const & ml : list )
-        {
-            if(&*ml == mc)
-            {
+        for (auto const & ml : list ) {
+            if(ml == mc) {
                 return true;
             }
         }
@@ -179,12 +176,12 @@ namespace imajuscule
     MANAGED_REF_LIST
     const T * ManagedRefList<Owner, T, Add, Remove>::get(int index) const
     {
-        return &*list[index];
+        return list[index];
     }
     
     MANAGED_REF_LIST
     T * ManagedRefList<Owner, T, Add, Remove>::edit(int index)
     {
-        return &*list[index];
+        return list[index];
     }
 }

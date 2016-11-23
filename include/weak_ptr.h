@@ -23,6 +23,7 @@ namespace imajuscule
         }
         
         WeakPtrBase() = default;
+        
         WeakPtrBase(T*p) {
             set(p);
         }
@@ -36,7 +37,7 @@ namespace imajuscule
             return *this;
         }
         
-        explicit operator T*() const { return ptr; }
+        operator T*() const { return ptr; }
         operator bool() const { return static_cast<bool>(ptr); }
         T& operator*() const { return *ptr; }
         T* operator -> () const { return ptr; }

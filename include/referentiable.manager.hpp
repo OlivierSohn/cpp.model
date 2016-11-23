@@ -28,7 +28,7 @@ Visitable()
 
 ReferentiableManagerBase::~ReferentiableManagerBase()
 {
-    observable().Notify(Event::MANAGER_DELETE, nullptr);
+    observable().Notify(Event::MANAGER_DELETE, {});
     observable().deinstantiate();
 
     // doc F3F7C744-0B78-4750-A0A1-7A9BAD872188
@@ -37,89 +37,74 @@ ReferentiableManagerBase::~ReferentiableManagerBase()
     }
 }
 
-Observable<ReferentiableManagerBase::Event, Referentiable*> & ReferentiableManagerBase::observable()
-{
-    return *m_observable;
-}
-
 bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const std::string & sessionName)
 {
-    bool bRet = false;
     A(r);
     r->setSessionName(sessionName);
-    
     {
         auto const & guid = r->guid();
-        guidsToRftbls::iterator it = m_guidsToRftbls.find(guid);
-        if (likely(it == m_guidsToRftbls.end()))
-        {
-            m_guidsToRftbls.insert(it, guidsToRftbls::value_type(guid, r));
-            bRet = true;
-        }
-        else
-        {
+        auto it = m_guidsToRftbls.find(guid);
+        if (it != m_guidsToRftbls.end()) {
             A(!"guid already present");
+            return false;
         }
+
+        m_guidsToRftbls.insert(it, guidsToRftbls::value_type(guid, r));
     }
     
-    if ( bRet )
-    {
-        snsToRftbls::iterator it = m_snsToRftbls.find(sessionName);
-        if (likely(it == m_snsToRftbls.end()))
-        {
-            m_snsToRftbls.insert(it, guidsToRftbls::value_type(sessionName, r));
-        }
-        else
-        {
-            A(!"an element was not found in guid map but found in session names map!");
-        }
-        
-        refs.push_back(r);
+    auto it = m_snsToRftbls.find(sessionName);
+    if (likely(it == m_snsToRftbls.end())) {
+        m_snsToRftbls.insert(it, guidsToRftbls::value_type(sessionName, r));
     }
+    else {
+        A(!"an element was not found in guid map but found in session names map!");
+    }
+    
+    refs.push_back(r);
 
-    return bRet;
+    return true;
 }
 
 void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
 {
-    if_A (r)
-    {
-        std::string guid = r->guid();
-        std::string sessionName = r->sessionName();
-
-        //LG(INFO, "delete %s %s", guid.c_str(), sessionName.c_str());
-        
-        // during destruction, the object must be accessible via its manager
-        // because for example when destructing a joint, we need to launch a command to change the parent to nullptr and this command uses the manager to find the object
-        // that's why delete is done before removing guid and session name from maps
-        r->observableReferentiable()->Notify(Referentiable::Event::WILL_BE_DELETED, r);
-        // to make sure that the observable is not used during the destructor
-        r->deleteObservableReferentiable();
-        delete r;
-
-        size_t count = m_guidsToRftbls.erase(guid);
-        A(count == 1);
-        
-        count = m_snsToRftbls.erase(sessionName);
-        A(count == 1);
-
-        for(auto it = refs.begin(); it != refs.end(); ++it) {
-            if(*it == r) {
-                refs.erase(it);
-                break;
-            }
+    A (r);
+    std::string guid = r->guid();
+    std::string sessionName = r->sessionName();
+    
+    //LG(INFO, "delete %s %s", guid.c_str(), sessionName.c_str());
+    
+    // during destruction, the object must be accessible via its manager
+    // because for example when destructing a joint, we need to launch a command to change the parent to nullptr and this command uses the manager to find the object
+    // that's why delete is done before removing guid and session name from maps
+    r->observableReferentiable()->Notify(Referentiable::Event::WILL_BE_DELETED, r);
+    // to make sure that the observable is not used during the destructor
+    r->deleteObservableReferentiable();
+    delete r;
+    
+    size_t count = m_guidsToRftbls.erase(guid);
+    A(count == 1);
+    
+    count = m_snsToRftbls.erase(sessionName);
+    A(count == 1);
+    
+    auto it = refs.begin();
+    for(; it != refs.end(); ++it) {
+        if(*it == r) {
+            auto ptr = *it;
+            refs.erase(it);
+            observable().Notify(Event::RFTBL_REMOVE, ptr); // must be placed after actual delete (use case : delete of joint makes the parent nullptr so the joint ui manager draws a joint at root which must be removed)
+            break;
         }
-        
-        A(refs.size() == m_guidsToRftbls.size());
-        A(refs.size() == m_snsToRftbls.size());
-        
-        observable().Notify(Event::RFTBL_REMOVE, r); // must be placed after actual delete (use case : delete of joint makes the parent nullptr so the joint ui manager draws a joint at root which must be removed)
     }
+    
+    A(refs.size() == m_guidsToRftbls.size());
+    A(refs.size() == m_snsToRftbls.size());
+    
 }
 
 struct pred
 {
-    bool operator()(Referentiable * const & a, Referentiable * const & b) const
+    bool operator()(Referentiable const * a, Referentiable const * b) const
     {
         A(a && b);
         std::string date1 = a->creationDate();
@@ -147,7 +132,7 @@ Referentiable * ReferentiableManagerBase::findByGuid(const std::string & guid)
     if (it != m_guidsToRftbls.end()) {
         return it->second;
     }
-    return nullptr;
+    return {};
 }
 // session name is unique per-session
 Referentiable * ReferentiableManagerBase::findBySessionName(const std::string & sessionName)
@@ -156,47 +141,41 @@ Referentiable * ReferentiableManagerBase::findBySessionName(const std::string & 
     if (it != m_snsToRftbls.end()) {
         return it->second;
     }
-    return nullptr;
+    return {};
 }
 
 bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r, bool bFinalize)
 {
-    bool bRet = false;
-
-    if_A (r)
+    A(r);
+    std::string sessionName = r->hintName();
+    
+    std::transform(sessionName.begin(), sessionName.end(), sessionName.begin(), ::toupper);
+    
+    if(findBySessionName(sessionName))
     {
-        std::string sessionName = r->hintName();
-
-        std::transform(sessionName.begin(), sessionName.end(), sessionName.begin(), ::toupper);
-
-        if(findBySessionName(sessionName))
-        {
-            sessionName += "_";
-         
-            auto f = [this](const std::string & pre, int i) -> bool {
-                return findBySessionName(pre + std::to_string(i)) ? true: false;
-            };
-            
-            while (f(sessionName,session_name_last_suffix))
-            {
-                session_name_last_suffix++;
-            }
-            
-            sessionName += std::to_string(session_name_last_suffix);
+        sessionName += "_";
+        
+        auto f = [this](const std::string & pre, int i) -> bool {
+            return findBySessionName(pre + std::to_string(i)) ? true: false;
+        };
+        
+        while (f(sessionName,session_name_last_suffix)) {
             session_name_last_suffix++;
         }
-        bRet = RegisterWithSessionName(r, sessionName);
+        
+        sessionName += std::to_string(session_name_last_suffix);
+        session_name_last_suffix++;
     }
-
-    if(bRet && bFinalize)
-    {
+    if(!RegisterWithSessionName(r, sessionName)) {
+        return false;
+    }
+    if(bFinalize) {
         r->Init();
         r->onLoaded();
         
         observable().Notify(ReferentiableManagerBase::Event::RFTBL_ADD, r);
     }
-    
-    return bRet;
+    return true;
 }
 
 std::string ReferentiableManagerBase::generateGuid()
@@ -285,7 +264,7 @@ void ReferentiableManagerBase::RemoveRef(Referentiable*r)
 {
     A(r);
 
-    HistoryManager * h = HistoryManager::getInstance();
+    auto * h = HistoryManager::getInstance();
     
     if (h->isActive())
     {
@@ -293,40 +272,35 @@ void ReferentiableManagerBase::RemoveRef(Referentiable*r)
             ReferentiableDeleteCmdBase::Execute(*r);
         }
     }
-    else
-    {
+    else {
         RemoveRefInternal(r);
     }    
 }
 
-Referentiable* ReferentiableManagerBase::newReferentiable(bool bFinalize)
+ref_unique_ptr<Referentiable> ReferentiableManagerBase::newReferentiable(bool bFinalize)
 {
     return newReferentiable(defaultNameHint(), bFinalize);
 }
 
-Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & nameHint, bool bFinalize)
+ref_unique_ptr<Referentiable> ReferentiableManagerBase::newReferentiable(const std::string & nameHint, bool bFinalize)
 {
     return newReferentiable(nameHint, std::vector < std::string>(), bFinalize, false);
 }
-Referentiable* ReferentiableManagerBase::newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize, bool bVisibleIfAhistoric)
+ref_unique_ptr<Referentiable> ReferentiableManagerBase::newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize, bool bVisibleIfAhistoric)
 {
-    Referentiable * r = nullptr;
-
     HistoryManager * h = HistoryManager::getInstance();
 
-    if (h->isActive())
-    {
-        A(bFinalize);
-        if (!ReferentiableNewCmdBase::ExecuteFromInnerCommand(*this, nameHint, guids, r))
-            r = ReferentiableNewCmdBase::Execute(*this, nameHint, guids);
+    if (!h->isActive()) {
+        return newReferentiableInternal(nameHint, guids, bVisibleIfAhistoric, bFinalize);
     }
-    else
-    {
-        r = newReferentiableInternal(nameHint, guids, bVisibleIfAhistoric, bFinalize);
+    A(bFinalize);
+    ref_unique_ptr<Referentiable> r;
+    if (ReferentiableNewCmdBase::ExecuteFromInnerCommand(*this, nameHint, guids, r)) {
+        return r;
     }
-
-    return r;
+    return ReferentiableNewCmdBase::Execute(*this, nameHint, guids);
 }
+
 template <class T>
 ReferentiableManager<T> * ReferentiableManager<T>::g_pRefManager = nullptr;
 
@@ -338,7 +312,7 @@ ReferentiableManager<T> * ReferentiableManager<T>::getInstance()
 
 
 template <class T>
-Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible, bool bFinalize)
+ref_unique_ptr<Referentiable> ReferentiableManager<T>::newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible, bool bFinalize)
 {
     /*LG(INFO, "ReferentiableManager<T>::newReferentiable(%s, %d guids) begin",
         (nameHint.c_str() ? nameHint.c_str() : "nullptr"),
@@ -353,18 +327,17 @@ Referentiable* ReferentiableManager<T>::newReferentiableInternal(const std::stri
         guid = generateGuid();
     }
 
-    auto ref = new T(this, guid, nameHint);
+    auto ref = ref_unique_ptr<T>(new T(this, guid, nameHint));
     if (!bVisible) {
         ref->Hide();
     }
-    if (unlikely(!ComputeSessionName(ref, bFinalize))) {
+    if (unlikely(!ComputeSessionName(ref.get(), bFinalize))) {
         LG(ERR, "ReferentiableManager<T>::newReferentiable : ComputeSessionName failed (uuid: %s)", guid.c_str());
-        delete ref;
-        return 0;
+        return {};
     }
 
     //LG((ref ? INFO : ERR), "ReferentiableManager<T>::newReferentiable(...) returns 0x%x", ref);
-    return ref;
+    return {ref.release()};
 }
 
 template <class T>
@@ -374,7 +347,7 @@ ref_unique_ptr<T> ReferentiableManager<T>::New()
     if(!rm) {
         return {};
     }
-    return {static_cast<T*>(rm->newReferentiable(true))};
+    return {static_cast<T*>(rm->newReferentiable(true).release())};
 }
 
 bool ReferentiableCmdBase::data::operator!=(const Undoable::data& other) const
@@ -438,7 +411,7 @@ bool ReferentiableCmdBase::doExecute(const Undoable::data & data)
 {
     bool bDone = false;
 
-    const ReferentiableCmdBase::data * pData = dynamic_cast<const ReferentiableCmdBase::data*>(&data);
+    auto pData = dynamic_cast<const ReferentiableCmdBase::data*>(&data);
     A(pData);
     switch (pData->m_action)
     {
@@ -465,7 +438,8 @@ void ReferentiableCmdBase::doInstantiate()
         bGUID = true;
         guids.push_back(m_GUID);
     }
-    auto * r = manager()->newReferentiableInternal(m_hintName, guids);
+    // F3F7C744-0B78-4750-A0A1-7A9BAD872188
+    auto r = manager()->newReferentiableInternal(m_hintName, guids).release();
     A(r);
     if (!bGUID) {
         m_GUID = r->guid();
@@ -482,8 +456,7 @@ void ReferentiableCmdBase::doInstantiate()
 
 void ReferentiableCmdBase::doDeinstantiate()
 {
-    Referentiable * r = manager()->findByGuid(m_GUID);
-
+    auto r = manager()->findByGuid(m_GUID);
     A(r);
     manager()->RemoveRefInternal(r);
 }
@@ -492,9 +465,6 @@ ReferentiableCmdBase::CommandResult::CommandResult(bool bSuccess, Referentiable*
 Undoable::CommandResult(bSuccess)
 , m_addr(ref)
 {}
-Referentiable * ReferentiableCmdBase::CommandResult::addr() const {
-    return m_addr;
-}
 
 
 ReferentiableNewCmdBase::ReferentiableNewCmdBase(ReferentiableManagerBase & manager, const std::string & nameHint, const std::vector<std::string> guids) :
@@ -525,7 +495,7 @@ void ReferentiableNewCmdBase::getSentenceDescription(std::string & desc) const {
     desc.append("\"");
 }
 
-bool ReferentiableNewCmdBase::ExecuteFromInnerCommand(ReferentiableManagerBase & rm, const std::string & nameHint, const std::vector<std::string> guids, Referentiable*& oRefAddr)
+bool ReferentiableNewCmdBase::ExecuteFromInnerCommand(ReferentiableManagerBase & rm, const std::string & nameHint, const std::vector<std::string> guids, ref_unique_ptr<Referentiable>& oRefAddr)
 {
     oRefAddr = nullptr;
 
@@ -535,20 +505,16 @@ bool ReferentiableNewCmdBase::ExecuteFromInnerCommand(ReferentiableManagerBase &
     CommandResult r;
     resFunc f(RESULT_BY_REF(r));
 
-    bool bDone = Undoable::ExecuteFromInnerCommand<ReferentiableCmdBase>(
-        *before,
-        *after,
-        nullptr,
-        &f);
-    
-    if (bDone) {
-        A(r.Success());
-        oRefAddr = r.addr();
+    if(!Undoable::ExecuteFromInnerCommand<ReferentiableCmdBase>(*before, *after, {}, &f)) {
+        return false;
     }
-
-    return bDone;
+    
+    A(r.Success());
+    oRefAddr = r.addr();
+    return true;
 }
-Referentiable* ReferentiableNewCmdBase::Execute(ReferentiableManagerBase & rm, const std::string & nameHint, const std::vector<std::string> guids)
+
+ref_unique_ptr<Referentiable> ReferentiableNewCmdBase::Execute(ReferentiableManagerBase & rm, const std::string & nameHint, const std::vector<std::string> guids)
 {
     auto c = new ReferentiableNewCmdBase(rm, nameHint, guids);
     CommandResult r;
@@ -558,7 +524,10 @@ Referentiable* ReferentiableNewCmdBase::Execute(ReferentiableManagerBase & rm, c
         c->observable().Remove(reg);
     }
 
-    return (r.Success()? r.addr() : nullptr);
+    return (r.Success() ?
+            r.addr()
+            :
+            nullptr);
 }
 
 std::string const & ReferentiableCmdBase::guid() const {
@@ -603,7 +572,7 @@ void ReferentiableDeleteCmdBase::Deinstantiate() {
 bool ReferentiableDeleteCmdBase::ExecuteFromInnerCommand(Referentiable & r)
 {
     std::string nameHint = r.hintName();
-    ReferentiableManagerBase * rm = r.getManager();
+    auto * rm = r.getManager();
     
     std::unique_ptr<Undoable::data> before(data::instantiate(ACTION_NEW, nameHint, rm));
     std::unique_ptr<Undoable::data> after(data::instantiate(ACTION_DELETE, nameHint, rm));

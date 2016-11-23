@@ -7,6 +7,7 @@
 
 #include "observable.h"
 #include "execution.h"
+#include "referentiable.h"
 
 namespace imajuscule
 {

@@ -11,7 +11,7 @@ const int KEY_TARGETS = -110;
 
 using namespace imajuscule;
 
-ReferentiableRoot * ReferentiableRoot::g_instance = nullptr;
+ref_shared_ptr<ReferentiableRoot> ReferentiableRoot::g_instance;
 
 IMPL_PERSIST2(ReferentiableRoot, Referentiable,
             ,
@@ -31,48 +31,17 @@ void ReferentiableRoot::initialize() {
     auto refroot_manager = getManager();
     for(auto * m : Referentiables::getManagers())
     {
-        if(!m) {
-            continue;
-        }
-
-        if(m == refroot_manager) {
+        if(!m || m == refroot_manager) {
             continue;
         }
         for (auto vi : m->traverse() ) {
-            addRef(vi);
+            addSpec(vi);
         }
-        
         m->observable().Register(ReferentiableManagerBase::Event::RFTBL_ADD,
-                                  [this](Referentiable*r){
-                                      if(!dynamic_cast<ReferentiableRoot*>(r))
-                                          this->addRef(r);
+                                  [this](Referentiable* r){
+                                      if(!dynamic_cast<ReferentiableRoot*>(r)) {
+                                          addSpec(r);
+                                      }
                                   });
     }
-}
-
-void ReferentiableRoot::addRef(Referentiable* ref)
-{
-    //LG(INFO,"+ %x, %s", ref, ref->sessionName().c_str());
-    A(ref);
-    auto it = m_refs.find(refs::key_type( ref ));
-    A(it == m_refs.end());
-    m_refs.insert(ref);
-    addSpec(ref);
-    if(auto refobs = ref->observableReferentiable()) {
-        refobs->Register(Referentiable::Event::WILL_BE_DELETED,
-                         [this](Referentiable*r){
-                             if(r!= this)
-                                 this->removeRef(r);
-                         });
-    }
-}
-void ReferentiableRoot::removeRef(Referentiable* ref)
-{
-    //LG(INFO,"- %x", ref);
-    A(ref);
-    auto it = m_refs.find(ref);
-    A(it != m_refs.end());
-
-    m_refs.erase(it);
-    removeSpec(ref);
 }

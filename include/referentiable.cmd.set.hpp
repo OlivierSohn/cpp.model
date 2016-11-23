@@ -42,7 +42,7 @@ namespace imajuscule {
     , m_hasAttr(false)
     , m_manager(nullptr)
     {
-        if (U * attr = std::bind(fGet, &obj)())
+        if (auto attr = std::bind(fGet, &obj)())
         {
             m_hasAttr = true;
             m_attrGUID = attr->guid();
@@ -92,7 +92,7 @@ namespace imajuscule {
         if (!m_hasAttr) {
             return "none";
         }
-        if (Referentiable * ref = Attr()) {
+        if (auto ref = Attr()) {
             return ref->sessionName();
         }
         return "missing";

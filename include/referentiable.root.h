@@ -9,23 +9,18 @@ namespace imajuscule
     class ReferentiableRoot : public Referentiable
     {
         friend class Globals;
-        friend class ReferentiableManager<ReferentiableRoot>;
+        DEFINE_REF_WITH_VISITOR(ReferentiableRoot);
     public:
         static ReferentiableRoot * getInstance();
 
         void initialize();
-        void addRef(Referentiable*);
-        void removeRef(Referentiable*);
     protected:
         ReferentiableRoot(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName);
 
         DECL_PERSIST(ReferentiableRoot, Referentiable)
-        VISITOR_HEADER_IMPL
         
-        static ReferentiableRoot * g_instance;
-
-        typedef std::set<Referentiable*> refs;
-        refs m_refs;
+        
+        static ref_shared_ptr<ReferentiableRoot> g_instance;
     };
 }
 

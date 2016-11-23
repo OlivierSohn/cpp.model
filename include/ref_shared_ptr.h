@@ -1,83 +1,124 @@
 #pragma once
 
+#include <type_traits>
+#include <cstddef>
+
 #include "os.log.h"
 
-#include "referentiable.h"
+#include "visitable.h"
 
 namespace imajuscule
 {
+    class Referentiable;
     template<class T = Referentiable>
     struct ref_shared_ptr : public NonCopyable {
-        explicit ref_shared_ptr(T * ref = 0) : p(ref), c(ref?new int32_t:nullptr) {
-            initialize();
+        
+        template<class> friend class ref_shared_ptr;
+        
+        ref_shared_ptr() : p(nullptr) {
+        }
+        
+        // doesn't need to be explicit because it's an intrusive shared pointer
+        ref_shared_ptr(T * ref) : p(ref) {
+            if(p) {
+                increment();
+            }
         }
 
         ~ref_shared_ptr() {
             decrement();
         }
 
-        void reset() {
-            if(decrement()) {
-                p = nullptr;
+        void reset(T*o = nullptr) {
+            if(p == o) {
+                return;
             }
-            c = nullptr;
-        }
-        
-        void reset(T*o) {
-            if(decrement()) {
-                c = nullptr;
-            }
+            decrement();
             p = o;
-            if(!c) {
-                c = new int32_t;
+            if(p) {
+                increment();
             }
-            initialize();
         }
 
-        ref_shared_ptr(ref_shared_ptr && o) {
-            p = o.p;
-            c = o.c;
+        ref_shared_ptr(ref_shared_ptr && o)
+        : p(o.p) {
             o.p = nullptr;
-            o.c = nullptr;
+        }
+
+        template<class Y>
+        ref_shared_ptr(ref_shared_ptr<Y> && o,
+                       typename std::enable_if<std::is_convertible<Y*, T*>::value>::type = 0)
+        : p(o.p) {
+            o.p = nullptr;
         }
         
-        ref_shared_ptr(ref_shared_ptr const & o) {
-            p = o.p;
-            c = o.c;
+        ref_shared_ptr(ref_shared_ptr const & o)
+        : p(o.p) {
+            if(p) {
+                increment();
+            }
+        }
+
+        template<class Y>
+        ref_shared_ptr(ref_shared_ptr<Y> const& o,
+                       typename std::enable_if<std::is_convertible<Y*, T*>::value>::type = 0)
+        : p(o.p) {
             if(p) {
                 increment();
             }
         }
         
+        
         ref_shared_ptr & operator = (const ref_shared_ptr & o) {
-            if(p != o.p) {
-                decrement();
-                p = o.p;
-                c = o.c;
-                if(p) {
-                    increment();
-                }
-            }
+            reset(o.p);
             return *this;
         }
 
         ref_shared_ptr & operator = (ref_shared_ptr && o) {
             decrement();
             p = o.p;
-            c = o.c;
             o.p = nullptr;
-            o.c = nullptr;
             return *this;
         }
 
-        void swap(ref_shared_ptr<T> & o) {
+        template<class Y>
+        operator ref_shared_ptr<Y>() const {
+            return {p};
+        }
+        
+        template<class Y>
+        operator Y *() const {
+            return static_cast<Y*>(p);
+        }
+        
+        void swap(ref_shared_ptr & o) {
             std::swap(p, o.p);
-            std::swap(c, o.c);
         }
         
         ref_shared_ptr & operator = (T * o) {
             reset(o);
             return *this;
+        }
+
+        template<class U>
+        ref_shared_ptr<U> dynamic_as() const {
+            if(std::is_same<U,T>::value) {
+                return ref_shared_ptr<T>(*this);
+            }
+            auto d = dynamic_cast<U*>(p);
+            if(!d) {
+                return {};
+            }
+            return {d};
+        }
+        
+        template<class U>
+        ref_shared_ptr<U> static_as() const {
+            auto s = static_cast<U*>(p);
+            if(!s) {
+                return {};
+            }
+            return {s};
         }
         
         explicit operator T*() const { return p; }
@@ -92,6 +133,13 @@ namespace imajuscule
             return p != o;
         }
         
+        bool operator != ( std::nullptr_t ) const {
+            return p != nullptr;
+        }
+        bool operator == ( std::nullptr_t ) const {
+            return p == nullptr;
+        }
+        
         bool operator == (ref_shared_ptr const & o) const {
             return p == o.p;
         }
@@ -100,37 +148,41 @@ namespace imajuscule
         }
         
         T * get() const { return p; }
-        int32_t count() const { return p ? *c + 1 : 0; }
+        int32_t count() const { return p ? p->get_shared_counter() + 1 : 0; }
 
+        // release ownership, decrements, but doesn't delete (the pointer will have no owner at the end)
+        // this is used because the referentiable manager "owns the pointer until a first program shared_pointer
+        // is created with it.
+        T* forget() {
+            A(count() == 1); // we are the only owner
+            -- p->edit_shared_counter();
+            A(count() == 0);
+            
+            auto ret = p;
+            A(ret);
+            p = nullptr;
+            return ret;
+        }
+        
     private:
-        int32_t * c;
         T* p;
         
         bool decrement() {
             if(!p) {
                 return false;
             }
-            A(c);
-            auto & count = *c;
-            if(count == 0) {
+            if(p->get_shared_counter() == 0) {
                 p->deinstantiate();
                 p = nullptr;
-                delete c;
-                c = nullptr;
                 return false;
             }
-            -- count;
+            -- p->edit_shared_counter();
             return true;
         }
         
-        void increment() {
-            ++(*c);
-        }
-        
-        void initialize() {
-            if(p) {
-                *c = 0;
-            }
+        void increment() const {
+            A(p);
+            ++(p->edit_shared_counter());
         }
     };
     
@@ -141,4 +193,15 @@ namespace imajuscule
         return ref_shared_ptr<T>(new T(std::forward<Args>(args)...));
     }
     
+    template<class U, class T>
+    ref_shared_ptr<U>  dynamic_pointer_cast(ref_shared_ptr<T> const & p) {
+        return p.template dynamic_as<U>();
+    }
+    
+    template<class U, class T>
+    ref_shared_ptr<U>  static_pointer_cast(ref_shared_ptr<T> const & p) {
+        return p.template static_as<U>();
+    }
 }
+
+#define ref_shared_ptr ref_shared_ptr

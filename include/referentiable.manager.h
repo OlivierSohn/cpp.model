@@ -5,14 +5,12 @@
 #include <vector>
 #include <functional>
 
-#include "ref_unique_ptr.h"
-#include "ref_shared_ptr.h"
 #include "visitable.h"
 #include "observable.h"
 #include "undoable.h"
+#include "referentiable.h"
 
-#define MAKE_UNIQUE(x) ReferentiableManager<x>::New()
-#define MAKE_SHARED(x) ref_shared_ptr<x>(ReferentiableManager<x>::New().release())
+#define MAKE_REF(x) ref_shared_ptr<x>(ReferentiableManager<x>::New().release())
 namespace imajuscule
 {
     class Referentiables;
@@ -22,8 +20,8 @@ namespace imajuscule
     class ReferentiableNewCmdBase;
     class ReferentiableDeleteCmdBase;
 
-    class Referentiable;
     typedef std::vector<Referentiable*> referentiables;
+    
     class ReferentiableManagerBase : public Visitable
     {
         friend class Referentiable;
@@ -45,11 +43,11 @@ namespace imajuscule
         // at this point, some ReferentiableManagers have been deleted already
         virtual ~ReferentiableManagerBase();
 
-        Referentiable* newReferentiable(bool bFinalize);
-        Referentiable* newReferentiable(const std::string & nameHint, bool bFinalize);
-        Referentiable* newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize, bool bVisibleIfAhistoric);
+        ref_unique_ptr<Referentiable> newReferentiable(bool bFinalize);
+        ref_unique_ptr<Referentiable> newReferentiable(const std::string & nameHint, bool bFinalize);
+        ref_unique_ptr<Referentiable> newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize, bool bVisibleIfAhistoric);
 
-        referentiables const & traverse() const { return refs; }
+        auto const & traverse() const { return refs; }
         void forEach(std::function<void(Referentiable &)> && f) {
             for(auto r : traverse()) {
                 if(r) {
@@ -65,7 +63,9 @@ namespace imajuscule
 
         referentiables ListReferentiablesByCreationDate() const;
 
-        Observable<Event, Referentiable*> & observable();
+        Observable<Event, Referentiable*> & observable() {
+            return *m_observable;
+        }
 
         void RemoveRef(Referentiable*);
         
@@ -76,8 +76,9 @@ namespace imajuscule
         virtual const char * UIName() = 0;
 
         static std::string generateGuid();
-    protected:
+
         virtual const char * defaultNameHint() = 0;
+    protected:
         // pure virtual because the session names are unique "per object type"
         bool ComputeSessionName(Referentiable*, bool bFinalize);
 
@@ -92,13 +93,13 @@ namespace imajuscule
 
         snsToRftbls m_snsToRftbls;
         guidsToRftbls m_guidsToRftbls;
-        referentiables refs;
+        std::vector<Referentiable*> refs;
         
         int session_name_last_suffix;
 
         Observable<Event, Referentiable*> * m_observable;
 
-        virtual Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible = true, bool bFinalize = true) = 0;
+        virtual ref_unique_ptr<Referentiable> newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible = true, bool bFinalize = true) = 0;
         void RemoveRefInternal(Referentiable*);
     };
     
@@ -128,9 +129,10 @@ namespace imajuscule
     private:
         static ReferentiableManager * g_pRefManager;
 
-        Referentiable* newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible, bool bFinalize) override;
+        ref_unique_ptr<Referentiable> newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible, bool bFinalize) override;
         void doTearDown() override {}
     };
+    
     template <class T>
     void forEach(std::function<void(T&)> && f) {
         auto rm = ReferentiableManager<T>::getInstance();
@@ -157,9 +159,10 @@ namespace imajuscule
             ACTION_DELETE,
             ACTION_UNKNOWN
         };
+        
         static Action other(Action);
-        struct data : public Undoable::data
-        {
+        
+        struct data : public Undoable::data {
             Action m_action;
             std::string m_hintName;
             ReferentiableManagerBase * m_manager;
@@ -187,14 +190,17 @@ namespace imajuscule
         public:
             CommandResult(bool bSuccess, Referentiable*);
 
-            Referentiable * addr() const;
+            ref_unique_ptr<Referentiable> addr() const {
+                return {m_addr};
+            }
         private:
-            Referentiable * m_addr;
+            Referentiable * m_addr; // doc F3F7C744-0B78-4750-A0A1-7A9BAD872188
         };
 
     private:
         ReferentiableManagerBase * m_manager;
     };
+    
     class ReferentiableNewCmdBase : public ReferentiableCmdBase
     {
         friend class ReferentiableManagerBase;
@@ -209,8 +215,8 @@ namespace imajuscule
 
         std::vector<std::string> m_guids;
     private:
-        static bool ExecuteFromInnerCommand(ReferentiableManagerBase & rm, const std::string & nameHint, const std::vector<std::string> guids, Referentiable*& oRefAddr);
-        static Referentiable* Execute(ReferentiableManagerBase & rm, const std::string & nameHint, const std::vector<std::string> guids);
+        static bool ExecuteFromInnerCommand(ReferentiableManagerBase & rm, const std::string & nameHint, const std::vector<std::string> guids, ref_unique_ptr<Referentiable>& oRefAddr);
+        static ref_unique_ptr<Referentiable> Execute(ReferentiableManagerBase & rm, const std::string & nameHint, const std::vector<std::string> guids);
     };
 
     class ReferentiableDeleteCmdBase : public ReferentiableCmdBase
@@ -230,23 +236,25 @@ namespace imajuscule
         static void Execute(Referentiable &);
     };
     
-    template <class T> T* REF_BY_SN( const std::string & sn ){
+    template <class T>
+    T* REF_BY_SN( const std::string & sn ){
         auto rm = ReferentiableManager<T>::getInstance();
         if(!rm) {
             return {};
         }
         return static_cast<T *>(rm->findBySessionName(sn));
     }
-    template <class T> T* REF_BY_GUID(const std::string & guid)
-    {
+    
+    template <class T>
+    T* REF_BY_GUID(const std::string & guid) {
         auto rm = ReferentiableManager<T>::getInstance();
         if(!rm) {
             return {};
         }
         return static_cast<T *>(rm->findByGuid(guid));
     }
-    template <class T> referentiables const & TRAVERSE()
-    {
+    
+    template <class T> referentiables const & TRAVERSE() {
         auto rm = ReferentiableManager<T>::getInstance();
         if(!rm) {
             static referentiables rs;
@@ -257,4 +265,3 @@ namespace imajuscule
     }
 }
 
-#include "referentiable.h"

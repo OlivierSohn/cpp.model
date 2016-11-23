@@ -1,14 +1,11 @@
 #pragma once
 
-#include "visitor.h"
 #include "observable.h"
 
-#define VISITOR_PURE_VIRTUAL virtual void accept(Visitor &) = 0;
 
-#define VISITOR_HEADER_IMPL void accept(Visitor & vtor) override\
-        {\
-        vtor.Visit(this);\
-        }
+#define VISITOR_HEADER_IMPL void accept(Visitor & vtor) override {\
+    vtor.Visit(this);\
+}
 
 
 namespace imajuscule
@@ -23,25 +20,25 @@ namespace imajuscule
     public:
         virtual ~Object() = default;
     };
-    
+
+    class Visitor;
     class Visitable : public Object
     {
     public:
-        enum HierarchyEvent
-        {
+        enum HierarchyEvent {
             ADD_CHILD,
             REMOVE_CHILD
         };
-        enum Event
-        {
+        enum Event {
             VISITABLE_DELETE,
         };
+        
         ~Visitable();
 
         Observable<Event, Visitable&> &  observableVisitable();
         Observable<HierarchyEvent, Visitable&, Visitable&> &  observableVisitableH();
 
-        VISITOR_PURE_VIRTUAL
+        virtual void accept(Visitor &) = 0;
     protected:
         Visitable();
 

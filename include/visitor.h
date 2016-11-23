@@ -40,6 +40,37 @@ namespace imajuscule
     class GenericUpdatable;
     class Simulation;
     class Script;
+    class DiscreteCurveMotion;
+    class ContinuousCurveMotion;
+    class PostExtrude;
+    class Shrink;
+    class Scale;
+    class Rounding;
+    class GeoTransform;
+    class Position;
+    class ParamMotion;
+    class Sphere;
+    class ParallellepipedRect;
+    class Color;
+    class Extrude;
+    class Rasterize;
+    class postRenderParam;
+    class focusModelParam;
+    class Render;
+    class ReferentiableRoot;
+    class LocalSpaceMotion;
+    class GenericMotion;
+    class IterativeConstraint;
+    class OffsetMotion;
+    class MotionMixer;
+    class LocalSpaceMotion;
+    class Effect;
+    class EffectOp;
+    class STAIEffectOp;
+    class Constraint;
+    class KinMotion;
+    class MotionCompositor;
+    class Camera;
 
     class Visitor
     {
@@ -72,7 +103,7 @@ namespace imajuscule
         virtual void Visit(Shot*) = 0;
         virtual void Visit(MotionLayer*) = 0;
         virtual void Visit(CurveTraversal*) = 0;
-        virtual void Visit(CameraBase*) = 0;
+        virtual void Visit(CameraBase*  ) = 0;
         virtual void Visit(WireModel*) = 0;
         virtual void Visit(WireTextModel*) = 0;
         virtual void Visit(ExactVolume*) = 0;
@@ -82,7 +113,37 @@ namespace imajuscule
         virtual void Visit(MixerBase*) {};
         virtual void Visit(GenericUpdatable*) {};
         virtual void Visit(Simulation*) {};
-        virtual void Visit(Script*) {};
+        virtual void Visit(Script*) {}
+        /*virtual void Visit(LocalSpaceMotion*) {}
+        virtual void Visit(DiscreteCurveMotion*) {}
+        virtual void Visit(ContinuousCurveMotion*) {}
+        virtual void Visit(GenericMotion*) {}
+        virtual void Visit(IterativeConstraint*) {}
+        virtual void Visit(OffsetMotion*) {}
+        virtual void Visit(MotionMixer*) {}
+        virtual void Visit(PostExtrude*) {}
+        virtual void Visit(Shrink*) {}
+        virtual void Visit(Scale*) {}
+        virtual void Visit(Rounding*) {}
+        virtual void Visit(GeoTransform*) {}
+        virtual void Visit(Position*) {}
+        virtual void Visit(ParamMotion*) {}
+        virtual void Visit(Sphere*) {}
+        virtual void Visit(ParallellepipedRect*) {}
+        virtual void Visit(Color*) {}
+        virtual void Visit(Rasterize*) {}
+        virtual void Visit(Extrude*) {}
+        virtual void Visit(postRenderParam*) {}
+        virtual void Visit(focusModelParam*) {}
+        virtual void Visit(Render*) {}
+        virtual void Visit(ReferentiableRoot*) {}
+        virtual void Visit(Effect*) {}
+        virtual void Visit(EffectOp*) {}
+        virtual void Visit(STAIEffectOp*) {}
+        virtual void Visit(Constraint*) {}
+        virtual void Visit(KinMotion*) {}
+        virtual void Visit(MotionCompositor*) {}
+        virtual void Visit(Camera*) {}*/
 
     protected:
         Visitor() = default;

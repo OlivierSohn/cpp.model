@@ -14,34 +14,33 @@ Undoable()
 , m_manager(r?(r->getManager()):nullptr)
 , m_guid(r?r->guid():std::string())
 {
-    if (m_obsolescenceObservable)
+    if (m_obsolescenceObservable) {
         m_reg.push_back(m_obsolescenceObservable->Register(IS_OBSOLETE, std::bind(&Command::onObsolete, this)));
-}
-Command::~Command()
-{
-    if (m_obsolescenceObservable && !isObsolete())
-        m_obsolescenceObservable->Remove(m_reg);
+    }
 }
 
-auto Command::Before() const -> data *
+Command::~Command()
 {
+    if (m_obsolescenceObservable && !isObsolete()) {
+        m_obsolescenceObservable->Remove(m_reg);
+    }
+}
+
+auto Command::Before() const -> data * {
     return m_pBefore.get();
 }
-auto Command::After() const -> data *
-{
+
+auto Command::After() const -> data * {
     return m_pAfter.get();
 }
 
-void Command::onObsolete()
-{
+void Command::onObsolete() {
     // on purpose, obsolescence doesn't propagate to inner commands
 
-    if (unlikely(isObsolete()))
-    {
+    if (unlikely(isObsolete())) {
         A(!"design error : called at least twice");
     }
-    else
-    {
+    else {
         setIsObsolete();
         A(m_obsolescenceObservable);
         if (m_obsolescenceObservable)
@@ -52,9 +51,8 @@ void Command::onObsolete()
     }
 }
 
-bool Command::Execute()
-{
-    HistoryManager* h = HistoryManager::getInstance();
+bool Command::Execute() {
+    auto* h = HistoryManager::getInstance();
     h->PushCurrentCommand(this);
 
     A(validStateToExecute());
@@ -147,7 +145,7 @@ bool Command::Redo(Undoable * limit, bool bStrict, bool & bFoundLimit)
 
 void Command::getDescription(std::string & desc) const
 {
-    if (Referentiable * p = getObject()) {
+    if (auto p = getObject()) {
         desc.append(p->sessionName());
     }
     else if (m_manager) {
@@ -194,7 +192,7 @@ bool Command::data::operator == (const data&d) const
 Referentiable * Command::getObject() const
 {
     if (!m_manager) {
-        return nullptr;
+        return {};
     }
     return m_manager->findByGuid(m_guid);
 }
@@ -271,12 +269,12 @@ bool Command::validStateToExecute() const
 {
     return (m_state == NOT_EXECUTED);
 }
-bool Command::validStateToUndo() const
-{
+
+bool Command::validStateToUndo() const {
     return ((m_state == EXECUTED) || (m_state == REDONE));
 }
-bool Command::validStateToRedo() const
-{
+
+bool Command::validStateToRedo() const {
     return (m_state == UNDONE);
 }
 
@@ -284,16 +282,16 @@ Command::CommandResult::CommandResult(bool bSuccess) :
 m_bInitialized(true)
 , m_success(bSuccess)
 {}
+
 Command::CommandResult::CommandResult() :
 m_bInitialized (false)
 {}
 
-bool Command::CommandResult::initialized() const
-{
+bool Command::CommandResult::initialized() const {
     return m_bInitialized;
 }
-bool Command::CommandResult::Success() const
-{
+
+bool Command::CommandResult::Success() const {
     A(initialized());
     return m_success;
 }

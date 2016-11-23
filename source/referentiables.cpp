@@ -44,8 +44,7 @@ namespace imajuscule
     
     Referentiable* Referentiables::findRefFromGUID(const DirectoryPath & path, const std::string & guid)
     {
-        Referentiable * r = nullptr;
-        if((r = findRefFromGUIDLoaded(guid))) {
+        if(auto r = findRefFromGUIDLoaded(guid)) {
             return r;
         }
         
@@ -59,45 +58,41 @@ namespace imajuscule
         
         std::vector<std::string> guids{guid};
         ReferentiableManagerBase * rm = m_managers[index];
-        r = rm->newReferentiable(nameHint, guids, false, true);
+        auto r = rm->newReferentiable(nameHint, guids, false, true);
         r->Load(path, guid);
-        rm->observable().Notify(ReferentiableManagerBase::Event::RFTBL_ADD, r);
+        rm->observable().Notify(ReferentiableManagerBase::Event::RFTBL_ADD, r.get());
         
-        return r;
+        return r.release();
     }
     
     Referentiable* Referentiables::findRefFromSessionNameLoaded(const std::string & sn)
     {
-        for(auto * man: m_managers)
-        {
-            if(Referentiable * ref = man->findBySessionName(sn)) {
+        for(auto * man: m_managers) {
+            if(auto ref = man->findBySessionName(sn)) {
                 return ref;
             }
         }
-        return nullptr;
+        return {};
     }
     
     Referentiable* Referentiables::findRefFromGUIDLoaded(const std::string & guid)
     {
-        for(auto * man: m_managers)
-        {
-            if(Referentiable * ref = man->findByGuid(guid)) {
+        for(auto * man: m_managers) {
+            if(auto ref = man->findByGuid(guid)) {
                 return ref;
             }
         }
-        return nullptr;
+        return {};
     }
     
-    void Referentiables::regManager(ReferentiableManagerBase * m)
-    {
+    void Referentiables::regManager(ReferentiableManagerBase * m) {
         if(m) {
             A(m->index() == m_managers.size());
         }
         m_managers.emplace_back(m);
     }
     
-    managers const & Referentiables::getManagers()
-    {
+    managers const & Referentiables::getManagers() {
         auto * i = Referentiables::getInstance();
         A(i);
         return i->m_managers;

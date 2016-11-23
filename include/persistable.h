@@ -135,7 +135,7 @@ if_A(ref) \
 std::vector<std::string> vs; \
 for(auto const & link : vec) \
 { \
-Referentiable * ref = &*link; \
+auto ref = link; \
 W_LNK_ELT( ref, vs); \
 } \
 WriteKeyData(key, vs);  \
@@ -146,7 +146,7 @@ WriteKeyData(key, vs);  \
 std::vector<std::string> vs; \
 for(auto & it : container) \
 {\
-    Referentiable * ref = it.first.get(); \
+    auto ref = it.first; \
     W_LNK_ELT( ref, vs); \
 }\
 WriteKeyData(key, vs);  \
@@ -161,7 +161,7 @@ break;
 #define R_UNIQUE_LNKS_OP( Op, type, key ) \
 case key: \
     for(auto const & guid : vs)\
-        Op( ref_unique_ptr<type>(static_cast<type*>(Referentiables::fromGUID(directory(), guid))) );\
+        Op( ref_shared_ptr<type>(static_cast<type*>(Referentiables::fromGUID(directory(), guid))) );\
 break;
 
 #define L_LNKS( key ) \

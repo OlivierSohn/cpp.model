@@ -51,16 +51,16 @@ namespace imajuscule {
         }
         
         template<typename T, typename... Args>
-        static T* ref(T *& p, Args&&... args) {
+        static T* ref(ref_shared_ptr<T>& p, Args&&... args) {
             if(p) {
-                return p;
+                return p.get();
             }
             make_ref(p, std::forward<Args>(args)...);
-            return p;
+            return p.get();
         }
         
         template<typename T, typename... Args>
-        static void make_ref(T *& p, Args&&... args) {
+        static void make_ref(ref_shared_ptr<T>& p, Args&&... args) {
             if( GlobalsImpl::getInstance()->isResetting() ) {
                 LG(ERR, "GlobalsImpl is resetting, cannot make ref");
                 if(p) {
@@ -78,7 +78,7 @@ namespace imajuscule {
                 p=0;
                 return;
             }
-            p = rm->New().release();
+            p.reset(rm->New().release());
             add_ref(p);
         }
 
@@ -99,7 +99,7 @@ namespace imajuscule {
         
         // can delete and reset the pointer to zero
         template<typename T>
-        static void add_ref(T *& p) {
+        static void add_ref(ref_shared_ptr<T>& p) {
             if( do_add_ref(p) ) {
                 return;
             }
@@ -108,7 +108,7 @@ namespace imajuscule {
         }
 
         template<typename T>
-        static bool do_add_ptr(T *& p) {
+        static bool do_add_ptr(T*& p) {
             if( GlobalsImpl::getInstance()->isResetting() ) {
                 LG(ERR, "GlobalsImpl is resetting, cannot add pointer");
                 return false;
@@ -121,14 +121,13 @@ namespace imajuscule {
         }
         
         template<typename T>
-        static bool do_add_ref(T *& p) {
+        static bool do_add_ref(ref_shared_ptr<T>& p) {
             if( GlobalsImpl::getInstance()->isResetting() ) {
                 LG(ERR, "GlobalsImpl is resetting, cannot add referentiable");
                 return false;
             }
             GlobalsImpl::getInstance()->addReseter([&p](){
-                p->deinstantiate();
-                p=0;
+                p.reset();
             });
             return true;
         }

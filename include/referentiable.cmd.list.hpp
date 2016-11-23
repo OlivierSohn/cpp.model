@@ -25,8 +25,7 @@ namespace imajuscule {
     , m_manager(nullptr)
     , m_t(t)
     {
-        if (attr)
-        {
+        if (attr) {
             m_attrGUID = attr->guid();
             m_manager = attr->getManager();
         }
@@ -66,12 +65,10 @@ namespace imajuscule {
     }
     
     REF_CMD_LIST
-    std::string RefAttrListCmd<T,U,fAdd,fRemove>::data::getDesc() const
-    {
+    std::string RefAttrListCmd<T,U,fAdd,fRemove>::data::getDesc() const {
         std::string desc;
         
-        switch(m_t)
-        {
+        switch(m_t) {
             case Type::TYPE_ADD:
                 desc.append("add ");
                 break;
@@ -114,16 +111,13 @@ namespace imajuscule {
         bool bSuccess = true;
         
         auto hm = HistoryManager::getInstance();
-        if (hm && hm->isActive())
-        {
+        if (hm && hm->isActive()) {
             if (!ExecuteFromInnerCommand(obj, Attr, t, bSuccess, found)) {
                 bSuccess = Execute(obj, Attr, t, found);
             }
         }
-        else
-        {
-            switch(t)
-            {
+        else {
+            switch(t) {
                 case Type::TYPE_ADD:
                     std::bind(fAdd, &obj, Attr)();
                     found = true;
@@ -144,8 +138,7 @@ namespace imajuscule {
     }
     
     REF_CMD_LIST
-    auto RefAttrListCmd<T,U,fAdd,fRemove>::Other(Type t) -> Type
-    {
+    auto RefAttrListCmd<T,U,fAdd,fRemove>::Other(Type t) -> Type {
         switch(t)
         {
             case Type::TYPE_ADD:
@@ -162,6 +155,7 @@ namespace imajuscule {
                 break;
         }
     }
+    
     REF_CMD_LIST
     bool RefAttrListCmd<T,U,fAdd,fRemove>::ExecuteFromInnerCommand(T & obj, U * newAttr, Type t, bool & bSuccess, bool & found)
     {
@@ -187,6 +181,7 @@ namespace imajuscule {
         
         return bDone;
     }
+    
     REF_CMD_LIST
     bool RefAttrListCmd<T,U,fAdd,fRemove>::doExecute(const Command::data & Data)
     {

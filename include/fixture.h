@@ -14,9 +14,6 @@
 
 #include "timeline.h"
 
-#define MAKE_UNIQUE_TEST(what) \
-Timeline::getInstance()->owned().nontyped.add(MAKE_UNIQUE(what));
-
 using namespace imajuscule;
 namespace {
     class Fixture: public ::testing::Test {

@@ -1,9 +1,11 @@
+#include <time.h>
+
+#include "os.log.h"
+#include "os.log.format.h"
+
 #include "history.manager.h"
 #include "referentiable.h"
 #include "referentiable.manager.h"
-#include <time.h>
-#include "os.log.h"
-#include "os.log.format.h"
 
 const int KEY_DATE_CREA           = 'd' ;// string
 const int KEY_GUID                = 'e' ;// string
@@ -16,7 +18,6 @@ Referentiable::Referentiable() :
 Persistable()
 , m_manager(nullptr)
 , m_guid(std::string(""))
-, m_bHasSessionName(false)
 , m_bHidden(false)
 , m_observableReferentiable(Observable<Event, Referentiable*>::instantiate())
 {
@@ -26,7 +27,6 @@ Referentiable::Referentiable(ReferentiableManagerBase * manager, const std::stri
 Persistable()
 , m_manager(manager)
 , m_guid(guid)
-, m_bHasSessionName(false)
 , m_bHidden(false)
 , m_observableReferentiable(Observable<Event, Referentiable*>::instantiate())
 {
@@ -38,7 +38,6 @@ Persistable()
 , m_manager(manager)
 , m_guid(guid)
 , m_hintName(hintName)
-, m_bHasSessionName(false)
 , m_bHidden(false)
 , m_observableReferentiable(Observable<Event, Referentiable*>::instantiate())
 {
@@ -65,75 +64,63 @@ void Referentiable::deleteObservableReferentiable()
     m_observableReferentiable = 0;
 }
 
-ReferentiableManagerBase * Referentiable::getManager() const
-{
-    return m_manager;
+namespace imajuscule {
+    ref_shared_ptr<Referentiable> instantiate(ReferentiableManagerBase * rm, const std::string & hintName) {
+        return ref_shared_ptr<Referentiable>{rm->newReferentiable(hintName, true).release()};
+    }
+
+    ref_shared_ptr<Referentiable> instantiate(ReferentiableManagerBase * rm) {
+        return instantiate(rm, std::string(rm->defaultNameHint()));
+    }
 }
-Referentiable* Referentiable::instantiate(ReferentiableManagerBase * rm)
-{
-    return instantiate(rm, std::string(rm->defaultNameHint()));
-}
-Referentiable* Referentiable::instantiate(ReferentiableManagerBase * rm, const std::string & hintName)
-{
-    return rm->newReferentiable(hintName, true);
-}
-void Referentiable::deinstantiate()
-{
+
+void Referentiable::deinstantiate() {
     getManager()->RemoveRef(this);
 }
 
-auto Referentiable::observableReferentiable() -> Observable<Event, Referentiable*> *
-{
+auto Referentiable::observableReferentiable() -> Observable<Event, Referentiable*> * {
     return m_observableReferentiable; // might be zero if it is being destroyed
 }
 
-void Referentiable::Hide()
-{
+void Referentiable::Hide() {
     m_bHidden = true;
 }
-bool Referentiable::isHidden()
-{
+
+bool Referentiable::isHidden() {
     return m_bHidden;
 }
 
-const std::string & Referentiable::guid() const
-{
+const std::string & Referentiable::guid() const {
     return m_guid;
 }
-const std::string & Referentiable::hintName() const
-{
+
+const std::string & Referentiable::hintName() const {
     return m_hintName;
 }
 
-const std::string & Referentiable::sessionName() const
-{
-    A(m_bHasSessionName);
+const std::string & Referentiable::sessionName() const {
     return m_sessionName;
 }
 
-void Referentiable::setSessionName(const std::string & sn)
-{
+void Referentiable::setSessionName(const std::string & sn) {
     //LG(INFO, "Referentiable::setSessionName(%s)", sn.empty()?"nullptr" : sn.c_str());
     m_sessionName = sn;
-    m_bHasSessionName = true;
 }
-const std::string & Referentiable::creationDate() const
-{
+
+const std::string & Referentiable::creationDate() const {
     return m_dateOfCreation;
 }
 
-std::string Referentiable::extendedName() const
-{
+std::string Referentiable::extendedName() const {
     auto ret = m_sessionName;
-    if (auto * mra = mainRefAttr()) {
+    if (auto mra = mainRefAttr()) {
         ret += "(" + mra->sessionName() + ")";
     }
     return ret;
 }
 
-Referentiable * Referentiable::mainRefAttr() const
-{
-    return nullptr;
+Referentiable* Referentiable::mainRefAttr() const {
+    return {};
 }
 
 IMPL_PERSIST3(Referentiable, Persistable,

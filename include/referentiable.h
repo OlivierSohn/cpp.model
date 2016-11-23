@@ -5,12 +5,21 @@
 #include <functional>
 #include <memory>
 
+#include "os.storage.keys.h"
+
 #include "ref_unique_ptr.h"
 #include "persistable.h"
 #include "observable.h"
-#include "os.storage.keys.h"
 #include "weak_ptr.h"
 #include "meta.h"
+
+#define DEFINE_REF(x) friend class ReferentiableManager<x>
+
+#define DEFINE_REF_WITH_VISITOR(x) public:  \
+VISITOR_HEADER_IMPL \
+private: \
+friend class ReferentiableManager<x>
+// last line without a ';'
 
 namespace imajuscule
 {
@@ -36,7 +45,6 @@ namespace imajuscule
             m_dateOfCreation = std::move(other.m_dateOfCreation);
             m_observableReferentiable = std::move(other.m_observableReferentiable);
             m_bHidden = std::move(other.m_bHidden);
-            m_bHasSessionName = std::move(other.m_bHasSessionName);
         }
         
         Referentiable& operator=(Referentiable&& other)
@@ -49,13 +57,10 @@ namespace imajuscule
                 m_dateOfCreation = std::move(other.m_dateOfCreation);
                 m_observableReferentiable = std::move(other.m_observableReferentiable);
                 m_bHidden = std::move(other.m_bHidden);
-                m_bHasSessionName = std::move(other.m_bHasSessionName);
             }
             return *this;
         }
         
-        static Referentiable * instantiate(ReferentiableManagerBase * rm);
-        static Referentiable * instantiate(ReferentiableManagerBase * rm, const std::string & hintName);
         void deinstantiate();
         enum Event
         {
@@ -69,12 +74,16 @@ namespace imajuscule
         const std::string & hintName() const;
         const std::string & creationDate() const;
 
-        ReferentiableManagerBase * getManager() const;
+        ReferentiableManagerBase * getManager() const { return m_manager; }
 
         void Hide();
         bool isHidden();
         
         static bool ReadIndexForDiskGUID(const DirectoryPath & path, const std::string & guid, unsigned int &index, std::string & sHintName);
+        
+        int16_t get_shared_counter() const { return shared_count; }
+        int16_t & edit_shared_counter() { return shared_count; }
+        
     protected:
         
         virtual ~Referentiable() = default;
@@ -107,6 +116,7 @@ namespace imajuscule
         };
         
     private:
+        int16_t shared_count = -1; // if 0 it means it's owned by one shared pointer
         ReferentiableManagerBase * m_manager;
         std::string m_guid; // persisted
         std::string m_hintName; // persisted
@@ -115,7 +125,6 @@ namespace imajuscule
         Observable<Event, Referentiable*> * m_observableReferentiable;
 
         bool m_bHidden;
-        bool m_bHasSessionName;
         virtual void setSessionName(const std::string & sn);
 
         virtual Referentiable * mainRefAttr() const;
@@ -123,16 +132,22 @@ namespace imajuscule
     };
     
     template<class T, typename std::enable_if<IsDerivedFrom<T, Referentiable>::Is>::type* = nullptr >
-    using WeakPtr = WeakPtrBase< T, Referentiable, &Referentiable::observableReferentiable, Referentiable::WILL_BE_DELETED>;
+    using ref_weak_ptr = WeakPtrBase< T, Referentiable, &Referentiable::observableReferentiable, Referentiable::WILL_BE_DELETED>;
 }
 #define SET_ref_unique(type, name, methodPostFix) \
-void set##methodPostFix(ref_unique_ptr<type> p) { \
+void set##methodPostFix(type * p) { \
     if(p == name) {\
         return;\
     }\
     removeSpec(name.get());\
-    name.swap(p);\
+    name = p;\
     addSpec(name.get());\
 }
 
+#include "ref_shared_ptr.h"
+
+namespace imajuscule {
+    ref_shared_ptr<Referentiable> instantiate(ReferentiableManagerBase * rm, const std::string & hintName);
+    ref_shared_ptr<Referentiable> instantiate(ReferentiableManagerBase * rm);
+}
 
