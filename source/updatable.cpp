@@ -84,10 +84,12 @@ void Updatable::Update()
     // we  need to setup specs correctly and rely on update
     A(updateAllowed);
     
-    if (UPDATED == getUpdateState())
+    if (UPDATED == getUpdateState()) {
         return;
-    // we can have inner updates : for example if a param is mixed, when updating the param it updates the mixer which in turns (for the first step to ensure param has a value) updates the param
-
+    }
+    
+    // we can have inner updates : for example if a param is mixed, updating the param updates the mixer which
+    // (for the first step to ensure param has a value) updates the param
     incrementState(); // the first time, from NOTUPDATED to INUPDATE
     
     {
@@ -138,13 +140,13 @@ void Updatable::resetObserversUpdateStatesRecurse()
 {
     for (auto * observer : m_observers)
     {
-        if(observer)
-        {
-            if(observer->m_state == UPDATED) {
-                observer->m_state = NOTUPDATED;
-            }
-            observer->resetObserversUpdateStatesRecurse();
+        if(!observer) {
+            continue;
         }
+        if(observer->m_state == UPDATED) {
+            observer->m_state = NOTUPDATED;
+        }
+        observer->resetObserversUpdateStatesRecurse();
     }
 }
 bool Updatable::isConsistent() const
@@ -166,19 +168,11 @@ bool Updatable::isConsistent() const
 
 bool Updatable::isSpecRecurse(Updatable const * item) const
 {
-    for (auto const * spec : m_specs)
-    {
-        if(!spec)
-        {
+    for (auto const * spec : m_specs) {
+        if(!spec) {
             continue;
         }
-        
-        if (spec == item)
-        {
-            return true;
-        }
-        if( spec->isSpecRecurse(item))
-        {
+        if (spec == item || spec->isSpecRecurse(item)) {
             return true;
         }
     }
@@ -187,15 +181,12 @@ bool Updatable::isSpecRecurse(Updatable const * item) const
 
 bool Updatable::isSpec(Updatable const * item) const
 {
-    for (auto const * spec : m_specs)
-    {
-        if(!spec)
-        {
+    for (auto const * spec : m_specs) {
+        if(!spec) {
             continue;
         }
 
-        if (spec == item)
-        {
+        if (spec == item) {
             return true;
         }
     }
@@ -204,8 +195,7 @@ bool Updatable::isSpec(Updatable const * item) const
 
 void Updatable::addSpec(spec item)
 {
-    if (!item)
-    {
+    if (!item) {
         return;
     }
     A(!isSpec(item));
@@ -220,8 +210,7 @@ void Updatable::addSpec(spec item)
     
     for (auto * observer : m_observers)
     {
-        if(observer)
-        {
+        if(observer) {
             observer->onAddRecursiveSpec(item);
         }
     }

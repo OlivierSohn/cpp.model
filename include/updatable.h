@@ -1,10 +1,10 @@
 
 #pragma once
 
-#include "visitable.h"
 #include <list>
 #include <set>
 
+#include "visitable.h"
 #include "visitor.h"
 #include "observable.h"
 
@@ -114,6 +114,7 @@ namespace imajuscule
         static void onUpdateStart();
         static void onUpdateEnd();
     };
+    
     struct UpdatePhase {
         UpdatePhase() {
             Updatable::onUpdateStart();
