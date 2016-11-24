@@ -126,9 +126,8 @@ Referentiable* Referentiable::mainRefAttr() const {
 IMPL_PERSIST3(Referentiable, Persistable,
              
              ReferentiableManagerBase * rm = m_Referentiable.getManager();
-              if_A(rm) {
-                WriteKeyData(KEY_MANAGER_INDEX, (int32_t)rm->index());
-              }
+             A(rm);
+             WriteKeyData(KEY_MANAGER_INDEX, (int32_t)rm->index());
              WriteKeyData(KEY_NAME, m_Referentiable.m_hintName);
              WriteKeyData(KEY_DATE_CREA, m_Referentiable.m_dateOfCreation);
              WriteKeyData(KEY_GUID, m_Referentiable.m_guid);

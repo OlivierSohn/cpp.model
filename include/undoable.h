@@ -216,24 +216,17 @@ namespace imajuscule
 
 #define RESULT_BY_REF(r) \
 [&](const Command::CommandResult * res){                                \
-if_A(res)                                                                 \
-{                                                                           \
-if_A(res->initialized());                                                 \
-{                                                                          \
+A(res);                                                                 \
+A(res->initialized());                                                 \
 const CommandResult* myRes = dynamic_cast<const CommandResult*>(res);   \
-if_A(myRes)                                                             \
-{                                                                       \
+A(myRes);                                                             \
 r = *myRes;                                                        \
-A(r.initialized());                                                \
-}                                                                     \
-}                                                                       \
-}                                                                          \
+A(r.initialized()); \
 }
 
 #define SUBCR_LISTEN_TO_RESULT \
-static FunctionInfo<Event> ListenToResult(Command & c, CommandResult & r)       \
-{                                                                               \
-return c.observable().Register(Event::RESULT, RESULT_BY_REF(r));            \
+static FunctionInfo<Event> ListenToResult(Command & c, CommandResult & r) {         \
+return c.observable().Register(Event::RESULT, RESULT_BY_REF(r));                    \
 }
 
 #define SUBCR \

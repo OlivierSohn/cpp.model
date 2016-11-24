@@ -124,7 +124,7 @@ W_PTR(refExpr.get(), key); \
 
 
 #define W_LNK_ELT( ref, vs ) \
-if_A(ref) \
+A(ref); \
 {\
     vs.push_back(ref->guid());\
     UGLY_SAVE_REF(ref);\

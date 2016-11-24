@@ -71,25 +71,23 @@ bool UndoGroup::Undo(Undoable *limit, bool bStrict, bool & bFoundLimit)
     while(it != end)
     {
         Undoable * u = it->get();
-        if_A (u)
+        A(u);
+        if (u->isObsolete())
         {
-            if (u->isObsolete())
-            {
-                it = std::reverse_iterator<Undoables::iterator>(m_undoables.erase((std::next(it)).base()));
-                end = m_undoables.rend();
-                continue;
-            }
-
-            bNotEmpty = true;
-
-            u->Undo(limit, false, bFoundLimit);
-            
-            // no need to check return value : a relevant (executed) command can become irrelevant for undo/redo e.g. SetFormula("", "0.")
-            // TODO -> should I introduce the notion of undoability and have 2 different commands: ParamInitializeFormula(not undoable) and ParamChangeForula(undoable) ?
-            
-            if(bFoundLimit)
-                break;
+            it = std::reverse_iterator<Undoables::iterator>(m_undoables.erase((std::next(it)).base()));
+            end = m_undoables.rend();
+            continue;
         }
+        
+        bNotEmpty = true;
+        
+        u->Undo(limit, false, bFoundLimit);
+        
+        // no need to check return value : a relevant (executed) command can become irrelevant for undo/redo e.g. SetFormula("", "0.")
+        // TODO -> should I introduce the notion of undoability and have 2 different commands: ParamInitializeFormula(not undoable) and ParamChangeForula(undoable) ?
+        
+        if(bFoundLimit)
+            break;
 
         ++it;
     }
@@ -114,30 +112,28 @@ bool UndoGroup::Redo(Undoable * limit, bool bStrict, bool & bFoundLimit)
     while (it != end)
     {
         Undoable * u = it->get();
-        if_A(u)
+        A(u);
+        if (u->isObsolete())
         {
-            if (u->isObsolete())
-            {
-                it = m_undoables.erase(it);
-                end = m_undoables.end();
-                continue;
-            }
-
-            bNotEmpty = true;
-
-//            if(u->validStateToRedo())// command can have been undone by a call to RedoUntil
-            {
-                /*bool bRelevant =*/
-                u->Redo(limit, false, bFoundLimit);
-                // Assert commented out : a relevant (executed) command can become irrelevant for undo/redo e.g. SetFormula("", "0.")
-                // -> should I introduce the notion of undoability?
-                //    and have 2 different commands: ParamInitializeFormula(not undoable) and ParamChangeForula(undoable) ?
-                //A(bRelevant);
-            }
-            
-            if(bFoundLimit)
-                break;
+            it = m_undoables.erase(it);
+            end = m_undoables.end();
+            continue;
         }
+        
+        bNotEmpty = true;
+        
+        //            if(u->validStateToRedo())// command can have been undone by a call to RedoUntil
+        {
+            /*bool bRelevant =*/
+            u->Redo(limit, false, bFoundLimit);
+            // Assert commented out : a relevant (executed) command can become irrelevant for undo/redo e.g. SetFormula("", "0.")
+            // -> should I introduce the notion of undoability?
+            //    and have 2 different commands: ParamInitializeFormula(not undoable) and ParamChangeForula(undoable) ?
+            //A(bRelevant);
+        }
+        
+        if(bFoundLimit)
+            break;
     
         ++it;
     }
