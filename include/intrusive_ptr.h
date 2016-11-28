@@ -197,8 +197,7 @@ namespace imajuscule
     
     template<class T, class... Args>
     inline intrusive_ptr<T>
-    make_shared_ref(Args&&... args) {
-        // todo optimize by allocation counter before object
+    make_intrusive_ptr(Args&&... args) {
         return intrusive_ptr<T>(new T(std::forward<Args>(args)...));
     }
     
