@@ -8,6 +8,7 @@
 #include "os.storage.keys.h"
 
 #include "ref_unique_ptr.h"
+#include "intrusive_ptr_defs.h"
 #include "persistable.h"
 #include "observable.h"
 #include "weak_ptr.h"

@@ -98,6 +98,7 @@
 		097835631D57B0B900E47ED3 /* unity.build.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unity.build.cpp; sourceTree = "<group>"; };
 		09963F231DA9056700FBEDD1 /* globals.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = globals.cpp; sourceTree = "<group>"; };
 		09963F241DA9058E00FBEDD1 /* globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = globals.h; sourceTree = "<group>"; };
+		09A13B8B1DEC86B100CC9B57 /* intrusive_ptr_defs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = intrusive_ptr_defs.h; sourceTree = "<group>"; };
 		09B330B61BF56DCE00DE437C /* raii.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = raii.hpp; sourceTree = "<group>"; };
 		09C070D81DDEC8CE00715728 /* intrusive_ptr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = intrusive_ptr.h; sourceTree = "<group>"; };
 		09C84A3A1C271D89002CF5B7 /* osx.debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = osx.debug.xcconfig; sourceTree = "<group>"; };
@@ -152,6 +153,7 @@
 		0976628F1AD357F70099DA54 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				09A13B8B1DEC86B100CC9B57 /* intrusive_ptr_defs.h */,
 				093733961DAA4AE900F01BD0 /* application.h */,
 				097662901AD357F70099DA54 /* asyncnotifier.h */,
 				097662911AD357F70099DA54 /* command.h */,
