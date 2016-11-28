@@ -20,7 +20,7 @@ namespace imajuscule
         DECL_PERSIST(ReferentiableRoot, Referentiable)
         
         
-        static ref_shared_ptr<ReferentiableRoot> g_instance;
+        static intrusive_ptr<ReferentiableRoot> g_instance;
     };
 }
 

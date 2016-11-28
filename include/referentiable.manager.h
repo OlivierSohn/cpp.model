@@ -10,7 +10,7 @@
 #include "undoable.h"
 #include "referentiable.h"
 
-#define MAKE_REF(x) ref_shared_ptr<x>(ReferentiableManager<x>::New().release())
+#define MAKE_REF(x) intrusive_ptr<x>(ReferentiableManager<x>::New().release())
 namespace imajuscule
 {
     class Referentiables;

@@ -11,7 +11,7 @@ const int KEY_TARGETS = -110;
 
 using namespace imajuscule;
 
-ref_shared_ptr<ReferentiableRoot> ReferentiableRoot::g_instance;
+intrusive_ptr<ReferentiableRoot> ReferentiableRoot::g_instance;
 
 IMPL_PERSIST2(ReferentiableRoot, Referentiable,
             ,

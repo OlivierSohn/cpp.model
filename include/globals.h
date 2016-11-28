@@ -51,7 +51,7 @@ namespace imajuscule {
         }
         
         template<typename T, typename... Args>
-        static T* ref(ref_shared_ptr<T>& p, Args&&... args) {
+        static T* ref(intrusive_ptr<T>& p, Args&&... args) {
             if(p) {
                 return p.get();
             }
@@ -60,7 +60,7 @@ namespace imajuscule {
         }
         
         template<typename T, typename... Args>
-        static void make_ref(ref_shared_ptr<T>& p, Args&&... args) {
+        static void make_ref(intrusive_ptr<T>& p, Args&&... args) {
             if( GlobalsImpl::getInstance()->isResetting() ) {
                 LG(ERR, "GlobalsImpl is resetting, cannot make ref");
                 if(p) {
@@ -99,7 +99,7 @@ namespace imajuscule {
         
         // can delete and reset the pointer to zero
         template<typename T>
-        static void add_ref(ref_shared_ptr<T>& p) {
+        static void add_ref(intrusive_ptr<T>& p) {
             if( do_add_ref(p) ) {
                 return;
             }
@@ -121,7 +121,7 @@ namespace imajuscule {
         }
         
         template<typename T>
-        static bool do_add_ref(ref_shared_ptr<T>& p) {
+        static bool do_add_ref(intrusive_ptr<T>& p) {
             if( GlobalsImpl::getInstance()->isResetting() ) {
                 LG(ERR, "GlobalsImpl is resetting, cannot add referentiable");
                 return false;

@@ -65,11 +65,11 @@ void Referentiable::deleteObservableReferentiable()
 }
 
 namespace imajuscule {
-    ref_shared_ptr<Referentiable> instantiate(ReferentiableManagerBase * rm, const std::string & hintName) {
-        return ref_shared_ptr<Referentiable>{rm->newReferentiable(hintName, true).release()};
+    intrusive_ptr<Referentiable> instantiate(ReferentiableManagerBase * rm, const std::string & hintName) {
+        return intrusive_ptr<Referentiable>{rm->newReferentiable(hintName, true).release()};
     }
 
-    ref_shared_ptr<Referentiable> instantiate(ReferentiableManagerBase * rm) {
+    intrusive_ptr<Referentiable> instantiate(ReferentiableManagerBase * rm) {
         return instantiate(rm, std::string(rm->defaultNameHint()));
     }
 }

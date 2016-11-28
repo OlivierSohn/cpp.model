@@ -144,10 +144,10 @@ void set##methodPostFix(type * p) { \
     addSpec(name.get());\
 }
 
-#include "ref_shared_ptr.h"
+#include "intrusive_ptr.h"
 
 namespace imajuscule {
-    ref_shared_ptr<Referentiable> instantiate(ReferentiableManagerBase * rm, const std::string & hintName);
-    ref_shared_ptr<Referentiable> instantiate(ReferentiableManagerBase * rm);
+    intrusive_ptr<Referentiable> instantiate(ReferentiableManagerBase * rm, const std::string & hintName);
+    intrusive_ptr<Referentiable> instantiate(ReferentiableManagerBase * rm);
 }
 

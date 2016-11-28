@@ -161,7 +161,7 @@ break;
 #define R_UNIQUE_LNKS_OP( Op, type, key ) \
 case key: \
     for(auto const & guid : vs)\
-        Op( ref_shared_ptr<type>(static_cast<type*>(Referentiables::fromGUID(directory(), guid))) );\
+        Op( intrusive_ptr<type>(static_cast<type*>(Referentiables::fromGUID(directory(), guid))) );\
 break;
 
 #define L_LNKS( key ) \

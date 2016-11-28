@@ -18,7 +18,7 @@ namespace imajuscule
         
         Owner * owner;
         vregs m_regs;
-        using listT = std::vector<ref_shared_ptr<T>>;
+        using listT = std::vector<intrusive_ptr<T>>;
         using listIterator = typename listT::iterator;
         listT list;
 
