@@ -116,7 +116,7 @@ namespace imajuscule
         };
         
     private:
-        int16_t shared_count = -1; // if 0 it means it's owned by one intrusive pointer
+        int16_t shared_count = intrusive_ptr_zero_count;
         ReferentiableManagerBase * m_manager;
         std::string m_guid; // persisted
         std::string m_hintName; // persisted
