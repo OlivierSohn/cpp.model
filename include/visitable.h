@@ -16,8 +16,7 @@ namespace imajuscule
         NonCopyable & operator=(const NonCopyable&) = delete;
     };
     
-    class Object : public NonCopyable {
-    public:
+    struct Object : public NonCopyable {
         virtual ~Object() = default;
     };
 
