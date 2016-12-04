@@ -210,6 +210,13 @@ namespace imajuscule
     intrusive_ptr<U>  static_pointer_cast(intrusive_ptr<T> const & p) {
         return p.template static_as<U>();
     }
+    
+    struct Intrusiveable : public NonCopyable {
+        int16_t get_shared_counter() const { return shared_count; }
+        int16_t & edit_shared_counter() { return shared_count; }
+        
+    private:
+        int16_t shared_count = intrusive_ptr_zero_count;
+    };
+    
 }
-
-#define intrusive_ptr intrusive_ptr
