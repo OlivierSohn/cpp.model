@@ -197,7 +197,7 @@ namespace imajuscule
     
     template<class T, class... Args>
     inline intrusive_ptr<T>
-    make_intrusive_ptr(Args&&... args) {
+    make_intrusive(Args&&... args) {
         return intrusive_ptr<T>(new T(std::forward<Args>(args)...));
     }
     
