@@ -68,8 +68,8 @@ namespace imajuscule
             
             bool Success() const;
         private:
-            bool m_bInitialized;
-            bool m_success;
+            bool m_bInitialized : 1;
+            bool m_success : 1;
         };
         typedef std::function<void(const CommandResult *)> resFunc;
 
@@ -119,8 +119,8 @@ namespace imajuscule
         
 
     private:
+        bool m_obsolete : 1;
         std::stack<Undoable*> m_curSubElts;
-        bool m_obsolete;
         Observable<Event, const CommandResult *> * m_observable;
     };
     

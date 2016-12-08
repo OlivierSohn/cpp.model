@@ -45,7 +45,7 @@ namespace imajuscule
             m_sessionName = std::move(other.m_sessionName);
             m_dateOfCreation = std::move(other.m_dateOfCreation);
             m_observableReferentiable = std::move(other.m_observableReferentiable);
-            m_bHidden = std::move(other.m_bHidden);
+            m_bHidden = other.m_bHidden;
         }
         
         Referentiable& operator=(Referentiable&& other)
@@ -57,7 +57,7 @@ namespace imajuscule
                 m_sessionName = std::move(other.m_sessionName);
                 m_dateOfCreation = std::move(other.m_dateOfCreation);
                 m_observableReferentiable = std::move(other.m_observableReferentiable);
-                m_bHidden = std::move(other.m_bHidden);
+                m_bHidden = other.m_bHidden;
             }
             return *this;
         }
@@ -111,7 +111,7 @@ namespace imajuscule
             void LoadStringForKey(char key, std::string & sVal) override;
 
         private:
-            bool m_bFound;
+            bool m_bFound : 1;
             std::string m_hintName, m_dateOfCreation;
             unsigned int m_uiIndex;
         };
@@ -125,7 +125,7 @@ namespace imajuscule
         std::string m_dateOfCreation; // persisted
         Observable<Event, Referentiable*> * m_observableReferentiable;
 
-        bool m_bHidden;
+        bool m_bHidden : 1;
         virtual void setSessionName(const std::string & sn);
 
         virtual Referentiable * mainRefAttr() const;

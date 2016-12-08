@@ -243,8 +243,8 @@ namespace imajuscule
         Observable &operator=(const Observable &) = delete;
 
     private:
+        bool m_deinstantiate : 1;
         observers m_observers;
-        bool m_deinstantiate;
         int m_iCurNotifyCalls;
 
         void deinstantiateIfNeeded()

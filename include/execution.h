@@ -3,7 +3,7 @@
 
 namespace imajuscule
 {
-    enum class ExecutionType
+    enum class ExecutionType : unsigned char
     {
         UNDO,
         REDO,

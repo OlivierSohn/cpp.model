@@ -56,13 +56,14 @@ namespace imajuscule
     private:
         static HistoryManager * g_instance;
 
+        bool m_bAppStateHasNewContent : 1;
+        ExecutionType m_curExecType : 2;
+        
         UndoGroups m_groups;
         Observable<Event> * m_observable;
         UndoGroups::reverse_iterator m_appState; //everything from rend to m_appState is "Done"
         unsigned int m_stacksCapacity;
-        bool m_bAppStateHasNewContent;
 
-        ExecutionType m_curExecType;
         std::stack<Undoable*> m_curCommandStack;
         int m_iActivated;
         int transactionCount_ = 0;

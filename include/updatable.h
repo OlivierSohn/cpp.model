@@ -76,7 +76,12 @@ namespace imajuscule
 
         virtual bool doUpdate() { return hasNewContentForUpdate(); };
 
-        enum UpdateState { UPDATED, NOTUPDATED, INUPDATE /* at the end so that we can increment it */ };
+        enum UpdateState : unsigned char
+        {
+            UPDATED,
+            NOTUPDATED,
+            INUPDATE /* at the end so that we can increment it */
+        };
         void setNotUpdated()
         {
             if(getUpdateState() == UPDATED) {
@@ -89,8 +94,8 @@ namespace imajuscule
         static updatables m_all;
         static bool updateAllowed;
 
-        UpdateState m_state;
-        bool m_bHasNewContentForUpdate;
+        UpdateState m_state : 7; // see comment in UpdateState
+        bool m_bHasNewContentForUpdate : 1;
 
         std::vector< Updatable* > m_specs;
         std::vector< Updatable* > m_observers;

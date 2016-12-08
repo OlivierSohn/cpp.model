@@ -21,9 +21,10 @@ namespace imajuscule {
         
         void reset();
         ~GlobalsImpl();
+        GlobalsImpl() : resetting(false) {}
         
         static GlobalsImpl * instance;
-        bool resetting = false;
+        bool resetting : 1;
         std::vector<std::function<void(void)>> reseters;
     };
     

@@ -34,7 +34,7 @@ namespace imajuscule
     private:
         struct data : public Command::data
         {
-            bool m_hasAttr;
+            bool m_hasAttr : 1;
             std::string m_attrGUID;
             ReferentiableManagerBase * m_manager;
 

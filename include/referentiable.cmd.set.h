@@ -33,12 +33,12 @@ namespace imajuscule
 
             bool getAttrChanged() const;
         private:
-            bool m_bAttrChanged;
+            bool m_bAttrChanged : 1;
         };
     private:
         struct data : public Command::data
         {
-            bool m_hasAttr;
+            bool m_hasAttr : 1;
             std::string m_attrGUID;
             ReferentiableManagerBase * m_manager;
 
