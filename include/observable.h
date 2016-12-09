@@ -13,6 +13,8 @@
 
 #include "meta.h"
 
+#include "available_indexes.h"
+
 #define OBSERVABLE_LOG 0
 # if OBSERVABLE_LOG
 #  define OBS_LG( x , y, ...) LG( x , y ,##__VA_ARGS__)
@@ -39,7 +41,7 @@ namespace imajuscule
         Event event : min_bits<Event>();
         uint16_t key;
     };
-
+    
     template <typename Event, typename... Args>
     class Observable
     {
@@ -57,9 +59,9 @@ namespace imajuscule
         // map doesn't work when the callback modifies the map 
         // so we use a list instead : its iterators are not invalidated by insertion / removal
         using callbacksList = std::list<Callback>;
+        // maybe there is room to improve that container...
 
-        using availableKeys = std::stack<uint16_t>;
-        using eventNotification = std::tuple<availableKeys, callbacksList>;
+        using eventNotification = std::tuple<AvailableIndexes<uint16_t>, callbacksList>;
         enum EvtNtfTupleIndex
         {
             AVAILABLE_KEYS = 0,
@@ -100,13 +102,11 @@ namespace imajuscule
         std::vector<FunctionInfo<Event>> Register(const std::vector<Event> & evts, Observer&& observer)
         {
             std::vector<FunctionInfo<Event>> rv;
-
             rv.reserve(evts.size());
             
             for (auto&r : evts) {
                 rv.push_back(Register(r, observer));
             }
-
             return rv;
         }
 
@@ -117,18 +117,9 @@ namespace imajuscule
 
             eventNotification & v = m_observers[to_underlying(evt)];
 
-            // take key from stack of available keys, or if it's empty, that means the next available key is the size of the map
-            uint16_t key;
-            auto & avKeys = std::get<AVAILABLE_KEYS>(v);
+            auto & available_keys = std::get<AVAILABLE_KEYS>(v);
             auto & cbslist = std::get<CBS_LIST>(v);
-            if (avKeys.empty()) {
-                A(cbslist.size() < std::numeric_limits<uint16_t>::max());
-                key = static_cast<int16_t>(cbslist.size());
-            }
-            else {
-                key = avKeys.top();
-                avKeys.pop();
-            }
+            uint16_t key = available_keys.Take(cbslist);
             cbslist.emplace_back(true, 0, key, std::move(observer));
             return { evt, key };
         }
@@ -155,7 +146,7 @@ namespace imajuscule
                 
                 if (!cb.active) {
                     // push the (future) removed key in stack of availableKeys
-                    std::get<AVAILABLE_KEYS>(obs).push(cb.key);
+                    std::get<AVAILABLE_KEYS>(obs).Return(cb.key);
                     // erase and increment
                     itM = cbslist.erase(itM);
                     endM = cbslist.end();
@@ -219,7 +210,7 @@ namespace imajuscule
                 }
                 else {
                     // push the (future) removed key in stack of availableKeys
-                    std::get<AVAILABLE_KEYS>(obs).push(cb.key);
+                    std::get<AVAILABLE_KEYS>(obs).Return(cb.key);
                     // erase
                     cbslist.erase(it);
                     OBS_LG(INFO, "Observable(%x)::Remove(%d) : size1 %d (removed a notification)", this, functionInfo.event, cbslist.size());
