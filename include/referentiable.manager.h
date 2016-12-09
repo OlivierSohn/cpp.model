@@ -29,11 +29,13 @@ namespace imajuscule
         friend class ReferentiableNewCmdBase;
         friend class ReferentiableDeleteCmdBase;
     public:
-        enum class Event
+        enum class Event: unsigned char
         {
             RFTBL_ADD, // a referentiable was added to the list of referentiables managed by the manager
             RFTBL_REMOVE, // a referentiable was removed from the list of referentiables managed by the manager
-            MANAGER_DELETE// the manager is being deleted
+            MANAGER_DELETE, // the manager is being deleted
+            
+            SIZE_ENUM
         };
         ReferentiableManagerBase();
         

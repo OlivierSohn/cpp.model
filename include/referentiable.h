@@ -63,9 +63,11 @@ namespace imajuscule
         }
         
         void deinstantiate();
-        enum Event
+        enum class Event: unsigned char
         {
-            WILL_BE_DELETED
+            WILL_BE_DELETED,
+            
+            SIZE_ENUM
         };
         Observable<Event, Referentiable*> * observableReferentiable();
 
@@ -133,7 +135,7 @@ namespace imajuscule
     };
     
     template<class T, typename std::enable_if<IsDerivedFrom<T, Referentiable>::Is>::type* = nullptr >
-    using ref_weak_ptr = WeakPtrBase< T, Referentiable, &Referentiable::observableReferentiable, Referentiable::WILL_BE_DELETED>;
+    using ref_weak_ptr = WeakPtrBase< T, Referentiable, &Referentiable::observableReferentiable, Referentiable::Event::WILL_BE_DELETED>;
 }
 #define SET_ref_unique(type, name, methodPostFix) \
 void set##methodPostFix(type * p) { \

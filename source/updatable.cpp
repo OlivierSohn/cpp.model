@@ -206,7 +206,7 @@ void Updatable::addSpec(spec item)
     
     A(isConsistent());
     
-    observableUpdatable().Notify(ADD_SPEC, *this, *item);
+    observableUpdatable().Notify(Event::ADD_SPEC, *this, *item);
     
     for (auto * observer : m_observers)
     {
@@ -218,7 +218,7 @@ void Updatable::addSpec(spec item)
 
 void Updatable::onAddRecursiveSpec(spec item)
 {
-    observableUpdatable().Notify(ADD_SPEC_RECURSE, *this, *item);
+    observableUpdatable().Notify(Event::ADD_SPEC_RECURSE, *this, *item);
 
     for (auto * observer : m_observers)
     {
@@ -230,7 +230,7 @@ void Updatable::onAddRecursiveSpec(spec item)
 }
 void Updatable::onRemoveRecursiveSpec(spec item)
 {
-    observableUpdatable().Notify(REMOVE_SPEC_RECURSE, *this, *item);
+    observableUpdatable().Notify(Event::REMOVE_SPEC_RECURSE, *this, *item);
 
     for (auto * observer : m_observers)
     {
@@ -254,7 +254,7 @@ bool Updatable::removeSpec(spec item)
 
     *f = nullptr;
     item->removeObserver(this);
-    observableUpdatable().Notify(REMOVE_SPEC, *this, *item);
+    observableUpdatable().Notify(Event::REMOVE_SPEC, *this, *item);
     
     for (auto * observer : m_observers)
     {

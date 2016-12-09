@@ -21,7 +21,7 @@ namespace imajuscule
     {
     public:
         
-        enum State
+        enum State: unsigned char
         {
             NOT_EXECUTED,
             EXECUTED,
@@ -73,9 +73,11 @@ namespace imajuscule
         };
         typedef std::function<void(const CommandResult *)> resFunc;
 
-        enum Event
+        enum class Event: unsigned char
         {
-            RESULT
+            RESULT,
+            
+            SIZE_ENUM
         };
         Observable<Event, const CommandResult *> & observable();
 
@@ -155,9 +157,11 @@ namespace imajuscule
         ////////////////////////////////
         
     public:
-        enum ObsolescenceEvent
+        enum ObsolescenceEvent: unsigned char
         {
-            IS_OBSOLETE // means that the command should not be considered by HistoryManager anymore
+            IS_OBSOLETE, // means that the command should not be considered by HistoryManager anymore
+            
+            SIZE_ENUM
         };
         
         virtual ~Command();

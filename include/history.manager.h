@@ -15,10 +15,12 @@ namespace imajuscule
     {
         friend class Globals;
     public:
-        enum Event
+        enum class Event: unsigned char
         {
             UNDOS_CHANGED,
-            REDOS_CHANGED
+            REDOS_CHANGED,
+            
+            SIZE_ENUM
         };
         Observable<Event> & observable();
         void logCommand(Command*c, const char * pre = nullptr);

@@ -21,12 +21,14 @@ namespace imajuscule
     {
         friend struct UpdatePhase;
     public:
-        enum Event
+        enum class Event: unsigned char
         {
             ADD_SPEC,
             ADD_SPEC_RECURSE,
             REMOVE_SPEC,
-            REMOVE_SPEC_RECURSE
+            REMOVE_SPEC_RECURSE,
+            
+            SIZE_ENUM
         };
         virtual ~Updatable();
 

@@ -24,12 +24,16 @@ namespace imajuscule
     class Visitable : public Object
     {
     public:
-        enum HierarchyEvent {
+        enum class HierarchyEvent : unsigned char{
             ADD_CHILD,
-            REMOVE_CHILD
+            REMOVE_CHILD,
+            
+            SIZE_ENUM
         };
-        enum Event {
+        enum class Event: unsigned char {
             VISITABLE_DELETE,
+            
+            SIZE_ENUM // we use the one in other enum
         };
         
         ~Visitable();

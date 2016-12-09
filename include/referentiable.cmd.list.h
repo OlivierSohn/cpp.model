@@ -19,7 +19,7 @@ namespace imajuscule
     public:
         void getSentenceDescription(std::string & desc) const override;
 
-        enum class Type
+        enum class Type: unsigned char
         {
             TYPE_ADD,
             TYPE_REMOVE

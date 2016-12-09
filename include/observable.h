@@ -5,10 +5,13 @@
 #include <vector>
 #include <list>
 #include <stack>
+#include <array>
 #include <tuple>
 #include <memory>
 
 #include "os.log.h"
+
+#include "meta.h"
 
 #define OBSERVABLE_LOG 0
 # if OBSERVABLE_LOG
@@ -19,54 +22,55 @@
 
 namespace imajuscule
 {
+    template <typename E>
+    constexpr typename std::underlying_type<E>::type to_underlying(E e) {
+        return static_cast<typename std::underlying_type<E>::type>(e);
+    }
+
     template <typename Event>
     struct FunctionInfo
     {
-        Event m_event;
-        int m_key;
+        Event event : ceil_power_of_two(to_underlying(Event::SIZE_ENUM));
+        uint16_t key;
     };
 
     template <typename Event, typename... Args>
     class Observable
     {
-        enum TupleIndex
-        {
-            KEY = 0,
-            ACTIVE,
-            RECURSIVE_LEVEL,
-            FUNCTION
+        struct Callback {
+            template <typename Observer>
+            Callback(bool active, unsigned char rec, uint16_t const key, Observer && f):
+            active(active), recursive_level(rec), key(key), function(std::move(f)) {}
+            
+            bool active : 1; // false means scheduled for removal
+            unsigned char recursive_level : 3; // > 0 means being sent
+            uint16_t const key;
+            std::function<void(Args...)> const function;
         };
+        
         // map doesn't work when the callback modifies the map 
         // so we use a list instead : its iterators are not invalidated by insertion / removal
-        typedef std::list< std::tuple<
-            int /*key*/,
-            bool /*active (false means scheduled for removal)*/, 
-            int /*recursive level (>0 means being sent)*/,
-            std::function<void(Args...) /*function*/ > > > callbacksList;
+        using callbacksList = std::list<Callback>;
 
-        typedef std::stack<int> availableKeys;
+        using availableKeys = std::stack<uint16_t>;
+        using eventNotification = std::tuple<availableKeys, callbacksList>;
         enum EvtNtfTupleIndex
         {
             AVAILABLE_KEYS = 0,
             CBS_LIST
         };
-        typedef std::tuple<availableKeys, callbacksList> eventNotification;
-        typedef std::map<Event, eventNotification *> observers;
-        std::vector<std::unique_ptr<eventNotification>> m_allocatedPairs;
 
-        // constructor is private, please call ::instantiate instead
+        using observers = std::array<eventNotification, to_underlying(Event::SIZE_ENUM)>;
+        
+        // constructor is private, call ::instantiate instead
         Observable():
             m_deinstantiate(false),
             m_iCurNotifyCalls(0)
-        {
-            //OBS_LG(INFO, "Observable::Observable()");
-        }
-        // destructor is private, please call ::deinstantiate instead
-        virtual ~Observable()
-        {
-            //OBS_LG(INFO, "Observable::~Observable() #%d : delete %d pairs", m_curNotifStamp, m_allocatedPairs.size());
-        }
-
+        {}
+        
+        // destructor is private, call ::deinstantiate instead
+        ~Observable() = default;
+        
     public:
         static Observable<Event, Args...> * instantiate()
         {
@@ -101,92 +105,79 @@ namespace imajuscule
         }
 
         template <typename Observer>
-        FunctionInfo<Event> Register(const Event &evt, Observer&& observer)
+        FunctionInfo<Event> Register(Event const evt, Observer&& observer)
         {
-                //OBS_LG(INFO, "Observable::Register(%d) #%d", evt, m_curNotifStamp);
+            //OBS_LG(INFO, "Observable::Register(%d) #%d", evt, m_curNotifStamp);
 
-            eventNotification * v;
-
-            auto r = m_observers.find(evt);
-            if (r == m_observers.end())
-            {
-                v = new eventNotification();
-                m_observers.insert(typename observers::value_type(evt, v));
-                m_allocatedPairs.emplace_back(std::unique_ptr<eventNotification>(v));
-            }
-            else
-            {
-                v = r->second;
-            }
+            eventNotification & v = m_observers[to_underlying(evt)];
 
             // take key from stack of available keys, or if it's empty, that means the next available key is the size of the map
-            int key;
-            auto & avKeys = std::get<AVAILABLE_KEYS>(*v);
-            auto & cbslist = std::get<CBS_LIST>(*v);
-            if (avKeys.empty())
-                key = (int)cbslist.size();
-            else
-            {
+            uint16_t key;
+            auto & avKeys = std::get<AVAILABLE_KEYS>(v);
+            auto & cbslist = std::get<CBS_LIST>(v);
+            if (avKeys.empty()) {
+                A(cbslist.size() < std::numeric_limits<uint16_t>::max());
+                key = static_cast<int16_t>(cbslist.size());
+            }
+            else {
                 key = avKeys.top();
                 avKeys.pop();
             }
-
-            cbslist.emplace_back(key, true, 0, std::move(observer));
-
+            cbslist.emplace_back(true, 0, key, std::move(observer));
             return { evt, key };
         }
 
-        void Notify(const Event &event, Args... Params)
+        void Notify(Event const event, Args... Params)
         {
             //OBS_LG(INFO, "Observable::Notify(%d) #%d", event, m_curNotifStamp);
-            auto it = m_observers.find(event);
-            if (it != m_observers.end())
+
+            auto & obs = m_observers[to_underlying(event)];
+            callbacksList & cbslist = std::get<CBS_LIST>(obs);
+            if (cbslist.empty()) { return; }
+            
+            ++m_iCurNotifyCalls;
+            A(m_iCurNotifyCalls); // else type too small
+            
+            OBS_LG(INFO, "Observable(%x)::Notify(%d) : size0 %d", this, event, cbslist.size());
+            
+            auto itM = cbslist.begin();
+            auto endM = cbslist.end();
+            
+            for (; itM != endM;)
             {
-                callbacksList & cbslist = std::get<CBS_LIST>(*(it->second));
-                if (!cbslist.empty())
-                {
-                    m_iCurNotifyCalls++;
-
-                    OBS_LG(INFO, "Observable(%x)::Notify(%d) : size0 %d", this, event, cbslist.size());
-
-                    auto itM = cbslist.begin();
-                    auto endM = cbslist.end();
-
-                    for (; itM != endM;)
-                    {
-                        if (std::get<ACTIVE>(*itM))
-                        {
-                            // increment recursive level, to prevent this notification from being removed immediately
-                            std::get<RECURSIVE_LEVEL>(*itM)++;
-
-                            OBS_LG(INFO, "Observable(%x)::Notify(%d) : size1 %d", this, event, std::get<CBS_LIST>(*(it->second)).size());
-                            
-                            std::get<FUNCTION>(*itM)(Params...);
-                            
-                            if (m_deinstantiate)
-                                break;
-
-                            OBS_LG(INFO, "Observable(%x)::Notify(%d) : size2 %d", this, event, std::get<CBS_LIST>(*(it->second)).size());
-
-                            std::get<RECURSIVE_LEVEL>(*itM)--;
-
-                            ++itM;
-                        }
-                        else
-                        {
-                            // push the (future) removed key in stack of availableKeys
-                            std::get<AVAILABLE_KEYS>(*(it->second)).push(std::get<KEY>(*itM));
-                            // erase and increment
-                            itM = cbslist.erase(itM);
-                            endM = cbslist.end();
-                            OBS_LG(INFO, "Observable(%x)::Notify(%d) : size1 %d (removed a notification)", this, event, std::get<CBS_LIST>(*(it->second)).size());
-                        }
-                    }
-
-                    m_iCurNotifyCalls--;
-                    deinstantiateIfNeeded();
+                auto & cb = *itM;
+                
+                if (!cb.active) {
+                    // push the (future) removed key in stack of availableKeys
+                    std::get<AVAILABLE_KEYS>(obs).push(cb.key);
+                    // erase and increment
+                    itM = cbslist.erase(itM);
+                    endM = cbslist.end();
+                    OBS_LG(INFO, "Observable(%x)::Notify(%d) : size1 %d (removed a notification)", this, event, std::get<CBS_LIST>(*(it->second)).size());
+                    continue;
                 }
+                
+                // increment recursive level, to prevent this notification from being removed immediately
+                ++cb.recursive_level;
+                A(cb.recursive_level); // else type too small
+                
+                OBS_LG(INFO, "Observable(%x)::Notify(%d) : size1 %d", this, event, std::get<CBS_LIST>(*(it->second)).size());
+                
+                cb.function(Params...);
+                
+                if (m_deinstantiate) {
+                    break;
+                }
+                
+                OBS_LG(INFO, "Observable(%x)::Notify(%d) : size2 %d", this, event, std::get<CBS_LIST>(*(it->second)).size());
+                
+                --cb.recursive_level;
+                
+                ++itM;
             }
+            
+            --m_iCurNotifyCalls;
+            deinstantiateIfNeeded();
         }
 
         const void Remove(const std::vector< FunctionInfo<Event> > & functionInfo)
@@ -196,46 +187,42 @@ namespace imajuscule
             }
         }
 
-        const bool Remove(const FunctionInfo<Event> &functionInfo)
+        const bool Remove(FunctionInfo<Event> const functionInfo)
         {
             //OBS_LG(INFO, "Observable::Remove(%d) #%d", functionInfo.m_event, m_curNotifStamp);
-
-            auto it1 = m_observers.find(functionInfo.m_event);
-            if (likely(it1 != m_observers.end()))
+            
+            auto & obs = m_observers[to_underlying(functionInfo.event)];
+            auto & cbslist = std::get<CBS_LIST>(obs);
+            
+            auto it = cbslist.begin();
+            auto end = cbslist.end();
+            
+            OBS_LG(INFO, "Observable(%x)::Remove(%d) : size before %d", this, functionInfo.m_event, cbslist.size());
+            
+            for (; it != end; ++it)
             {
-                callbacksList & cbslist = std::get<CBS_LIST>(*(it1->second));
- 
-                auto it = cbslist.begin();
-                auto end = cbslist.end();
-
-                OBS_LG(INFO, "Observable(%x)::Remove(%d) : size before %d", this, functionInfo.m_event, std::get<CBS_LIST>(*(it1->second)).size());
-
-                for (; it != end; ++it)
-                {
-                    if (std::get<KEY>(*it) == functionInfo.m_key)
-                    {
-                        //LG(INFO, "  %d", std::get<KEY>(*it));
-
-                        if (std::get<RECURSIVE_LEVEL>(*it) > 0)
-                        {
-                            // notification is being sent, we cannot delete it now.
-                            std::get<ACTIVE>(*it) = false;
-                            OBS_LG(INFO, "Observable(%x)::Remove(%d) : tagged for removal", this, functionInfo.m_event);
-                        }
-                        else
-                        {
-                            // push the (future) removed key in stack of availableKeys
-                            std::get<AVAILABLE_KEYS>(*(it1->second)).push(std::get<KEY>(*it));
-                            // erase
-                            cbslist.erase(it);
-                            OBS_LG(INFO, "Observable(%x)::Remove(%d) : size1 %d (removed a notification)", this, functionInfo.m_event, std::get<CBS_LIST>(*(it1->second)).size());
-                        }
-                        return true;
-                    }
+                auto & cb = *it;
+                if (cb.key != functionInfo.key) { continue; }
+                
+                //LG(INFO, "  %d", std::get<KEY>(*it));
+                
+                if (cb.recursive_level > 0) {
+                    // notification is being sent, we cannot delete it now.
+                    cb.active = false;
+                    OBS_LG(INFO, "Observable(%x)::Remove(%d) : tagged for removal", this, functionInfo.event);
                 }
-
-                OBS_LG(INFO, "Observable(%x)::Remove(%d) : size after %d", this, functionInfo.m_event, std::get<CBS_LIST>(*(it1->second)).size());
+                else {
+                    // push the (future) removed key in stack of availableKeys
+                    std::get<AVAILABLE_KEYS>(obs).push(cb.key);
+                    // erase
+                    cbslist.erase(it);
+                    OBS_LG(INFO, "Observable(%x)::Remove(%d) : size1 %d (removed a notification)", this, functionInfo.event, cbslist.size());
+                }
+                return true;
             }
+            
+            OBS_LG(INFO, "Observable(%x)::Remove(%d) : size after %d", this, functionInfo.m_event, cbslist.size());
+            
             return false;
         }
 
@@ -245,7 +232,7 @@ namespace imajuscule
     private:
         bool m_deinstantiate : 1;
         observers m_observers;
-        int m_iCurNotifyCalls;
+        unsigned int m_iCurNotifyCalls : 4;
 
         void deinstantiateIfNeeded()
         {

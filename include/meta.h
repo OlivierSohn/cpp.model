@@ -16,5 +16,16 @@ namespace imajuscule {
     public:
         enum { Is = sizeof(Test(static_cast<D*>(nullptr))) == sizeof(Yes) ? 1 : 0 };
     };
-  
+
+    constexpr unsigned int ceil_power_of_two(unsigned int v)
+    {
+        v = v - 1;
+        v |= v >> 1;
+        v |= v >> 2;
+        v |= v >> 4;
+        v |= v >> 8;
+        v |= v >> 16;
+        v++;
+        return v;
+    }
 }

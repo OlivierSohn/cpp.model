@@ -176,9 +176,11 @@ break;
 
 namespace imajuscule
 {
-    enum PersistableEvent
+    enum PersistableEvent: unsigned char
     {
-        OBJECT_DEFINITION_CHANGED = 0 // TODO this event should be in Referentiable
+        OBJECT_DEFINITION_CHANGED, // TODO this event should be in Referentiable
+        
+        SIZE_ENUM
     };
 
     class Persistable : public Updatable
