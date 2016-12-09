@@ -58,6 +58,7 @@
 		0927A8181B3F2DCF00872BC9 /* command.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = command.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		0927A81A1B3F987B00872BC9 /* referentiable.cmd.simpleset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.cmd.simpleset.h; sourceTree = "<group>"; };
 		0927A81B1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = referentiable.cmd.simpleset.hpp; sourceTree = "<group>"; };
+		0927EC361DFB5130006F1563 /* available_indexes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = available_indexes.h; sourceTree = "<group>"; };
 		0930C57F1CC8688F00AB958B /* managed.reflist.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = managed.reflist.hpp; sourceTree = "<group>"; };
 		0930C5801CC8688F00AB958B /* managed.reflist.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = managed.reflist.hxx; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		0931815C1DA389F500DF8B3B /* ref_unique_ptr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ref_unique_ptr.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -153,15 +154,17 @@
 		0976628F1AD357F70099DA54 /* include */ = {
 			isa = PBXGroup;
 			children = (
-				09A13B8B1DEC86B100CC9B57 /* intrusive_ptr_defs.h */,
 				093733961DAA4AE900F01BD0 /* application.h */,
 				097662901AD357F70099DA54 /* asyncnotifier.h */,
+				0927EC361DFB5130006F1563 /* available_indexes.h */,
 				097662911AD357F70099DA54 /* command.h */,
 				0927A8181B3F2DCF00872BC9 /* command.hpp */,
 				090578091BAE12BA00FA8E42 /* execution.h */,
 				09D756BA1DA7934C004602DE /* fixture.h */,
 				09963F241DA9058E00FBEDD1 /* globals.h */,
 				097662921AD357F70099DA54 /* history.manager.h */,
+				09A13B8B1DEC86B100CC9B57 /* intrusive_ptr_defs.h */,
+				09C070D81DDEC8CE00715728 /* intrusive_ptr.h */,
 				0930C57F1CC8688F00AB958B /* managed.reflist.hpp */,
 				0930C5801CC8688F00AB958B /* managed.reflist.hxx */,
 				094C4E611DD224860074077B /* meta.h */,
@@ -169,7 +172,6 @@
 				097662941AD357F70099DA54 /* observable.h */,
 				097662951AD357F70099DA54 /* persistable.h */,
 				09B330B61BF56DCE00DE437C /* raii.hpp */,
-				09C070D81DDEC8CE00715728 /* intrusive_ptr.h */,
 				0931815C1DA389F500DF8B3B /* ref_unique_ptr.h */,
 				0973B4CE1B256101007EFBDD /* referentiable.cmd.list.h */,
 				0973B4CD1B256100007EFBDD /* referentiable.cmd.list.hpp */,
