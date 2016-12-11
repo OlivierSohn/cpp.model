@@ -121,7 +121,7 @@ namespace imajuscule
             auto & cbslist = std::get<CBS_LIST>(v);
             uint16_t key = available_keys.Take(cbslist);
             cbslist.emplace_back(true, 0, key, std::move(observer));
-            return { evt, key };
+            return FunctionInfo<Event>{ evt, key };
         }
 
         void Notify(Event const event, Args... Params)
