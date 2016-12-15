@@ -16,8 +16,9 @@ namespace imajuscule
         NonCopyable & operator=(const NonCopyable&) = delete;
     };
     
-    struct Object : public NonCopyable {
+    struct Object {
         virtual ~Object() = default;
+        Object() = default;
     };
 
     class Visitor;
@@ -48,5 +49,8 @@ namespace imajuscule
     private:
         Observable<Event, Visitable&> * m_observableVisitable;
         Observable<HierarchyEvent, Visitable&, Visitable&> * m_observableVisitableH;
+        
+        Visitable(const Visitable &) = delete;
+        Visitable & operator=(const Visitable&) = delete;
     };
 }
