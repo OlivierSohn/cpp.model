@@ -148,9 +148,7 @@ bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r, bool bFinal
 {
     A(r);
     std::string sessionName = r->hintName();
-    
-    std::transform(sessionName.begin(), sessionName.end(), sessionName.begin(), ::toupper);
-    
+        
     if(findBySessionName(sessionName))
     {
         sessionName += "_";

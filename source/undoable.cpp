@@ -120,14 +120,14 @@ const char * Undoable::StateToString(State s)
     switch (s)
     {
         case NOT_EXECUTED:
-            return "NOT_EXECUTED";
+            return "Not Executed";
         case EXECUTED:
-            return "EXECUTED";
+            return "Executed";
         case UNDONE:
-            return "UNDONE";
+            return "Undone";
         case REDONE:
-            return "REDONE";
+            return "Redone";
         default:
-            return "UNKNOWN";
+            return "Unknown";
     }
 }
