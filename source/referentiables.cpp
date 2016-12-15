@@ -58,7 +58,7 @@ namespace imajuscule
         
         std::vector<std::string> guids{guid};
         ReferentiableManagerBase * rm = m_managers[index];
-        auto r = rm->newReferentiable(nameHint, guids, false, true);
+        auto r = rm->newReferentiable(nameHint, guids, false);
         r->Load(path, guid);
         rm->observable().Notify(ReferentiableManagerBase::Event::RFTBL_ADD, r.get());
         

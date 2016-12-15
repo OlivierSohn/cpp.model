@@ -284,14 +284,14 @@ ref_unique_ptr<Referentiable> ReferentiableManagerBase::newReferentiable(bool bF
 
 ref_unique_ptr<Referentiable> ReferentiableManagerBase::newReferentiable(const std::string & nameHint, bool bFinalize)
 {
-    return newReferentiable(nameHint, std::vector < std::string>(), bFinalize, false);
+    return newReferentiable(nameHint, std::vector < std::string>(), bFinalize);
 }
-ref_unique_ptr<Referentiable> ReferentiableManagerBase::newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize, bool bVisibleIfAhistoric)
+ref_unique_ptr<Referentiable> ReferentiableManagerBase::newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize)
 {
     HistoryManager * h = HistoryManager::getInstance();
 
     if (!h->isActive()) {
-        return newReferentiableInternal(nameHint, guids, bVisibleIfAhistoric, bFinalize);
+        return newReferentiableInternal(nameHint, guids, bFinalize);
     }
     A(bFinalize);
     ref_unique_ptr<Referentiable> r;
@@ -312,7 +312,7 @@ ReferentiableManager<T> * ReferentiableManager<T>::getInstance()
 
 
 template <class T>
-ref_unique_ptr<Referentiable> ReferentiableManager<T>::newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible, bool bFinalize)
+ref_unique_ptr<Referentiable> ReferentiableManager<T>::newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize)
 {
     /*LG(INFO, "ReferentiableManager<T>::newReferentiable(%s, %d guids) begin",
         (nameHint.c_str() ? nameHint.c_str() : "nullptr"),
@@ -328,9 +328,6 @@ ref_unique_ptr<Referentiable> ReferentiableManager<T>::newReferentiableInternal(
     }
 
     auto ref = ref_unique_ptr<T>(new T(this, guid, nameHint));
-    if (!bVisible) {
-        ref->Hide();
-    }
     if (unlikely(!ComputeSessionName(ref.get(), bFinalize))) {
         LG(ERR, "ReferentiableManager<T>::newReferentiable : ComputeSessionName failed (uuid: %s)", guid.c_str());
         return {};

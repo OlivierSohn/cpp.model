@@ -18,7 +18,6 @@ Referentiable::Referentiable() :
 Persistable()
 , m_manager(nullptr)
 , m_guid(std::string(""))
-, m_bHidden(false)
 , m_observableReferentiable(Observable<Event, Referentiable*>::instantiate())
 {
 }
@@ -27,7 +26,6 @@ Referentiable::Referentiable(ReferentiableManagerBase * manager, const std::stri
 Persistable()
 , m_manager(manager)
 , m_guid(guid)
-, m_bHidden(false)
 , m_observableReferentiable(Observable<Event, Referentiable*>::instantiate())
 {
     A(m_manager);
@@ -38,7 +36,6 @@ Persistable()
 , m_manager(manager)
 , m_guid(guid)
 , m_hintName(hintName)
-, m_bHidden(false)
 , m_observableReferentiable(Observable<Event, Referentiable*>::instantiate())
 {
     A(m_manager);
@@ -80,14 +77,6 @@ void Referentiable::deinstantiate() {
 
 auto Referentiable::observableReferentiable() -> Observable<Event, Referentiable*> * {
     return m_observableReferentiable; // might be zero if it is being destroyed
-}
-
-void Referentiable::Hide() {
-    m_bHidden = true;
-}
-
-bool Referentiable::isHidden() {
-    return m_bHidden;
 }
 
 const std::string & Referentiable::guid() const {

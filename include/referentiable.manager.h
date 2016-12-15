@@ -47,7 +47,7 @@ namespace imajuscule
 
         ref_unique_ptr<Referentiable> newReferentiable(bool bFinalize);
         ref_unique_ptr<Referentiable> newReferentiable(const std::string & nameHint, bool bFinalize);
-        ref_unique_ptr<Referentiable> newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize, bool bVisibleIfAhistoric);
+        ref_unique_ptr<Referentiable> newReferentiable(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize);
 
         auto const & traverse() const { return refs; }
         void forEach(std::function<void(Referentiable &)> && f) {
@@ -101,7 +101,7 @@ namespace imajuscule
 
         Observable<Event, Referentiable*> * m_observable;
 
-        virtual ref_unique_ptr<Referentiable> newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible = true, bool bFinalize = true) = 0;
+        virtual ref_unique_ptr<Referentiable> newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize = true) = 0;
         void RemoveRefInternal(Referentiable*);
     };
     
@@ -131,7 +131,7 @@ namespace imajuscule
     private:
         static ReferentiableManager * g_pRefManager;
 
-        ref_unique_ptr<Referentiable> newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bVisible, bool bFinalize) override;
+        ref_unique_ptr<Referentiable> newReferentiableInternal(const std::string & nameHint, const std::vector<std::string> & guids, bool bFinalize) override;
         void doTearDown() override {}
     };
     
