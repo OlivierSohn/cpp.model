@@ -1,6 +1,3 @@
-#pragma once
-
-#include "command.h"
 
 namespace imajuscule
 {

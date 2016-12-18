@@ -1,13 +1,3 @@
-#pragma once
-
-#include <vector>
-#include <stack>
-#include <string>
-#include <functional>
-
-#include "observable.h"
-#include "execution.h"
-#include "referentiable.h"
 
 namespace imajuscule
 {
@@ -239,7 +229,5 @@ CommandResult() = default; \
 SUBCR_LISTEN_TO_RESULT;       \
 private:
 
-#include "undoable.hpp"
 
-#include "os.log.h"
 

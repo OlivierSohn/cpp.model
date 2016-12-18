@@ -1,7 +1,3 @@
-#pragma once
-
-#include "referentiables.h"
-#include "globals.h"
 
 namespace imajuscule {
     struct Application {

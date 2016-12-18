@@ -1,21 +1,3 @@
-#ifdef _WIN32
-#define NOMINMAX
-#include "Windows.h"
-#include "Objbase.h"
-#elif __ANDROID__
-#else
-#include <uuid/uuid.h>
-#endif
-
-#include <algorithm>
-
-#include "globals.h"
-#include "referentiable.h"
-#include "referentiable.manager.h"
-#include "history.manager.h"
-
-#include "os.log.h"
-#include "os.log.format.h"
 
 using namespace imajuscule;
 

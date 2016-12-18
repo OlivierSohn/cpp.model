@@ -1,11 +1,3 @@
-#include <time.h>
-
-#include "os.log.h"
-#include "os.log.format.h"
-
-#include "history.manager.h"
-#include "referentiable.h"
-#include "referentiable.manager.h"
 
 const int KEY_DATE_CREA           = 'd' ;// string
 const int KEY_GUID                = 'e' ;// string

@@ -1,6 +1,4 @@
 
-#pragma once
-
 namespace imajuscule
 {
     class PathSuite;

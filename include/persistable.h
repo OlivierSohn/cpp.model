@@ -1,11 +1,4 @@
 
-#pragma once
-
-#include "updatable.h"
-#include "observable.h"
-#include "os.storage.keys.h"
-#include "os.storage.h"
-
 #define DECL_NO_PERSIST         eResult Save(const Directory) override {return ILE_SUCCESS;}
 
 #define DECL_PERSIST_CLASSES( type, supertype ) \

@@ -1,10 +1,3 @@
-#pragma once
-
-#include <list>
-#include <stack>
-
-#include "observable.h"
-#include "execution.h"
 
 namespace imajuscule
 {
@@ -99,4 +92,3 @@ namespace imajuscule
     };
 }
 
-#include "undoable.h"

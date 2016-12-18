@@ -1,11 +1,3 @@
-#include <iostream>
-#include <algorithm>
-
-#include "os.log.h"
-
-#include "globals.h"
-#include "command.h"
-#include "history.manager.h"
 
 using namespace imajuscule;
 

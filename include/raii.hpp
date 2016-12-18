@@ -1,8 +1,4 @@
 
-#pragma once
-#include <functional>
-
-#include "os.log.h"
 
 namespace imajuscule {
     struct RAII

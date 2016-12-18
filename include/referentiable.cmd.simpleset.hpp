@@ -1,6 +1,3 @@
-#include "referentiable.cmd.simpleset.h"
-#include "history.manager.h"
-#include "os.log.h"
 
 using namespace imajuscule;
 

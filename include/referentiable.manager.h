@@ -1,14 +1,3 @@
-#pragma once
-
-#include <map>
-#include <string>
-#include <vector>
-#include <functional>
-
-#include "visitable.h"
-#include "observable.h"
-#include "undoable.h"
-#include "referentiable.h"
 
 #define MAKE_REF(x) intrusive_ptr<x>(ReferentiableManager<x>::New().release())
 namespace imajuscule

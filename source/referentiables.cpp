@@ -1,10 +1,3 @@
-#pragma once
-
-#include "globals.h"
-
-#include "referentiable.manager.h"
-
-#include "referentiables.h"
 
 namespace imajuscule
 {

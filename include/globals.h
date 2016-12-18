@@ -1,11 +1,3 @@
-#pragma once
-
-#include <functional>
-
-#include <vector>
-
-#include "referentiable.h"
-#include "referentiable.manager.h"
 
 namespace imajuscule {
     using reseter = std::function<void(void)>;

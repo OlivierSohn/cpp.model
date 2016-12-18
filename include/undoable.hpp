@@ -1,7 +1,4 @@
 
-#include "history.manager.h"
-#include "command.h"
-
 namespace imajuscule
 {
 template <class InnerCmdType>

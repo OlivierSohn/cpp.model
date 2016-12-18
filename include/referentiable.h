@@ -1,18 +1,3 @@
-#pragma once
-
-#include <string>
-#include <vector>
-#include <functional>
-#include <memory>
-
-#include "os.storage.keys.h"
-
-#include "ref_unique_ptr.h"
-#include "intrusive_ptr_defs.h"
-#include "persistable.h"
-#include "observable.h"
-#include "weak_ptr.h"
-#include "meta.h"
 
 #define DEFINE_REF(x) friend class ReferentiableManager<x>
 
@@ -144,10 +129,4 @@ void set##methodPostFix(type * p) { \
     addSpec(name.get());\
 }
 
-#include "intrusive_ptr.h"
-
-namespace imajuscule {
-    intrusive_ptr<Referentiable> instantiate(ReferentiableManagerBase * rm, const std::string & hintName);
-    intrusive_ptr<Referentiable> instantiate(ReferentiableManagerBase * rm);
-}
 

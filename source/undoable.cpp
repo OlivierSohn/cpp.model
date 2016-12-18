@@ -1,6 +1,3 @@
-#include "undoable.h"
-#include "os.log.h"
-#include "history.manager.h"
 
 using namespace imajuscule;
 
@@ -71,20 +68,6 @@ bool Undoable::EndSubElement()
     m_curSubElts.pop();
     return true;
 }
-/*
-bool Undoable::contains(Undoable * u)
-{
-    if(!u) {
-        return false;
-    }
-    std::vector<Undoable*> v;
-    traverseForwardRecurse(v);
-    for(auto e:v) {
-        if(e == u) {
-            return true;
-        }
-    }
-}*/
 
 void Undoable::getNRExtendedDescription(std::string & desc) const
 {

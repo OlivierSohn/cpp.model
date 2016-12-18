@@ -1,11 +1,3 @@
-#pragma once
-
-#include <type_traits>
-#include <cstddef>
-
-#include "os.log.h"
-
-#include "visitable.h"
 
 namespace imajuscule
 {

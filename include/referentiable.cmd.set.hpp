@@ -1,10 +1,3 @@
-#include "os.log.h"
-
-#include "history.manager.h"
-
-#include "referentiable.manager.h"
-
-#include "referentiable.cmd.set.h"
 
 namespace imajuscule {
     

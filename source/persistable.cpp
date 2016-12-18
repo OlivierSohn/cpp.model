@@ -1,4 +1,3 @@
-#include "persistable.h"
 
 using namespace imajuscule;
 

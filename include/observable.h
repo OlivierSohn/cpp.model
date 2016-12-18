@@ -1,19 +1,3 @@
-#pragma once
-
-#include <functional>
-#include <map>
-#include <vector>
-#include <list>
-#include <stack>
-#include <array>
-#include <tuple>
-#include <memory>
-
-#include "os.log.h"
-
-#include "meta.h"
-
-#include "available_indexes.h"
 
 #define OBSERVABLE_LOG 0
 # if OBSERVABLE_LOG

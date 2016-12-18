@@ -1,4 +1,3 @@
-#include "globals.h"
 
 namespace imajuscule {
     GlobalsImpl * GlobalsImpl::instance = 0;

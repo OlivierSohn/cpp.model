@@ -1,15 +1,5 @@
 //#define LOG_UPDATES
 
-#include <algorithm>
-#include <string>
-
-#include "os.log.h"
-
-#include "updatable.h"
-#ifndef NDEBUG
-#include "raii.hpp"
-#endif
-
 using namespace imajuscule;
 
 Updatable::updatables Updatable::m_all;

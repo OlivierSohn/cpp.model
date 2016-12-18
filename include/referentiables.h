@@ -1,10 +1,3 @@
-#pragma once
-
-#include <vector>
-#include <memory>
-
-#include "referentiable.h"
-#include "referentiable.manager.h"
 
 namespace imajuscule
 {

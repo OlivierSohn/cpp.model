@@ -1,7 +1,3 @@
-#pragma once
-
-#include "observable.h"
-
 
 #define VISITOR_HEADER_IMPL void accept(Visitor & vtor) override {\
     vtor.Visit(this);\

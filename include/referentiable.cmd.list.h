@@ -1,6 +1,3 @@
-#pragma once
-
-#include "command.h"
 
 namespace imajuscule
 {
@@ -41,7 +38,7 @@ namespace imajuscule
     private:
         struct data : public Command::data
         {
-            Type m_t;
+            Type m_t : 1;
             std::string m_attrGUID;
             ReferentiableManagerBase * m_manager;
 
@@ -54,7 +51,7 @@ namespace imajuscule
         };
 
         const char * m_shortDesc;
-        Type m_type;
+        Type m_type : 1;
 
         bool doExecute(const Command::data & Data) override;
 

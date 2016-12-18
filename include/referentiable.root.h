@@ -1,8 +1,3 @@
-#pragma once
-
-#include <set>
-
-#include "referentiable.h"
 
 namespace imajuscule
 {
@@ -18,7 +13,6 @@ namespace imajuscule
         ReferentiableRoot(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName);
 
         DECL_PERSIST(ReferentiableRoot, Referentiable)
-        
         
         static intrusive_ptr<ReferentiableRoot> g_instance;
     };

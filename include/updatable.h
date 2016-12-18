@@ -1,13 +1,4 @@
 
-#pragma once
-
-#include <list>
-#include <set>
-
-#include "visitable.h"
-#include "visitor.h"
-#include "observable.h"
-
 namespace imajuscule
 {
     class Updatable;

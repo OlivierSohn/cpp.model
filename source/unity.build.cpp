@@ -1,3 +1,5 @@
+#include "private.h"
+
 #include "asyncnotifier.cpp"
 #include "command.cpp"
 #include "history.manager.cpp"

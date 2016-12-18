@@ -1,6 +1,3 @@
-#pragma once
-
-#include "os.log.h"
 
 namespace imajuscule
 {
