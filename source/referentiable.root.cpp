@@ -1,5 +1,5 @@
 
-const int KEY_TARGETS = -110;
+constexpr int KEY_TARGETS = -110;
 
 using namespace imajuscule;
 

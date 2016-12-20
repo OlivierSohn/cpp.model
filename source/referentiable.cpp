@@ -1,8 +1,8 @@
 
-const int KEY_DATE_CREA           = 'd' ;// string
-const int KEY_GUID                = 'e' ;// string
-const int KEY_NAME                = 'i' ;// string
-const int KEY_MANAGER_INDEX       =  -10;
+constexpr int KEY_DATE_CREA           = 'd' ;// string
+constexpr int KEY_GUID                = 'e' ;// string
+constexpr int KEY_NAME                = 'i' ;// string
+constexpr int KEY_MANAGER_INDEX       =  -10;
 
 using namespace imajuscule;
 
