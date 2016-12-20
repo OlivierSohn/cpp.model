@@ -63,7 +63,7 @@ void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
     r->deleteObservableReferentiable();
     delete r;
     
-    size_t count = m_guidsToRftbls.erase(guid);
+    auto count = m_guidsToRftbls.erase(guid);
     A(count == 1);
     
     count = m_snsToRftbls.erase(sessionName);
