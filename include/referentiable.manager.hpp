@@ -50,6 +50,7 @@ bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const 
 void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
 {
     A (r);
+    // copies are intentional (the string need to outlive the referentiable)
     std::string guid = r->guid();
     std::string sessionName = r->sessionName();
     
