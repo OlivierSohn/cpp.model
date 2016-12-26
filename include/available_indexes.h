@@ -28,11 +28,15 @@ namespace imajuscule
     struct AvailableIndexes {
         using index_t = T;
         
+        void reserve(size_t size) {
+            availables.reserve(size);
+        }
+        
         template<typename Container>
         T Take(Container & container) {
             if (!availables.empty()) {
-                auto key = availables.top();
-                availables.pop();
+                auto key = availables.back();
+                availables.pop_back();
                 return key;
             }
             A(container.size() < std::numeric_limits<T>::max());
@@ -42,14 +46,14 @@ namespace imajuscule
         }
 
         void Return(T index) {
-            availables.push(index);
+            availables.emplace_back(index);
         }
         
         auto size() {
             return availables.size();
         }
     private:
-        std::stack<T> availables;
+        std::vector<T> availables;
     };
 
 }
