@@ -86,7 +86,7 @@ namespace imajuscule
         guidsToRftbls m_guidsToRftbls;
         std::vector<Referentiable*> refs;
         
-        int session_name_last_suffix;
+        int32_t session_name_last_suffix;
 
         Observable<Event, Referentiable*> * m_observable;
 

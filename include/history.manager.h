@@ -60,8 +60,8 @@ namespace imajuscule
         unsigned int m_stacksCapacity;
 
         std::stack<Undoable*> m_curCommandStack;
-        int m_iActivated;
-        int transactionCount_ = 0;
+        int32_t m_iActivated;
+        int32_t transactionCount_ = 0;
 
         void NewGroup();
         void SizeUndos();
