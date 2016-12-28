@@ -13,7 +13,7 @@ namespace imajuscule {
         static No Test( ... ); // undefined
         
     public:
-        enum { Is = sizeof(Test(static_cast<D*>(nullptr))) == sizeof(Yes) ? 1 : 0 };
+        static constexpr bool Is = sizeof(Test(static_cast<D*>(nullptr))) == sizeof(Yes) ? 1 : 0;
     };
 
     constexpr unsigned int ceil_power_of_two(unsigned int v)
