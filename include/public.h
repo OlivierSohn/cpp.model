@@ -22,6 +22,7 @@
 #include <type_traits>
 #include <vector>
 
+#include "../../os.log/include/public.h"
 #include "../../os.storage/include/public.h"
 
 #include "meta.h"
