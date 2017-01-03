@@ -6,17 +6,17 @@
 
 namespace imajuscule
 {
-    struct NonCopyable {
-        NonCopyable() =default;
-        NonCopyable(const NonCopyable &) = delete;
-        NonCopyable & operator=(const NonCopyable&) = delete;
-    };
-    
     struct Object {
         virtual ~Object() = default;
         Object() = default;
     };
 
+    struct NonCopyable : public Object {
+        NonCopyable() =default;
+        NonCopyable(const NonCopyable &) = delete;
+        NonCopyable & operator=(const NonCopyable&) = delete;
+    };
+    
     class Visitor;
     class Visitable : public Object
     {
