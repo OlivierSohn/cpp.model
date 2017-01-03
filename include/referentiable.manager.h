@@ -111,9 +111,8 @@ namespace imajuscule
 
         void forEachReferentiable(std::function<void(T&)> && f) {
             for(auto r : traverse()) {
-                if(T * cast = static_cast<T*>(r)) {
-                    f(*cast);
-                }
+                auto * cast = safe_cast<T*>(r);
+                f(*cast);
             }
         }
 

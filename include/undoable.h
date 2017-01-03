@@ -212,7 +212,7 @@ namespace imajuscule
 [&](const Command::CommandResult * res){                                \
 A(res);                                                                 \
 A(res->initialized());                                                 \
-const CommandResult* myRes = dynamic_cast<const CommandResult*>(res);   \
+auto * myRes = dynamic_cast<const CommandResult*>(res);   \
 A(myRes);                                                             \
 r = *myRes;                                                        \
 A(r.initialized()); \

@@ -48,13 +48,13 @@ auto Undoable::ListInnerCommandsReadyFor(const data & dataBefore, const data & d
     {
         Undoable * u = itG->get();
         
-        if(UndoGroup * g = dynamic_cast<UndoGroup*>(u))
+        if(auto * g = dynamic_cast<UndoGroup*>(u))
         {
             std::vector<Undoable*> v2;
             g->traverseForwardRecurse(v2);
             for (auto u2 : v2)
             {
-                if( Command * c2 = dynamic_cast<Command*>(u2) )
+                if(auto * c2 = dynamic_cast<Command*>(u2) )
                 {
                     if (c2->ReadyFor<InnerCmdType>(dataBefore, dataAfter, pRef))
                     {
@@ -63,7 +63,7 @@ auto Undoable::ListInnerCommandsReadyFor(const data & dataBefore, const data & d
                 }
             }
         }
-        else if(Command * c = dynamic_cast<Command*>(u))
+        else if(auto * c = dynamic_cast<Command*>(u))
         {
             if (c->ReadyFor<InnerCmdType>(dataBefore, dataAfter, pRef))
             {

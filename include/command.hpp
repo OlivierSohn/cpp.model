@@ -8,7 +8,7 @@ bool Command::ReadyFor(const data & Now, const data & Then, Referentiable * pRef
         return false;
     }
     
-    if (InnerCmdType * i = dynamic_cast<InnerCmdType*>(this))
+    if(auto * i = dynamic_cast<InnerCmdType*>(this))
     {
         if ((nullptr == pRef) || (pRef == getObject()))
         {

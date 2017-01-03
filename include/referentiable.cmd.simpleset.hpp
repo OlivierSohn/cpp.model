@@ -141,7 +141,7 @@ bool RefSimpleChangeAttrCmd<T,U,fSet,fGet>::doExecute(const Command::data & Data
     
     auto pData = dynamic_cast<const RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data*>(&Data);
     A(pData);
-    T * obj = dynamic_cast<T*>(getObject());
+    auto * obj = dynamic_cast<T*>(getObject());
     A(obj);
     bSuccess = true;
     std::bind(fSet, obj, pData->Attr())();

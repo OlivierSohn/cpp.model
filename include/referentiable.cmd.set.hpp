@@ -191,9 +191,9 @@ namespace imajuscule {
         
         if (U * newAttr = ((data*)After())->Attr())
         {
-            if (T * Attr0 = dynamic_cast<T*>(newAttr))
+            if(auto * Attr0 = dynamic_cast<T*>(newAttr))
             {
-                while (T * Attr1 = dynamic_cast<T*>(std::bind(fGet, Attr0)()))
+                while(auto * Attr1 = dynamic_cast<T*>(std::bind(fGet, Attr0)()))
                 {
                     if (Attr1 == obj)
                     {
