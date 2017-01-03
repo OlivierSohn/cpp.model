@@ -95,7 +95,7 @@ A(ILE_SUCCESS == res || ILE_RECURSIVITY == res);
 
 #define W_LNK_SOFT( refExpr, key ) \
 {\
-auto * ref = static_cast<Referentiable*>(refExpr);\
+auto * ref = static_cast<Referentiable*>(refExpr);/* calling conversion operator if needed */\
 if(ref) \
 {       \
 WriteKeyData(key, ref->guid()); \
@@ -148,13 +148,13 @@ WriteKeyData(key, vs);  \
 #define R_LNKS_OP( Op, type, key ) \
 case key: \
     for(auto const & guid : vs)\
-        Op( static_cast<type*>(Referentiables::fromGUID(directory(), guid)) );\
+        Op( safe_cast<type*>(Referentiables::fromGUID(directory(), guid)) );\
 break;
 
 #define R_UNIQUE_LNKS_OP( Op, type, key ) \
 case key: \
     for(auto const & guid : vs)\
-        Op( intrusive_ptr<type>(static_cast<type*>(Referentiables::fromGUID(directory(), guid))) );\
+        Op( intrusive_ptr<type>(safe_cast<type*>(Referentiables::fromGUID(directory(), guid))) );\
 break;
 
 #define L_LNKS( key ) \
@@ -164,7 +164,7 @@ break;
 
 #define R_LNK_OP( Op, type, key ) \
 case key: \
-Op( static_cast<type*>(Referentiables::fromGUID(directory(), str)) );\
+Op( safe_cast<type*>(Referentiables::fromGUID(directory(), str)) );\
 break;
 
 namespace imajuscule

@@ -45,7 +45,7 @@ namespace imajuscule {
         if(!m_manager) {
             return nullptr;
         }
-        return static_cast<U *>(m_manager->findByGuid(m_attrGUID));
+        return safe_cast<U *>(m_manager->findByGuid(m_attrGUID));
     }
     
     REF_CMD_LIST

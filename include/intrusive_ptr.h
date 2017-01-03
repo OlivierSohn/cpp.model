@@ -114,7 +114,7 @@ namespace imajuscule
         }
         
         explicit operator T*() const { return p; }
-        operator bool() const { return static_cast<bool>(p); }
+        operator bool() const { return !!p; }
         T& operator*() const { return *p; }
         T* operator -> () const { return p; }
         

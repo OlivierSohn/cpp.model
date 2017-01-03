@@ -27,7 +27,7 @@ namespace imajuscule
             if(auto mcobsref = mc->observableReferentiable()) {
                 m_regs.push_back( {
                     mcobsref->Register(Referentiable::Event::WILL_BE_DELETED, [this](Referentiable*r){
-                        remove(static_cast<T*>(r));
+                        remove(safe_cast<T*>(r));
                     })
                 });
             }

@@ -40,7 +40,7 @@ namespace imajuscule
                 return key;
             }
             A(container.size() < std::numeric_limits<T>::max());
-            T index = static_cast<T>(container.size());
+            T index = safe_cast<T>(container.size());
             make_room_for_index(index, container);
             return index;
         }

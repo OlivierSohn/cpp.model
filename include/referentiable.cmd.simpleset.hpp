@@ -55,7 +55,7 @@ U * RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data::Attr() const {
     if (!m_hasAttr) {
         return {};
     }
-    return static_cast<U *>(m_manager->findByGuid(m_attrGUID));
+    return safe_cast<U *>(m_manager->findByGuid(m_attrGUID));
 }
 
 REF_CMD_SIMPLESET

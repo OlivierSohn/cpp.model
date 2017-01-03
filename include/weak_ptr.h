@@ -37,7 +37,7 @@ namespace imajuscule
         }
         
         operator T*() const { return ptr; }
-        operator bool() const { return static_cast<bool>(ptr); }
+        operator bool() const { return !!ptr; }
         T& operator*() const { return *ptr; }
         T* operator -> () const { return ptr; }
         

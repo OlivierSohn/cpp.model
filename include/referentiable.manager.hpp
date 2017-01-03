@@ -325,7 +325,7 @@ ref_unique_ptr<T> ReferentiableManager<T>::New()
     if(!rm) {
         return {};
     }
-    return {static_cast<T*>(rm->newReferentiable(true).release())};
+    return {safe_cast<T*>(rm->newReferentiable(true).release())};
 }
 
 bool ReferentiableCmdBase::data::operator!=(const Undoable::data& other) const

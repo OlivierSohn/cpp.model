@@ -65,7 +65,7 @@ namespace imajuscule {
     REF_CMD_SET
     U * RefChangeAttrCmd<T,U,fSet,fGet>::data::Attr() const {
         if (m_hasAttr) {
-            return static_cast<U *>(m_manager->findByGuid(m_attrGUID));
+            return safe_cast<U *>(m_manager->findByGuid(m_attrGUID));
         }
         return nullptr;
     }
