@@ -14,19 +14,19 @@ Persistable()
 {
 }
 
-Referentiable::Referentiable(ReferentiableManagerBase * manager, const std::string & guid) :
+Referentiable::Referentiable(ReferentiableManagerBase * manager, std::string && guid) :
 Persistable()
 , m_manager(manager)
-, m_guid(guid)
+, m_guid(std::move(guid))
 , m_observableReferentiable(Observable<Event, Referentiable*>::instantiate())
 {
     A(m_manager);
 }
 
-Referentiable::Referentiable(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName) :
+Referentiable::Referentiable(ReferentiableManagerBase * manager, std::string && guid, const std::string & hintName) :
 Persistable()
 , m_manager(manager)
-, m_guid(guid)
+, m_guid(std::move(guid))
 , m_hintName(hintName)
 , m_observableReferentiable(Observable<Event, Referentiable*>::instantiate())
 {

@@ -15,8 +15,8 @@ ReferentiableRoot * ReferentiableRoot::getInstance()
     return Globals::ref<ReferentiableRoot>(g_instance);
 }
 
-ReferentiableRoot::ReferentiableRoot(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName) :
-Referentiable(manager, guid, hintName)
+ReferentiableRoot::ReferentiableRoot(ReferentiableManagerBase * manager, std::string guid, const std::string & hintName) :
+Referentiable(manager, std::move(guid), hintName)
 {}
 
 void ReferentiableRoot::initialize() {

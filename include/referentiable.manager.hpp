@@ -308,9 +308,9 @@ ref_unique_ptr<Referentiable> ReferentiableManager<T>::newReferentiableInternal(
         guid = generateGuid();
     }
 
-    auto ref = ref_unique_ptr<T>(new T(this, guid, nameHint));
+    auto ref = ref_unique_ptr<T>(new T(this, std::move(guid), nameHint));
     if (unlikely(!ComputeSessionName(ref.get(), bFinalize))) {
-        LG(ERR, "ReferentiableManager<T>::newReferentiable : ComputeSessionName failed (uuid: %s)", guid.c_str());
+        LG(ERR, "ReferentiableManager<T>::newReferentiable : ComputeSessionName failed");
         return {};
     }
 

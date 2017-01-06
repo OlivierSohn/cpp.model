@@ -78,8 +78,8 @@ namespace imajuscule
 
         // this version of the contructor doesn't set creation Date 
         Referentiable();
-        Referentiable(ReferentiableManagerBase * manager, const std::string & guid);
-        Referentiable(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName);
+        Referentiable(ReferentiableManagerBase * manager, std::string && guid);
+        Referentiable(ReferentiableManagerBase * manager, std::string && guid, const std::string & hintName);
         
         DECL_PERSIST(Referentiable, Persistable)
         

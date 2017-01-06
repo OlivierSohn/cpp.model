@@ -10,7 +10,7 @@ namespace imajuscule
 
         void initialize();
     protected:
-        ReferentiableRoot(ReferentiableManagerBase * manager, const std::string & guid, const std::string & hintName);
+        ReferentiableRoot(ReferentiableManagerBase * manager, std::string guid, const std::string & hintName);
 
         DECL_PERSIST(ReferentiableRoot, Referentiable)
         
