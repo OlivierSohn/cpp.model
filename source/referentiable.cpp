@@ -32,19 +32,7 @@ Persistable()
 {
     A(m_manager);
 
-    time_t result;
-    result = time(nullptr);
-
-    struct tm * pTime = nullptr;
-#ifdef _WIN32
-    struct tm time;
-    pTime = &time;
-    localtime_s(pTime, &result);
-#else
-    pTime = localtime(&result);
-#endif
-
-    FormatDate(pTime, m_dateOfCreation);
+    WriteCurrentDate(m_dateOfCreation);
 }
 
 void Referentiable::deleteObservableReferentiable()
