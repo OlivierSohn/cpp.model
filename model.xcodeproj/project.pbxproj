@@ -29,13 +29,11 @@
 		0927A8181B3F2DCF00872BC9 /* command.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = command.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		0927A81A1B3F987B00872BC9 /* referentiable.cmd.simpleset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiable.cmd.simpleset.h; sourceTree = "<group>"; };
 		0927A81B1B3F987B00872BC9 /* referentiable.cmd.simpleset.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = referentiable.cmd.simpleset.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		0927EC361DFB5130006F1563 /* available_indexes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = available_indexes.h; sourceTree = "<group>"; };
 		0930C57F1CC8688F00AB958B /* managed.reflist.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = managed.reflist.hpp; sourceTree = "<group>"; };
 		0931815C1DA389F500DF8B3B /* ref_unique_ptr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ref_unique_ptr.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		093733961DAA4AE900F01BD0 /* application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = application.h; sourceTree = "<group>"; };
 		09429C961AD38207001513DA /* libmodel.ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmodel.ios.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		094C4E601DD224860074077B /* weak_ptr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = weak_ptr.h; sourceTree = "<group>"; };
-		094C4E611DD224860074077B /* meta.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = meta.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		095F43E51C3A2010005BE7DA /* referentiables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referentiables.h; sourceTree = "<group>"; };
 		095F43E71C3A20F9005BE7DA /* referentiables.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = referentiables.cpp; sourceTree = "<group>"; };
 		09681A0B1B1AAACE00678885 /* referentiable.root.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = referentiable.root.cpp; sourceTree = "<group>"; };
@@ -123,10 +121,8 @@
 		0976628F1AD357F70099DA54 /* include */ = {
 			isa = PBXGroup;
 			children = (
-				0992C64F1E0582500003688B /* public.h */,
 				093733961DAA4AE900F01BD0 /* application.h */,
 				097662901AD357F70099DA54 /* asyncnotifier.h */,
-				0927EC361DFB5130006F1563 /* available_indexes.h */,
 				0927A8181B3F2DCF00872BC9 /* command.hpp */,
 				090578091BAE12BA00FA8E42 /* execution.h */,
 				09963F241DA9058E00FBEDD1 /* globals.h */,
@@ -134,9 +130,9 @@
 				09A13B8B1DEC86B100CC9B57 /* intrusive_ptr_defs.h */,
 				09C070D81DDEC8CE00715728 /* intrusive_ptr.h */,
 				0930C57F1CC8688F00AB958B /* managed.reflist.hpp */,
-				094C4E611DD224860074077B /* meta.h */,
 				097662941AD357F70099DA54 /* observable.h */,
 				097662951AD357F70099DA54 /* persistable.h */,
+				0992C64F1E0582500003688B /* public.h */,
 				09B330B61BF56DCE00DE437C /* raii.hpp */,
 				0931815C1DA389F500DF8B3B /* ref_unique_ptr.h */,
 				0973B4CE1B256101007EFBDD /* referentiable.cmd.list.h */,

@@ -26,12 +26,10 @@
 #include "../../os.log/include/public.h"
 #include "../../os.storage/include/public.h"
 
-#include "meta.h"
 #include "raii.hpp"
 #include "ref_unique_ptr.h"
 #include "intrusive_ptr_defs.h"
 #include "visitor.h"
-#include "available_indexes.h"
 #include "observable.h"
 #include "visitable.h"
 #include "weak_ptr.h"
