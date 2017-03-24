@@ -23,7 +23,7 @@ private: \
 
 #define DECL_PERSIST( type, supertype ) \
 public: \
-void Load(DirectoryPath d, Storage::FileName f) override; \
+void Load(DirectoryPath d, FileName f) override; \
 eResult Save(const DirectoryPath &) override; \
 protected: \
 DECL_PERSIST_CLASSES( type, supertype ) \
@@ -78,7 +78,7 @@ type::type ## Persist l( p, guid(), *this);  \
 eResult res = l.Save();\
 return res;\
 } \
-void type::Load(DirectoryPath d, Storage::FileName f) \
+void type::Load(DirectoryPath d, FileName f) \
 { \
 type::type ## Load l( d, f, *this);  \
 l.ReadAllKeys();\
@@ -183,7 +183,7 @@ namespace imajuscule
 
         Observable<PersistableEvent, Persistable*> & observable();
 
-        virtual void Load(DirectoryPath d, Storage::FileName f){A(0);}
+        virtual void Load(DirectoryPath d, FileName f){A(0);}
         virtual eResult Save( DirectoryPath const & ) {A(0); return ILE_ERROR;}
         
         // overload by calling supertype implementation first
