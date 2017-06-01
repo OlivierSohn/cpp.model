@@ -1,14 +1,5 @@
 #pragma once
 
-#ifdef _WIN32
-#define NOMINMAX
-#include "Windows.h"
-#include "Objbase.h"
-#elif __ANDROID__
-#else
-#include <uuid/uuid.h>
-#endif
-
 #include <algorithm>
 #include <array>
 #include <cstddef>
