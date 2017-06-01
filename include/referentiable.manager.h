@@ -66,8 +66,6 @@ namespace imajuscule
 
         virtual const char * UIName() = 0;
 
-        static std::string generateGuid();
-
         virtual const char * defaultNameHint() = 0;
     protected:
         // pure virtual because the session names are unique "per object type"
