@@ -11,7 +11,7 @@ namespace imajuscule {
     REF_CMD_SET
     bool RefChangeAttrCmd<T,U,fSet,fGet>::CommandResult::getAttrChanged() const
     {
-        A(initialized());
+        Assert(initialized());
         return m_bAttrChanged;
     }
     
@@ -47,7 +47,7 @@ namespace imajuscule {
     bool RefChangeAttrCmd<T,U,fSet,fGet>::data::operator!=(const Command::data&other) const
     {
         auto pOther = dynamic_cast<const RefChangeAttrCmd<T,U,fSet,fGet>::data * >(&other);
-        A(pOther);
+        Assert(pOther);
         
         if (m_hasAttr != pOther->m_hasAttr) {
             return true;
@@ -171,9 +171,9 @@ namespace imajuscule {
         bool bChanged = false;
         
         const RefChangeAttrCmd<T,U,fSet,fGet>::data * pData = dynamic_cast<const RefChangeAttrCmd<T,U,fSet,fGet>::data*>(&Data);
-        A(pData);
+        Assert(pData);
         T * obj = dynamic_cast<T*>(getObject());
-        A(obj);
+        Assert(obj);
         bSuccess = std::bind(fSet, obj, pData->Attr(), std::ref(bChanged))();
         
         CommandResult r(bSuccess, bChanged);
@@ -211,7 +211,7 @@ namespace imajuscule {
             bChanged = m_preconditionning->Execute();
             
             if (unlikely(!bChanged)) {
-                A(!"preconditionning command failed");
+                Assert(!"preconditionning command failed");
                 // deleted by previous call
                 m_preconditionning = nullptr;
             }

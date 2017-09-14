@@ -24,16 +24,16 @@ namespace imajuscule {
     }
     
     void GlobalsImpl::reset() {
-        A(!resetting);
+        Assert(!resetting);
         resetting = true;
         
         for(auto it = reseters.rbegin(); it!= reseters.rend(); ++it) {
-            A(resetting);
+            Assert(resetting);
             (*it)();
-            A(resetting);
+            Assert(resetting);
         }
         reseters.clear();
-        A(resetting);
+        Assert(resetting);
         resetting = false;
     }
     

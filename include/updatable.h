@@ -97,8 +97,8 @@ namespace imajuscule
 
         static updatables const & traverse() { return m_all; }
 
-        void incrementState() { A(m_state >= NOTUPDATED); m_state = (UpdateState)(((int)m_state)+1) ; }
-        void decrementState() { A(m_state > NOTUPDATED); m_state = (UpdateState)(((int)m_state)-1) ; }
+        void incrementState() { Assert(m_state >= NOTUPDATED); m_state = (UpdateState)(((int)m_state)+1) ; }
+        void decrementState() { Assert(m_state > NOTUPDATED); m_state = (UpdateState)(((int)m_state)-1) ; }
         UpdateState getUpdateState() const { return m_state; }
         void setUpdateState(UpdateState s) { m_state = s; }
 

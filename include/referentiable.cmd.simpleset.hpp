@@ -37,7 +37,7 @@ REF_CMD_SIMPLESET
 bool RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data::operator!=(const Command::data&other) const
 {
     auto pOther = dynamic_cast<const RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data * >(&other);
-    A(pOther);
+    Assert(pOther);
     if (m_hasAttr != pOther->m_hasAttr) {
         return true;
     }
@@ -140,9 +140,9 @@ bool RefSimpleChangeAttrCmd<T,U,fSet,fGet>::doExecute(const Command::data & Data
     bool bSuccess = false;
     
     auto pData = dynamic_cast<const RefSimpleChangeAttrCmd<T,U,fSet,fGet>::data*>(&Data);
-    A(pData);
+    Assert(pData);
     auto * obj = dynamic_cast<T*>(getObject());
-    A(obj);
+    Assert(obj);
     bSuccess = true;
     std::bind(fSet, obj, pData->Attr())();
     

@@ -91,7 +91,7 @@ l.ReadAllKeys();\
 
 #define UGLY_SAVE_REF(ref) \
 eResult res = ref->Save(directory()); \
-A(ILE_SUCCESS == res || ILE_RECURSIVITY == res);
+Assert(ILE_SUCCESS == res || ILE_RECURSIVITY == res);
 
 #define W_LNK_SOFT( refExpr, key ) \
 {\
@@ -106,7 +106,7 @@ UGLY_SAVE_REF(ref);\
 
 #define W_PTR( refExpr, key ) \
 {\
-A(refExpr); \
+Assert(refExpr); \
 W_LNK_SOFT(refExpr, key); \
 }
 
@@ -117,7 +117,7 @@ W_PTR(refExpr.get(), key); \
 
 
 #define W_LNK_ELT( ref, vs ) \
-A(ref); \
+Assert(ref); \
 {\
     vs.push_back(ref->guid());\
     UGLY_SAVE_REF(ref);\
@@ -183,8 +183,8 @@ namespace imajuscule
 
         Observable<PersistableEvent, Persistable*> & observable();
 
-        virtual void Load(DirectoryPath d, FileName f){A(0);}
-        virtual eResult Save( DirectoryPath const & ) {A(0); return ILE_ERROR;}
+        virtual void Load(DirectoryPath d, FileName f){Assert(0);}
+        virtual eResult Save( DirectoryPath const & ) {Assert(0); return ILE_ERROR;}
         
         // overload by calling supertype implementation first
         virtual void onLoaded() {};

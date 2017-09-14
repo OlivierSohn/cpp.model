@@ -20,7 +20,7 @@ Persistable()
 , m_guid(std::move(guid))
 , m_observableReferentiable(Observable<Event, Referentiable*>::instantiate())
 {
-    A(m_manager);
+    Assert(m_manager);
 }
 
 Referentiable::Referentiable(ReferentiableManagerBase * manager, std::string && guid, const std::string & hintName) :
@@ -30,7 +30,7 @@ Persistable()
 , m_hintName(hintName)
 , m_observableReferentiable(Observable<Event, Referentiable*>::instantiate())
 {
-    A(m_manager);
+    Assert(m_manager);
 
     WriteCurrentDate(m_dateOfCreation);
 }
@@ -95,7 +95,7 @@ Referentiable* Referentiable::mainRefAttr() const {
 IMPL_PERSIST3(Referentiable, Persistable,
              
              ReferentiableManagerBase * rm = m_Referentiable.getManager();
-             A(rm);
+             Assert(rm);
              WriteKeyData(KEY_MANAGER_INDEX, (int32_t)rm->index());
              WriteKeyData(KEY_NAME, m_Referentiable.m_hintName);
              WriteKeyData(KEY_DATE_CREA, m_Referentiable.m_dateOfCreation);
@@ -173,7 +173,7 @@ bool Referentiable::ReadIndexForDiskGUID(const DirectoryPath & path, const std::
     bool bFound = false;
     Referentiable::ReferentiableIndexLoad l(path, guid);
     bFound = l.found(index, sHintName);
-    A(bFound);
+    Assert(bFound);
     return bFound;
 }
 

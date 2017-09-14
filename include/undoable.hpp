@@ -20,7 +20,7 @@ bool Undoable::ExecuteFromInnerCommand( const data & dataBefore, const data & da
     if (! c->ExecFromInnerCommand<InnerCmdType>(dataBefore, dataAfter, pRef, pResFunc))
     {
         // since we have a current command and are undoing or redoing, the inner command should be there
-        A(!"corresponding inner command not found");
+        Assert(!"corresponding inner command not found");
         return false;
     }
     
@@ -71,7 +71,7 @@ auto Undoable::ListInnerCommandsReadyFor(const data & dataBefore, const data & d
             }
         }
         else {
-            A(0);
+            Assert(0);
         }
     }
 

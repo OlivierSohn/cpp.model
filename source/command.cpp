@@ -34,11 +34,11 @@ void Command::onObsolete() {
     // on purpose, obsolescence doesn't propagate to inner commands
 
     if (unlikely(isObsolete())) {
-        A(!"design error : called at least twice");
+        Assert(!"design error : called at least twice");
     }
     else {
         setIsObsolete();
-        A(m_obsolescenceObservable);
+        Assert(m_obsolescenceObservable);
         if (m_obsolescenceObservable)
         {
             m_obsolescenceObservable->Remove(m_reg);
@@ -51,9 +51,9 @@ bool Command::Execute() {
     auto* h = HistoryManager::getInstance();
     h->PushCurrentCommand(this);
 
-    A(validStateToExecute());
+    Assert(validStateToExecute());
 
-    A(m_undoables.empty());
+    Assert(m_undoables.empty());
 
     bool bRelevant = doExecute();
 
@@ -176,7 +176,7 @@ m_group(g)
 , m_command(c)
 , m_pResFunc(f)
 {
-    A(m_command);
+    Assert(m_command);
 }
 
 
@@ -210,8 +210,8 @@ bool Command::doRedo()
 
 bool Undoable::CommandExec::Run()
 {
-    A(m_command);
-    A(!m_command->isObsolete()); // else the command will be deleted by the group
+    Assert(m_command);
+    Assert(!m_command->isObsolete()); // else the command will be deleted by the group
     FunctionInfo<Event> reg;
     if (m_pResFunc) {
         reg = m_command->observable().Register(Event::RESULT, *m_pResFunc);
@@ -227,7 +227,7 @@ bool Undoable::CommandExec::Run()
             else {
                 m_command->Undo();
             }
-            A(m_command->getState() == UNDONE);
+            Assert(m_command->getState() == UNDONE);
             break;
         case Command::State::UNDONE:
             if(m_group) {
@@ -236,10 +236,10 @@ bool Undoable::CommandExec::Run()
             else {
                 m_command->Redo();
             }
-            A(m_command->getState() == REDONE);
+            Assert(m_command->getState() == REDONE);
             break;
         default:
-            A(!"unhandled type");
+            Assert(!"unhandled type");
             break;
     }
     
@@ -288,7 +288,7 @@ bool Command::CommandResult::initialized() const {
 }
 
 bool Command::CommandResult::Success() const {
-    A(initialized());
+    Assert(initialized());
     return m_success;
 }
 

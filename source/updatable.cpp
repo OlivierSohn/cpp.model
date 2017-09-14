@@ -72,7 +72,7 @@ void Updatable::Update()
     //
     // ... so instead of updating something immediately
     // we  need to setup specs correctly and rely on update
-    A(updateAllowed);
+    Assert(updateAllowed);
     
     if (UPDATED == getUpdateState()) {
         return;
@@ -96,7 +96,7 @@ void Updatable::Update()
             }
         }
         
-        A(m_state >= INUPDATE);
+        Assert(m_state >= INUPDATE);
         if ( oneNull && m_state == INUPDATE ) {
             m_specs.erase(std::remove(m_specs.begin(), m_specs.end(), (void*)0), m_specs.end());
         }
@@ -188,13 +188,13 @@ void Updatable::addSpec(spec item)
     if (!item) {
         return;
     }
-    A(!isSpec(item));
-    A(!isObserver(item));
+    Assert(!isSpec(item));
+    Assert(!isObserver(item));
     
     m_specs.push_back(item);
     item->addObserver(this);
     
-    A(isConsistent());
+    Assert(isConsistent());
     
     observableUpdatable().Notify(Event::ADD_SPEC, *this, *item);
     
@@ -254,7 +254,7 @@ bool Updatable::removeSpec(spec item)
         }
     }
     
-    A(!isSpec(item));
+    Assert(!isSpec(item));
     return true;
 }
 void Updatable::onUpdateStart() {
@@ -313,7 +313,7 @@ bool Updatable::isObserver(Updatable const * item) const
 
 void Updatable::addObserver(observer item)
 {
-    A(!isObserver(item));
+    Assert(!isObserver(item));
 
     m_observers.push_back(item);
 }

@@ -19,7 +19,7 @@ namespace imajuscule
                 return;
             }
             if(unlikely(has(mc))) {
-                A(!"Design Error : attempt to add a present item");
+                Assert(!"Design Error : attempt to add a present item");
                 return;
             }
             list.emplace_back( mc );
@@ -48,7 +48,7 @@ namespace imajuscule
             
             for(; layer != layer_end; ++layer, ++registration) {
                 
-                A( registration != registration_end );
+                Assert( registration != registration_end );
                 if( *layer == mc)
                 {
                     remove( registration, layer );
@@ -79,7 +79,7 @@ namespace imajuscule
         ManagedRefList(Owner * owner) : owner(owner) {}
 
         ~ManagedRefList() {
-            A( m_regs.size() == list.size() );
+            Assert( m_regs.size() == list.size() );
             
             auto layer = list.begin();
             auto layer_end = list.end();
@@ -89,15 +89,15 @@ namespace imajuscule
             
             for(; layer != layer_end; ++layer, ++registration)
             {
-                A( registration != registration_end );
-                A(*layer);
+                Assert( registration != registration_end );
+                Assert(*layer);
                 T & l = **layer;
                 if(auto lobsref = l.observableReferentiable()) {
                     lobsref->Remove( *registration );
                 }
             }
             
-            A( registration == registration_end );
+            Assert( registration == registration_end );
         }
 
         Owner_T & editOwner() { return *owner; }
@@ -160,7 +160,7 @@ namespace imajuscule
                     lobsref->Remove( *registration );
                 }
             }
-            A( registration == registration_end );
+            Assert( registration == registration_end );
             
             list.clear();
             m_regs.clear();

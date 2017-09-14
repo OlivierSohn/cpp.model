@@ -21,13 +21,13 @@ ReferentiableManagerBase::~ReferentiableManagerBase()
 
 bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const std::string & sessionName)
 {
-    A(r);
+    Assert(r);
     r->setSessionName(sessionName);
     {
         auto const & guid = r->guid();
         auto it = m_guidsToRftbls.find(guid);
         if (it != m_guidsToRftbls.end()) {
-            A(!"guid already present");
+            Assert(!"guid already present");
             return false;
         }
 
@@ -39,7 +39,7 @@ bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const 
         m_snsToRftbls.insert(it, guidsToRftbls::value_type(sessionName, r));
     }
     else {
-        A(!"an element was not found in guid map but found in session names map!");
+        Assert(!"an element was not found in guid map but found in session names map!");
     }
     
     refs.push_back(r);
@@ -49,7 +49,7 @@ bool ReferentiableManagerBase::RegisterWithSessionName(Referentiable * r, const 
 
 void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
 {
-    A (r);
+    Assert(r);
     // copies are intentional (the string need to outlive the referentiable)
     std::string guid = r->guid();
     std::string sessionName = r->sessionName();
@@ -65,10 +65,10 @@ void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
     delete r;
     
     auto count = m_guidsToRftbls.erase(guid);
-    A(count == 1);
+    Assert(count == 1);
     
     count = m_snsToRftbls.erase(sessionName);
-    A(count == 1);
+    Assert(count == 1);
     
     auto it = refs.begin();
     for(; it != refs.end(); ++it) {
@@ -80,8 +80,8 @@ void ReferentiableManagerBase::RemoveRefInternal(Referentiable*r)
         }
     }
     
-    A(refs.size() == m_guidsToRftbls.size());
-    A(refs.size() == m_snsToRftbls.size());
+    Assert(refs.size() == m_guidsToRftbls.size());
+    Assert(refs.size() == m_snsToRftbls.size());
     
 }
 
@@ -89,7 +89,7 @@ struct pred
 {
     bool operator()(Referentiable const * a, Referentiable const * b) const
     {
-        A(a && b);
+        Assert(a && b);
         std::string date1 = a->creationDate();
         std::string date2 = b->creationDate();
         FormatDateForComparison(date1);
@@ -129,7 +129,7 @@ Referentiable * ReferentiableManagerBase::findBySessionName(const std::string & 
 
 bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r, bool bFinalize)
 {
-    A(r);
+    Assert(r);
     std::string sessionName = r->hintName();
         
     if(findBySessionName(sessionName))
@@ -162,7 +162,7 @@ bool ReferentiableManagerBase::ComputeSessionName(Referentiable * r, bool bFinal
 
 void ReferentiableManagerBase::RemoveRef(Referentiable*r)
 {
-    A(r);
+    Assert(r);
 
     auto * h = HistoryManager::getInstance();
     
@@ -193,7 +193,7 @@ ref_unique_ptr<Referentiable> ReferentiableManagerBase::newReferentiable(const s
     if (!h->isActive()) {
         return newReferentiableInternal(nameHint, guids, bFinalize);
     }
-    A(bFinalize);
+    Assert(bFinalize);
     ref_unique_ptr<Referentiable> r;
     if (ReferentiableNewCmdBase::ExecuteFromInnerCommand(*this, nameHint, guids, r)) {
         return r;
@@ -250,7 +250,7 @@ ref_unique_ptr<T> ReferentiableManager<T>::New()
 bool ReferentiableCmdBase::data::operator!=(const Undoable::data& other) const
 {
     auto pOther = dynamic_cast<const ReferentiableCmdBase::data * >(&other);
-    A(pOther);
+    Assert(pOther);
     if (m_manager != pOther->m_manager) {
         return true;
     }
@@ -291,7 +291,7 @@ auto ReferentiableCmdBase::other(Action a)->Action
         break;
     default:
     case ACTION_UNKNOWN:
-        A(0);
+        Assert(0);
         return ACTION_UNKNOWN;
         break;
     }
@@ -309,7 +309,7 @@ bool ReferentiableCmdBase::doExecute(const Undoable::data & data)
     bool bDone = false;
 
     auto pData = dynamic_cast<const ReferentiableCmdBase::data*>(&data);
-    A(pData);
+    Assert(pData);
     switch (pData->m_action)
     {
         case ACTION_DELETE:
@@ -321,7 +321,7 @@ bool ReferentiableCmdBase::doExecute(const Undoable::data & data)
             bDone = true;
             break;
         case ACTION_UNKNOWN:
-            A(!"unknown action");
+            Assert(!"unknown action");
             break;
     }
     return bDone;
@@ -337,15 +337,15 @@ void ReferentiableCmdBase::doInstantiate()
     }
     // F3F7C744-0B78-4750-A0A1-7A9BAD872188
     auto r = manager()->newReferentiableInternal(m_hintName, guids).release();
-    A(r);
+    Assert(r);
     if (!bGUID) {
         m_GUID = r->guid();
     }
     else {
-        A(m_GUID == r->guid());
+        Assert(m_GUID == r->guid());
     }
     
-    A(m_hintName == r->hintName());
+    Assert(m_hintName == r->hintName());
 
     CommandResult res(true, r);
     observable().Notify(Event::RESULT, &res);
@@ -354,7 +354,7 @@ void ReferentiableCmdBase::doInstantiate()
 void ReferentiableCmdBase::doDeinstantiate()
 {
     auto r = manager()->findByGuid(m_GUID);
-    A(r);
+    Assert(r);
     manager()->RemoveRefInternal(r);
 }
 
@@ -406,7 +406,7 @@ bool ReferentiableNewCmdBase::ExecuteFromInnerCommand(ReferentiableManagerBase &
         return false;
     }
     
-    A(r.Success());
+    Assert(r.Success());
     oRefAddr = r.addr();
     return true;
 }
@@ -436,7 +436,7 @@ std::string const & ReferentiableCmdBase::hintName() const {
 }
 
 ReferentiableManagerBase * ReferentiableCmdBase::manager() const {
-    A(m_manager);
+    Assert(m_manager);
     return m_manager;
 }
 

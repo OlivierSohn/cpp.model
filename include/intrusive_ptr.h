@@ -146,12 +146,12 @@ namespace imajuscule
         // this is used because the referentiable manager "owns the pointer until a first program shared_pointer
         // is created with it.
         T* forget() {
-            A(count() == 1); // we are the only owner
+            Assert(count() == 1); // we are the only owner
             -- p->edit_shared_counter();
-            A(count() == 0);
+            Assert(count() == 0);
             
             auto ret = p;
-            A(ret);
+            Assert(ret);
             p = nullptr;
             return ret;
         }
@@ -173,7 +173,7 @@ namespace imajuscule
         }
         
         void increment() const {
-            A(p);
+            Assert(p);
             ++(p->edit_shared_counter());
         }
         

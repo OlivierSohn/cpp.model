@@ -210,12 +210,12 @@ namespace imajuscule
 
 #define RESULT_BY_REF(r) \
 [&](const Command::CommandResult * res){                                \
-A(res);                                                                 \
-A(res->initialized());                                                 \
+Assert(res);                                                                 \
+Assert(res->initialized());                                                 \
 auto * myRes = dynamic_cast<const CommandResult*>(res);   \
-A(myRes);                                                             \
+Assert(myRes);                                                             \
 r = *myRes;                                                        \
-A(r.initialized()); \
+Assert(r.initialized()); \
 }
 
 #define SUBCR_LISTEN_TO_RESULT \

@@ -35,7 +35,7 @@ void Persistable::removeSpecAndUnforward(Persistable * upd, const FunctionInfo<P
 eResult Persistable::Save(PersistablePersist&pp)
 {
     eResult ret = ILE_NOT_IMPLEMENTED;
-    A(0);
+    Assert(0);
     return ret;
 }
 

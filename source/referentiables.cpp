@@ -44,8 +44,8 @@ namespace imajuscule
         unsigned int index;
         std::string nameHint;
         auto res = Referentiable::ReadIndexForDiskGUID(path, guid, index, nameHint);
-        A(res);
-        A(index < m_managers.size());
+        Assert(res);
+        Assert(index < m_managers.size());
         // To record this in history we should have a command specializing newRefCmd for Load, with path as input)
         HistoryManagerPause p;
         
@@ -80,14 +80,14 @@ namespace imajuscule
     
     void Referentiables::regManager(ReferentiableManagerBase * m) {
         if(m) {
-            A(m->index() == m_managers.size());
+            Assert(m->index() == m_managers.size());
         }
         m_managers.emplace_back(m);
     }
     
     managers const & Referentiables::getManagers() {
         auto * i = Referentiables::getInstance();
-        A(i);
+        Assert(i);
         return i->m_managers;
     }
 }

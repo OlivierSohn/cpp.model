@@ -15,7 +15,7 @@ bool Command::ReadyFor(const data & Now, const data & Then, Referentiable * pRef
             switch (getState())
             {
             case State::NOT_EXECUTED:
-                A(!"found an unexecuted inner command");
+                Assert(!"found an unexecuted inner command");
                 break;
             case State::UNDONE:
                     if ((Now == *Before()) && (Then == *After())) {
@@ -31,7 +31,7 @@ bool Command::ReadyFor(const data & Now, const data & Then, Referentiable * pRef
                 break;
             default:
                 LG(ERR, "ParamChangeFormulaCmd::doExecuteFromInnerCmd : unhandled state %d", getState());
-                A(0);
+                Assert(0);
                 break;
             }
         }

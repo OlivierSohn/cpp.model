@@ -8,7 +8,7 @@ void HistoryManager::logObsoleteCommand(Command*c)
 
 void HistoryManager::logCommand(Command*c, const char * pre)
 {
-    A(c);
+    Assert(c);
     std::string pad;
     pad.insert(pad.end(), m_curCommandStack.size(), ' ');
     std::string desc;
@@ -45,7 +45,7 @@ bool UndoGroup::isObsolete() const
 
 bool UndoGroup::Execute()
 {
-    A(0);
+    Assert(0);
     return false;
 }
 
@@ -63,7 +63,7 @@ bool UndoGroup::Undo(Undoable *limit, bool bStrict, bool & bFoundLimit)
     while(it != end)
     {
         Undoable * u = it->get();
-        A(u);
+        Assert(u);
         if (u->isObsolete())
         {
             it = std::reverse_iterator<Undoables::iterator>(m_undoables.erase((std::next(it)).base()));
@@ -86,7 +86,7 @@ bool UndoGroup::Undo(Undoable *limit, bool bStrict, bool & bFoundLimit)
 
     if (bStrict)
     {
-        A(bFoundLimit);
+        Assert(bFoundLimit);
     }
     
     return bNotEmpty;
@@ -104,7 +104,7 @@ bool UndoGroup::Redo(Undoable * limit, bool bStrict, bool & bFoundLimit)
     while (it != end)
     {
         Undoable * u = it->get();
-        A(u);
+        Assert(u);
         if (u->isObsolete())
         {
             it = m_undoables.erase(it);
@@ -121,7 +121,7 @@ bool UndoGroup::Redo(Undoable * limit, bool bStrict, bool & bFoundLimit)
             // Assert commented out : a relevant (executed) command can become irrelevant for undo/redo e.g. SetFormula("", "0.")
             // -> should I introduce the notion of undoability?
             //    and have 2 different commands: ParamInitializeFormula(not undoable) and ParamChangeForula(undoable) ?
-            //A(bRelevant);
+            //Assert(bRelevant);
         }
         
         if(bFoundLimit)
@@ -132,7 +132,7 @@ bool UndoGroup::Redo(Undoable * limit, bool bStrict, bool & bFoundLimit)
 
     if (bStrict)
     {
-        A(bFoundLimit);
+        Assert(bFoundLimit);
     }
     
     return bNotEmpty;
@@ -165,17 +165,17 @@ auto HistoryManager::observable()->Observable<Event> &
 
 void HistoryManager::PushPause()
 {
-    A(m_iActivated <= 1);
+    Assert(m_iActivated <= 1);
     m_iActivated --;
 }
 void HistoryManager::PopPause()
 {
     m_iActivated ++;
-    A(m_iActivated <= 1);
+    Assert(m_iActivated <= 1);
 }
 bool HistoryManager::isActive() const
 {
-    A(m_iActivated <= 1);
+    Assert(m_iActivated <= 1);
     return m_iActivated == 1;
 }
 void HistoryManager::MakeGroup()
@@ -202,11 +202,11 @@ void HistoryManager::EndTransaction(){
 
 void HistoryManager::reset()
 {
-    A(m_curExecType == ExecutionType::NONE);
+    Assert(m_curExecType == ExecutionType::NONE);
     
     m_curExecType = ExecutionType::NONE;
     
-    A(transactionCount_ == 0);
+    Assert(transactionCount_ == 0);
     transactionCount_ = 0;
     
     m_iActivated = 1;
@@ -240,8 +240,8 @@ void HistoryManager::PushCurrentCommand(Undoable*c)
 }
 void HistoryManager::PopCurrentCommand(Undoable*c)
 {
-    A(!m_curCommandStack.empty());
-    A(m_curCommandStack.top() == c);
+    Assert(!m_curCommandStack.empty());
+    Assert(m_curCommandStack.top() == c);
     m_curCommandStack.pop();
 }
 
@@ -258,7 +258,7 @@ void HistoryManager::Add(Undoable* c)
     if ( unlikely(m_curExecType != ExecutionType::NONE))
     {
         LG(ERR, "HistoryManager::Add : Memory leak : a command was added to history while %s", (m_curExecType==ExecutionType::UNDO)?"undoing":"redoing");
-        A(0);
+        Assert(0);
         return;
     }
 
@@ -266,7 +266,7 @@ void HistoryManager::Add(Undoable* c)
     {
         // memory leak
         LG(ERR, "HistoryManager::Add : Memory leak : a command was added to history while inactive");
-        A(0);
+        Assert(0);
         return;
     }
 
@@ -294,7 +294,7 @@ void HistoryManager::Add(Undoable* c)
     }
 
     m_appState->Add(c);
-    A(!m_appState->isObsolete());
+    Assert(!m_appState->isObsolete());
     SizeUndos();
     // TODO HistoryManager::Add : after SizeUndos, find an algo to recompute m_appState that could have been invalidated
 

@@ -21,11 +21,11 @@ namespace imajuscule {
     {
         static constexpr auto minVal = 0;
         inc_dec_RAII(int & i) : RAII([&i]() {
-            A(i >= minVal);
+            Assert(i >= minVal);
             i++;
         }, [&i]() {
             i--;
-            A(i >= minVal);
+            Assert(i >= minVal);
         }) {}
     };
 

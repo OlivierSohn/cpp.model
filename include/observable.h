@@ -61,7 +61,7 @@ namespace imajuscule
         // an observer when it is in one or multiple Notify calls
         void deinstantiate()
         {
-            A(!m_deinstantiate);
+            Assert(!m_deinstantiate);
             m_deinstantiate = true;
             deinstantiateIfNeeded();
         }
@@ -106,7 +106,7 @@ namespace imajuscule
             if (cbslist.empty()) { return; }
             
             ++m_iCurNotifyCalls;
-            A(m_iCurNotifyCalls); // else type too small
+            Assert(m_iCurNotifyCalls); // else type too small
             
             OBS_LG(INFO, "Observable(%x)::Notify(%d) : size0 %d", this, event, cbslist.size());
             
@@ -129,7 +129,7 @@ namespace imajuscule
                 
                 // increment recursive level, to prevent this notification from being removed immediately
                 ++cb.recursive_level;
-                A(cb.recursive_level); // else type too small
+                Assert(cb.recursive_level); // else type too small
                 
                 OBS_LG(INFO, "Observable(%x)::Notify(%d) : size1 %d", this, event, std::get<CBS_LIST>(*(it->second)).size());
                 

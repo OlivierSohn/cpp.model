@@ -25,7 +25,7 @@ namespace imajuscule {
     bool RefAttrListCmd<T,U,fAdd,fRemove>::data::operator!=(const Command::data&other) const
     {
         auto pOther = dynamic_cast<const RefAttrListCmd<T,U,fAdd,fRemove>::data * >(&other);
-        A(pOther);
+        Assert(pOther);
         if(m_t != pOther->m_t) {
             return true;
         }
@@ -67,7 +67,7 @@ namespace imajuscule {
                 break;
                 
             default:
-                A(0);
+                Assert(0);
                 break;
         }
         
@@ -118,7 +118,7 @@ namespace imajuscule {
                     
                 default:
                     bSuccess = false;
-                    A(0);
+                    Assert(0);
                     break;
             }
         }
@@ -139,7 +139,7 @@ namespace imajuscule {
                 break;
                 
             default:
-                A(0);
+                Assert(0);
                 return Type::TYPE_ADD;
                 break;
         }
@@ -178,9 +178,9 @@ namespace imajuscule {
         bool found = true;
         
         auto * pData = dynamic_cast<const RefAttrListCmd<T,U,fAdd,fRemove>::data*>(&Data);
-        A(pData);
+        Assert(pData);
         auto * obj = dynamic_cast<T*>(getObject());
-        A(obj);
+        Assert(obj);
         switch(pData->m_t)
         {
             case Type::TYPE_ADD:
@@ -194,7 +194,7 @@ namespace imajuscule {
                 break;
                 
             default:
-                A(0);
+                Assert(0);
                 bSuccess = false;
                 break;
         }
