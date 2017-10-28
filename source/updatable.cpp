@@ -83,10 +83,10 @@ void Updatable::Update()
     incrementState(); // the first time, from NOTUPDATED to INUPDATE
     
     {
-        // vector can change size
-        // so we access elements by [] instead of iterators
-
         bool oneNull = false;
+        // vector can change size
+        // so we access elements by index instead of iterators
+        // and we recompute size at each iteration
         for ( int i = 0; i < (int)m_specs.size(); i++ )
         {
             if( auto s = m_specs[i] ) {
