@@ -1,0 +1,3 @@
+# What is it?
+
+Library for undo/redo, notion of command, referentiables, etc...
