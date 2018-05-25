@@ -116,7 +116,7 @@ namespace imajuscule
         void deleteObservableReferentiable();
     };
     
-    template<class T, typename std::enable_if<IsDerivedFrom<T, Referentiable>::Is>::type* = nullptr >
+    template<class T, typename std::enable_if<IsDerivedFrom<T, Referentiable>::value>::type* = nullptr >
     using ref_weak_ptr = WeakPtrBase< T, Referentiable, &Referentiable::observableReferentiable, Referentiable::Event::WILL_BE_DELETED>;
 }
 #define SET_ref_unique(type, name, methodPostFix) \
