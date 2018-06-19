@@ -14,7 +14,6 @@
 #include <vector>
 
 #include "../../cpp.algorithms/include/public.h"
-#include "../../cpp.os.log/include/public.h"
 #include "../../cpp.os.storage/include/public.h"
 
 #include "raii.hpp"
