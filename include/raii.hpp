@@ -24,7 +24,7 @@ namespace imajuscule {
             Assert(i >= minVal);
             i++;
         }, [&i]() {
-            i--;
+            --i;
             Assert(i >= minVal);
         }) {}
     };

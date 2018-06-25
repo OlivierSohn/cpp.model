@@ -209,7 +209,7 @@ namespace imajuscule
 // depending on where this MACRO is used, CommandResult will be XXX::CommandResult or YYY::CommandResult
 
 #define RESULT_BY_REF(r) \
-[&](const Command::CommandResult * res){                                \
+[&r](const Command::CommandResult * res){                                \
 Assert(res);                                                                 \
 Assert(res->initialized());                                                 \
 auto * myRes = dynamic_cast<const CommandResult*>(res);   \
